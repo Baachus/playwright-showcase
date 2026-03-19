@@ -1,0 +1,43 @@
+{
+  "name": "playwright-showcase",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A production-grade Playwright + TypeScript testing showcase covering UI, API, Accessibility, Performance, and Security testing.",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui",
+    "test:api": "playwright test tests/api",
+    "test:a11y": "playwright test tests/accessibility",
+    "test:perf": "playwright test tests/performance",
+    "test:security": "playwright test tests/security",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "lighthouse:open": "open reports/lighthouse/index.html || xdg-open reports/lighthouse/index.html",
+    "allure:generate": "allure generate allure-results --clean -o allure-report",
+    "allure:open": "allure open allure-report",
+    "allure:serve": "allure serve allure-results",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@axe-core/playwright": "^4.9.1",
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.12.12",
+    "allure-playwright": "^3.0.0",
+    "axe-core": "^4.9.1",
+    "chrome-launcher": "^1.1.2",
+    "lighthouse": "^12.2.1",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-playwright": "^1.6.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  }
+}
