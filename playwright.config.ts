@@ -33,7 +33,31 @@ export default defineConfig({
   // Reporter configuration - supports both HTML and Allure
   reporter: [
     ['html', { outputFolder: 'reports/html', open: 'never' }],
-    ['allure-playwright', { outputFolder: 'allure-results', suiteTitle: false }],
+    [
+      'allure-playwright',
+      {
+        resultsDir: 'allure-results',
+        suiteTitle: false,
+        // Groups tests by Epic → Feature → Story in the Allure sidebar
+        categories: [
+          {
+            name: 'Test Failures',
+            matchedStatuses: ['failed'],
+          },
+          {
+            name: 'Broken Tests',
+            matchedStatuses: ['broken'],
+          },
+        ],
+        environmentInfo: {
+          Framework: 'Playwright',
+          Language: 'TypeScript',
+          Target: 'https://playwright.dev',
+          'Node Version': process.version,
+          Platform: process.platform,
+        },
+      },
+    ],
     ['list'],
     ...(process.env.CI ? [['github'] as ['github']] : []),
   ],

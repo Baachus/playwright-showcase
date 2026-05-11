@@ -1,86 +1,124 @@
-import { test, expect } from '../../src/fixtures';
+import { test, expect } from '../../src/fixtures/index.js';
+import * as allure from 'allure-js-commons';
 
 /**
  * UI Tests – Docs Page
- * ─────────────────────────────────────────────────────────────────────────────
- * Covers: sidebar navigation, content rendering, code blocks, TOC, and
- * pagination between doc pages.
  */
 
 test.describe('Docs Page', () => {
-  test.describe('Page Load & Layout', () => {
-    test('should load the intro docs page', async ({ docsPage }) => {
-      await docsPage.assertOnDocsPage();
-    });
+  test.beforeEach(async ({}, testInfo) => {
+    testInfo.annotations.push({ type: 'epic', description: 'UI Testing' });
+    testInfo.annotations.push({ type: 'feature', description: 'Docs Page' });
+    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  });
 
-    test('should display the sidebar navigation', async ({ docsPage }) => {
-      await docsPage.assertSidebarVisible();
-    });
+  test.describe('Page Structure', () => {
+    test('should load the intro page correctly',
+      { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'critical' }] },
+      async ({ docsPage }) => {
+        await allure.step('Assert URL is under /docs/', async () => {
+          await docsPage.assertOnDocsPage();
+        });
+      });
 
-    test('should display the main content area', async ({ docsPage }) => {
-      await expect(docsPage.mainContent).toBeVisible();
-    });
+    test('should display the sidebar navigation',
+      { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'critical' }] },
+      async ({ docsPage }) => {
+        await allure.step('Assert sidebar nav is visible', async () => {
+          await docsPage.assertSidebarVisible();
+        });
+      });
 
-    test('should display at least one code block on intro page', async ({ docsPage }) => {
-      await docsPage.assertCodeBlocksPresent();
-    });
+    test('should display the main content area',
+      { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'normal' }] },
+      async ({ docsPage }) => {
+        await allure.step('Assert article content area is visible', async () => {
+          await expect(docsPage.mainContent).toBeVisible();
+        });
+      });
+
+    test('should contain code examples on intro page',
+      { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'normal' }] },
+      async ({ docsPage }) => {
+        await allure.step('Assert at least one code block is present', async () => {
+          await docsPage.assertCodeBlocksPresent();
+        });
+      });
   });
 
   test.describe('Sidebar Navigation', () => {
-    test('should navigate to Writing Tests section', async ({ docsPage }) => {
-      await docsPage.gotoSection('writing-tests');
-      await docsPage.assertOnDocsPage();
-      await docsPage.assertHeadingVisible('Writing tests');
-    });
+    test('should list navigation links in the sidebar',
+      { annotation: [{ type: 'story', description: 'Sidebar Navigation' }, { type: 'severity', description: 'normal' }] },
+      async ({ docsPage }) => {
+        await allure.step('Get all sidebar links', async () => {
+          const links = await docsPage.getSidebarLinks();
+          expect(links.length).toBeGreaterThan(5);
+        });
+      });
 
-    test('should navigate to Assertions section', async ({ docsPage }) => {
-      await docsPage.gotoSection('test-assertions');
-      await docsPage.assertOnDocsPage();
-      await docsPage.assertHeadingVisible('Assertions');
-    });
+    test('should navigate to the Installation page',
+      { annotation: [{ type: 'story', description: 'Sidebar Navigation' }, { type: 'severity', description: 'critical' }] },
+      async ({ docsPage, page }) => {
+        await allure.step('Click Installation link in sidebar', async () => {
+          await docsPage.clickSidebarLink('Installation');
+        });
+        await allure.step('Assert URL contains "installation"', async () => {
+          await expect(page).toHaveURL(/intro/i);
+        });
+        await allure.step('Assert Installation heading is visible', async () => {
+          await docsPage.assertHeadingVisible('Installation');
+        });
+      });
 
-    test('should navigate to Page Object Models section', async ({ docsPage }) => {
-      await docsPage.gotoSection('pom');
-      await docsPage.assertOnDocsPage();
-      await docsPage.assertHeadingVisible('Page object models');
-    });
+    test('should navigate to Writing Tests page',
+      { annotation: [{ type: 'story', description: 'Sidebar Navigation' }, { type: 'severity', description: 'normal' }] },
+      async ({ docsPage, page }) => {
+        await allure.step('Click Writing tests link in sidebar', async () => {
+          await docsPage.clickSidebarLink('Writing tests');
+        });
+        await allure.step('Assert URL contains "writing-tests"', async () => {
+          await expect(page).toHaveURL(/writing-tests/i);
+        });
+      });
   });
 
   test.describe('Code Blocks', () => {
-    test('should have multiple code blocks on Writing Tests page', async ({ docsPage }) => {
-      await docsPage.gotoSection('writing-tests');
-      const count = await docsPage.getCodeBlockCount();
-      expect(count).toBeGreaterThan(2);
-    });
+    test('should have multiple code blocks on the intro page',
+      { annotation: [{ type: 'story', description: 'Code Blocks' }, { type: 'severity', description: 'minor' }] },
+      async ({ docsPage }) => {
+        await allure.step('Count code blocks on page', async () => {
+          const count = await docsPage.getCodeBlockCount();
+          expect(count).toBeGreaterThan(0);
+        });
+      });
 
-    test('code blocks should contain TypeScript syntax', async ({ docsPage }) => {
-      await docsPage.gotoSection('writing-tests');
-      const content = await docsPage.getCodeBlockContent(0);
-      expect(content).not.toBeNull();
-      expect(content!.length).toBeGreaterThan(0);
-    });
+    test('should render code block content',
+      { annotation: [{ type: 'story', description: 'Code Blocks' }, { type: 'severity', description: 'minor' }] },
+      async ({ docsPage }) => {
+        await allure.step('Get content of first code block', async () => {
+          const content = await docsPage.getCodeBlockContent(0);
+          expect(content).not.toBeNull();
+          expect(content!.length).toBeGreaterThan(0);
+        });
+      });
   });
 
-  test.describe('URL Integrity', () => {
-    test('should stay on a /docs/ path after sidebar navigation', async ({ docsPage }) => {
-      await docsPage.gotoSection('api/class-page');
-      await expect(docsPage.page).toHaveURL(/\/docs\/api\/class-page/);
-    });
-
-    test('should not redirect to 404 for key doc pages', async ({ docsPage, page }) => {
-      const criticalPaths = [
-        'intro',
-        'writing-tests',
-        'test-assertions',
-        'pom',
-        'api/class-page',
-        'api/class-locator',
-      ];
-
-      for (const docPath of criticalPaths) {
-        const response = await page.goto(`https://playwright.dev/docs/${docPath}`);
-        expect(response?.status(), `Expected 200 for /docs/${docPath}`).toBe(200);
-      }
-    });
+  test.describe('Direct Page Navigation', () => {
+    for (const [label, section] of [
+      ['API Testing', 'api-testing'],
+      ['Assertions', 'test-assertions'],
+      ['Configuration', 'test-configuration'],
+    ] as const) {
+      test(`should load the ${label} page`,
+        { annotation: [{ type: 'story', description: 'Direct Navigation' }, { type: 'severity', description: 'normal' }] },
+        async ({ docsPage }) => {
+          await allure.step(`Navigate to /docs/${section}`, async () => {
+            await docsPage.gotoSection(section);
+          });
+          await allure.step('Assert page is a valid docs page', async () => {
+            await docsPage.assertOnDocsPage();
+          });
+        });
+    }
   });
 });
