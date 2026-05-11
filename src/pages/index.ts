@@ -6,3 +6,4 @@ export { DocsPage } from './playwrightdev/DocsPage.js';
 
 // Saucedemo pages
 export { LoginPage } from './saucedemo/LoginPage.js';
+export { InventoryPage } from './saucedemo/InventoryPage.js';
