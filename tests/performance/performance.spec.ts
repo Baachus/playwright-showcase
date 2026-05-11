@@ -59,7 +59,7 @@ async function attachLighthouseToAllure(result: LighthouseResult): Promise<void>
 
 // ── Home Page Desktop ────────────────────────────────────────────────────────
 
-test.describe('Lighthouse – Home Page (Desktop)', () => {
+test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
   test.beforeEach(async ({}, testInfo) => {
@@ -164,7 +164,7 @@ test.describe('Lighthouse – Home Page (Desktop)', () => {
 
 // ── Home Page Mobile ─────────────────────────────────────────────────────────
 
-test.describe('Lighthouse – Home Page (Mobile)', () => {
+test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
   test.beforeEach(async ({}, testInfo) => {
@@ -211,7 +211,7 @@ test.describe('Lighthouse – Home Page (Mobile)', () => {
 
 // ── Docs Page ────────────────────────────────────────────────────────────────
 
-test.describe('Lighthouse – Docs Page (Desktop)', () => {
+test.describe('Lighthouse – Docs Page (Desktop)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
   test.beforeEach(async ({}, testInfo) => {

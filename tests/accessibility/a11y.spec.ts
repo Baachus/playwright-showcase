@@ -11,7 +11,7 @@ import {
  * Accessibility Tests – playwright.dev
  */
 
-test.describe('Accessibility – Home Page', () => {
+test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => {
   test.beforeEach(async ({ page }, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Accessibility Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'Home Page' });
@@ -87,7 +87,7 @@ test.describe('Accessibility – Home Page', () => {
     });
 });
 
-test.describe('Accessibility – Docs Page', () => {
+test.describe('Accessibility – Docs Page', { tag: ['@accessibility'] }, () => {
   test.beforeEach(async ({ page }, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Accessibility Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'Docs Page' });
@@ -127,7 +127,7 @@ test.describe('Accessibility – Docs Page', () => {
     });
 });
 
-test.describe('Accessibility – Keyboard Navigation', () => {
+test.describe('Accessibility – Keyboard Navigation', { tag: ['@accessibility'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Accessibility Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'Keyboard Navigation' });

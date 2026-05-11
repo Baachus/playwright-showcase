@@ -16,7 +16,7 @@ import {
 const HOME_URL = 'https://playwright.dev/';
 const DOCS_URL = 'https://playwright.dev/docs/intro';
 
-test.describe('Security – HTTP Headers (Required)', () => {
+test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'HTTP Headers' });
@@ -83,7 +83,7 @@ test.describe('Security – HTTP Headers (Required)', () => {
     });
 });
 
-test.describe('Security – HTTP Headers (Recommended Audit)', () => {
+test.describe('Security – HTTP Headers (Recommended Audit)', { tag: ['@security'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'OWASP Recommended Headers' });
@@ -116,7 +116,7 @@ test.describe('Security – HTTP Headers (Recommended Audit)', () => {
   }
 });
 
-test.describe('Security – Sensitive Header Exposure', () => {
+test.describe('Security – Sensitive Header Exposure', { tag: ['@security'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'Header Exposure' });
@@ -155,7 +155,7 @@ test.describe('Security – Sensitive Header Exposure', () => {
   }
 });
 
-test.describe('Security – HTTPS & Transport', () => {
+test.describe('Security – HTTPS & Transport', { tag: ['@security'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'HTTPS & Transport' });
@@ -183,7 +183,7 @@ test.describe('Security – HTTPS & Transport', () => {
     });
 });
 
-test.describe('Security – Content Integrity', () => {
+test.describe('Security – Content Integrity', { tag: ['@security'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'Content Integrity' });
@@ -214,7 +214,7 @@ test.describe('Security – Content Integrity', () => {
     });
 });
 
-test.describe('Security – Cookie Attributes', () => {
+test.describe('Security – Cookie Attributes', { tag: ['@security'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
     testInfo.annotations.push({ type: 'feature', description: 'Cookie Security' });

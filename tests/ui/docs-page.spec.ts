@@ -12,7 +12,7 @@ test.describe('Docs Page', () => {
     testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
   });
 
-  test.describe('Page Structure', () => {
+  test.describe('Page Structure', { tag: ['@ui']}, () => {
     test('should load the intro page correctly',
       { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'critical' }] },
       async ({ docsPage }) => {
@@ -46,7 +46,7 @@ test.describe('Docs Page', () => {
       });
   });
 
-  test.describe('Sidebar Navigation', () => {
+  test.describe('Sidebar Navigation', { tag: ['@ui'] }, () => {
     test('should list navigation links in the sidebar',
       { annotation: [{ type: 'story', description: 'Sidebar Navigation' }, { type: 'severity', description: 'normal' }] },
       async ({ docsPage }) => {
@@ -82,7 +82,7 @@ test.describe('Docs Page', () => {
       });
   });
 
-  test.describe('Code Blocks', () => {
+  test.describe('Code Blocks', { tag: ['@ui'] }, () => {
     test('should have multiple code blocks on the intro page',
       { annotation: [{ type: 'story', description: 'Code Blocks' }, { type: 'severity', description: 'minor' }] },
       async ({ docsPage }) => {
@@ -103,13 +103,13 @@ test.describe('Docs Page', () => {
       });
   });
 
-  test.describe('Direct Page Navigation', () => {
+  test.describe('Direct Page Navigation', { tag: ['@ui'] }, () => {
     for (const [label, section] of [
       ['API Testing', 'api-testing'],
       ['Assertions', 'test-assertions'],
       ['Configuration', 'test-configuration'],
     ] as const) {
-      test(`should load the ${label} page`,
+      test(`should load the ${label} page`, 
         { annotation: [{ type: 'story', description: 'Direct Navigation' }, { type: 'severity', description: 'normal' }] },
         async ({ docsPage }) => {
           await allure.step(`Navigate to /docs/${section}`, async () => {

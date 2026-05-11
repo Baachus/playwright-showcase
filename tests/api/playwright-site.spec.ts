@@ -5,7 +5,7 @@ import * as allure from 'allure-js-commons';
  * API Tests – playwright.dev
  */
 
-test.describe('API – Core HTTP Behaviour', () => {
+test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
   test.beforeEach(async ({}, testInfo) => {
     testInfo.annotations.push({ type: 'epic', description: 'API Testing' });
     testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });

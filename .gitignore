@@ -16,4 +16,4 @@ allure-results/
 allure-report/
 
 # Auth state
-src/fixtures/.auth/
+.auth/

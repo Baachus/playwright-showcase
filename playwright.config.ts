@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
+import { fileURLToPath } from 'url';
 import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Playwright Configuration
@@ -7,9 +11,6 @@ import path from 'path';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  // Root directory for test discovery
-  testDir: './tests',
-
   // Run all tests in parallel
   fullyParallel: true,
 
@@ -85,56 +86,91 @@ export default defineConfig({
 
   // Projects - multi-browser + mobile + API
   projects: [
-    // ── Setup project (global auth / state) ──────────────────────────
+    // ── Setup Projects ────────────────────────────────────────────────
     {
-      name: 'setup',
-      testMatch: '**/fixtures/global.setup.ts',
+      name: 'setup-saucedemo',
+      testMatch: /.*saucedemo\.setup\.ts/,
+    },
+    {
+      name: 'setup-playwrightdev',
+      testMatch: /.*playwrightdev\.setup\.ts/,
     },
 
-    // ── Desktop Browsers ─────────────────────────────────────────────
+    // ── Playwright.dev — Desktop Browsers ────────────────────────────
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
-      // Chromium runs everything including Lighthouse performance tests
+      name: 'Playwright.dev Chromium',
+      testDir: './tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: '.auth/playwrightdev.json',
+      },
+      dependencies: ['setup-playwrightdev'],
+      testIgnore: '**/saucedemo/**',
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup'],
-      // Lighthouse requires Chrome — skip performance tests on other browsers
-      testIgnore: '**/performance/**',
+      name: 'Playwright.dev Firefox',
+      testDir: './tests',
+      use: {
+        ...devices['Desktop Firefox'],
+        storageState: '.auth/playwrightdev.json',
+      },
+      dependencies: ['setup-playwrightdev'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**'],
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      dependencies: ['setup'],
-      testIgnore: '**/performance/**',
-    },
-
-    // ── Mobile Viewports ─────────────────────────────────────────────
-    {
-      name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
-      dependencies: ['setup'],
-      testIgnore: '**/performance/**',
-    },
-    {
-      name: 'mobile-safari',
-      use: { ...devices['iPhone 13'] },
-      dependencies: ['setup'],
-      testIgnore: '**/performance/**',
+      name: 'Playwright.dev Webkit',
+      testDir: './tests',
+      use: {
+        ...devices['Desktop Safari'],
+        storageState: '.auth/playwrightdev.json',
+      },
+      dependencies: ['setup-playwrightdev'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**'],
     },
 
-    // ── API Testing (no browser) ──────────────────────────────────────
+    // ── Playwright.dev — Mobile ───────────────────────────────────────
     {
-      name: 'api',
+      name: 'Playwright.dev Mobile-chrome',
+      testDir: './tests',
+      use: {
+        ...devices['Pixel 5'],
+        storageState: '.auth/playwrightdev.json',
+      },
+      dependencies: ['setup-playwrightdev'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**'],
+    },
+    {
+      name: 'Playwright.dev Mobile-safari',
+      testDir: './tests',
+      use: {
+        ...devices['iPhone 13'],
+        storageState: '.auth/playwrightdev.json',
+      },
+      dependencies: ['setup-playwrightdev'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**'],
+    },
+
+    // ── API ───────────────────────────────────────────────────────────
+    {
+      name: 'API',
       testMatch: '**/api/**/*.spec.ts',
+      testDir: './tests',
       use: {
         baseURL: 'https://playwright.dev',
-        extraHTTPHeaders: {
-          Accept: 'application/json',
-        },
+        extraHTTPHeaders: { Accept: 'application/json' },
+      },
+    },
+
+    // ── Saucedemo ─────────────────────────────────────────────────────
+    {
+      name: 'Saucedemo Chromium',
+      testMatch: '**/saucedemo/**/*.spec.ts',
+      testDir: './tests',
+      dependencies: ['setup-saucedemo'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'https://www.saucedemo.com',
+        storageState: '.auth/saucedemo.json',
       },
     },
   ],

@@ -12,7 +12,7 @@ test.describe('Home Page', () => {
     testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
   });
 
-  test.describe('Page Load & Core Elements', () => {
+  test.describe('Page Load & Core Elements', { tag: ['@ui']}, () => {
     test('should display the hero section with CTA',
       { annotation: [{ type: 'story', description: 'Page Load' }, { type: 'severity', description: 'critical' }] },
       async ({ homePage }) => {
@@ -46,7 +46,7 @@ test.describe('Home Page', () => {
       });
   });
 
-  test.describe('Navigation', () => {
+  test.describe('Navigation', { tag: ['@ui']}, () => {
     test('should navigate to Docs on "Get Started" click',
       { annotation: [{ type: 'story', description: 'Navigation' }, { type: 'severity', description: 'critical' }] },
       async ({ homePage, page }) => {
@@ -59,7 +59,7 @@ test.describe('Home Page', () => {
       });
   });
 
-  test.describe('Search', () => {
+  test.describe('Search', { tag: ['@ui'] }, () => {
     test('should open search modal and accept input',
       { annotation: [{ type: 'story', description: 'Search' }, { type: 'severity', description: 'critical' }] },
       async ({ homePage }) => {
@@ -83,7 +83,7 @@ test.describe('Home Page', () => {
       });
   });
 
-  test.describe('Responsive Layout', () => {
+  test.describe('Responsive Layout', { tag: ['@ui'] }, () => {
     test('should render correctly on mobile viewport',
       { annotation: [{ type: 'story', description: 'Responsive' }, { type: 'severity', description: 'normal' }] },
       async ({ page }) => {

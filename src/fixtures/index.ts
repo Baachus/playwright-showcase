@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
-import { HomePage } from '../pages/HomePage.js';
-import { DocsPage } from '../pages/DocsPage.js';
+import { HomePage } from '../pages/playwrightdev/HomePage.js';
+import { DocsPage } from '../pages/playwrightdev/DocsPage.js';
 
 /**
  * Custom Fixtures
