@@ -61,6 +61,11 @@ export class InventoryPage extends BasePage {
   /** The burger / hamburger menu button. */
   readonly menuButton: Locator;
 
+  /** The social media links */
+  readonly facebookIcon: Locator;
+  readonly twitterIcon: Locator;
+  readonly indeedIcon: Locator;
+
   // ── Constructor ─────────────────────────────────────────────────────────────
   constructor(page: Page) {
     super(page);
@@ -72,6 +77,9 @@ export class InventoryPage extends BasePage {
     this.cartIcon           = page.locator('.shopping_cart_link');
     this.cartBadge          = page.locator('.shopping_cart_badge');
     this.menuButton         = page.locator('#react-burger-menu-btn');
+    this.facebookIcon       = page.locator('[data-test="social-facebook"]');
+    this.twitterIcon        = page.locator('[data-test="social-twitter"]');
+    this.indeedIcon         = page.locator('[data-test="social-linkedin"]');
   }
 
   // ── BasePage implementation ──────────────────────────────────────────────────
@@ -174,6 +182,18 @@ export class InventoryPage extends BasePage {
   async goToCart(): Promise<void> {
     await this.cartIcon.click();
   }
+
+  /**
+   * Clicks social media icons depending on which is required
+   */
+  async clickSocialIcon(icon: 'facebook' | 'twitter' | 'indeed'): Promise<void> {
+  const map = {
+    facebook: this.facebookIcon,
+    twitter: this.twitterIcon,
+    indeed: this.indeedIcon,
+  };
+  await map[icon].click();
+}
 
   // ── Sort helpers ─────────────────────────────────────────────────────────────
 

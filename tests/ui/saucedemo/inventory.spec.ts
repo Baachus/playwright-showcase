@@ -9,10 +9,9 @@ import { InventoryPage } from '../../../src/pages/index.js';
  * following the same pattern as the other saucedemo specs.
  */
 
-const BASE_URL    = 'https://www.saucedemo.com';
 const TOTAL_ITEMS = 6; // Saucedemo always shows 6 products
 
-test.describe('Inventory Page', () => {
+test.describe('Inventory Page', { tag: ['@ui'] }, () => {
 
   let inventoryPage: InventoryPage;
 
@@ -112,7 +111,31 @@ test.describe('Inventory Page', () => {
   });
 
   test('should log the user out via the burger menu', async ({ page }) => {
+    const BASE_URL    = 'https://www.saucedemo.com';
+
     await inventoryPage.logout();
     await expect(page).toHaveURL(BASE_URL + '/');
+  });
+
+  // ── Social Media Links ─────────────────────────────────────────────────────────────
+  test('should navigate to facebook on icon click', async ({ page }) => {
+    const page2Promise = page.waitForEvent('popup');
+    inventoryPage.clickSocialIcon('facebook');
+    const page2 = await page2Promise;
+    await expect(page2.getByText('See more from Sauce Labs').first()).toBeVisible();
+  });
+
+  test('should navigate to twitter on icon click', async ({ page }) => {
+    const page2Promise = page.waitForEvent('popup');
+    inventoryPage.clickSocialIcon('twitter');
+    const page2 = await page2Promise;
+    await expect(page2.getByText('Sauce Labs helps').first()).toBeVisible();
+  });
+
+  test('should navigate to indeed on icon click', async ({ page }) => {
+    const page2Promise = page.waitForEvent('popup');
+    inventoryPage.clickSocialIcon('indeed');
+    const page2 = await page2Promise;
+    await expect(page2.getByRole('heading', { name: 'Sign in to see who you' }).first()).toBeVisible();
   });
 });
