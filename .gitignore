@@ -17,3 +17,6 @@ allure-report/
 
 # Auth state
 .auth/
+
+# Specific exemption
+tools/publish-zephyr.ts
