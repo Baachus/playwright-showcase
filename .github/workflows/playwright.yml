@@ -21,6 +21,9 @@ jobs:
       run: npx playwright install chromium --with-deps
     - name: Run smoke tests
       run: npx playwright test --grep "@smoke" --project="Playwright.dev Chromium" --project="Saucedemo Chromium"
+      env:
+        SAUCEDEMO_USERNAME: ${{ secrets.SAUCEDEMO_USERNAME }}
+        SAUCEDEMO_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
@@ -46,6 +49,9 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
+      env:
+        SAUCEDEMO_USERNAME: ${{ secrets.SAUCEDEMO_USERNAME }}
+        SAUCEDEMO_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
