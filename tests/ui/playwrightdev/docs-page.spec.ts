@@ -1,4 +1,4 @@
-import { test, expect } from '../../src/fixtures/index.js';
+import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**

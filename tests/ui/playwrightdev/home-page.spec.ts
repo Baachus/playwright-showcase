@@ -1,4 +1,4 @@
-import { test, expect } from '../../src/fixtures/index.js';
+import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**
@@ -12,7 +12,7 @@ test.describe('Home Page', () => {
     testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
   });
 
-  test.describe('Page Load & Core Elements', { tag: ['@ui']}, () => {
+  test.describe('Page Load & Core Elements', { tag: ['@ui', '@smoke']}, () => {
     test('should display the hero section with CTA',
       { annotation: [{ type: 'story', description: 'Page Load' }, { type: 'severity', description: 'critical' }] },
       async ({ homePage }) => {
