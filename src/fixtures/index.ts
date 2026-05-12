@@ -1,6 +1,8 @@
 import { test as base, expect } from '@playwright/test';
 import { HomePage } from '../pages/playwrightdev/HomePage.js';
 import { DocsPage } from '../pages/playwrightdev/DocsPage.js';
+import { LoginPage } from '../pages/saucedemo/LoginPage.js';
+import { InventoryPage } from '../pages/saucedemo/InventoryPage.js';
 
 /**
  * Custom Fixtures
@@ -16,11 +18,17 @@ import { DocsPage } from '../pages/playwrightdev/DocsPage.js';
 
 // Define the shape of our custom fixtures
 type PageFixtures = {
+  // Playwright.dev
   homePage: HomePage;
   docsPage: DocsPage;
+
+  // Saucedemo
+  inventoryPage: InventoryPage;
+  loginPage: LoginPage;
 };
 
 export const test = base.extend<PageFixtures>({
+  // ---- Playwright.dev ----
   /**
    * HomePage fixture – navigates to home and waits for load before yielding.
    */
@@ -37,6 +45,19 @@ export const test = base.extend<PageFixtures>({
     const docsPage = new DocsPage(page);
     await docsPage.goto();
     await use(docsPage);
+  },
+
+  // ---- Saucedemo ----
+  inventoryPage: async ({ page }, use) => {
+    const inventoryPage = new InventoryPage(page);
+    await inventoryPage.goto();
+    await use(inventoryPage);
+  },
+
+  loginPage: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await use(loginPage);
   },
 });
 

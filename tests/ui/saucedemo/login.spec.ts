@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../../src/fixtures/index.js';
 import { LoginPage } from '../../../src/pages/saucedemo/LoginPage.js'
 import * as allure from 'allure-js-commons';
 
