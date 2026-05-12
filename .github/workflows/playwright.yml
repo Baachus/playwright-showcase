@@ -1,18 +1,45 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: ['**']
   pull_request:
     branches: [ main, master ]
 jobs:
-  test:
-    timeout-minutes: 60
+  smoke:
+    name: Smoke Tests (@smoke)
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install chromium --with-deps
+    - name: Run smoke tests
+      run: npx playwright test --grep "@smoke" --project="Playwright.dev Chromium" --project="Saucedemo Chromium"
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: smoke-report
+        path: reports/html/
+        retention-days: 14
+
+  test:
+    name: Full Test Suite
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    needs: smoke
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+        cache: 'npm'
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
@@ -23,5 +50,5 @@ jobs:
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
-        path: playwright-report/
+        path: reports/html/
         retention-days: 30
