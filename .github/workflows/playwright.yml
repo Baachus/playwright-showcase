@@ -4,6 +4,8 @@ on:
     branches: ['**']
   pull_request:
     branches: [ main, master ]
+  schedule:
+    - cron: '0 2 * * 2'    # nightly at 2am UTC on Tuesday
 jobs:
   smoke:
     name: Smoke Tests (@smoke)
@@ -36,7 +38,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     needs: smoke
-    if: vars.RUN_REGRESSION == 'true'
+    if: github.event_name == 'schedule'
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
