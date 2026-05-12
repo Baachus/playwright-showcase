@@ -8,23 +8,29 @@ import { BasePage } from '../../BasePage.js';
  */
 export class SD_InfoPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
-  readonly loginLogo: Locator;
+  readonly firstName: Locator;
+  readonly lastName: Locator;
+  readonly zipCode: Locator;
+  readonly checkoutBtn: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.loginLogo       = page.locator('.login_logo');
+    this.firstName  = page.locator('[data-test="firstName"]');
+    this.lastName = page.locator('[data-test="lastName"]');
+    this.zipCode  = page.locator('[data-test="postalCode"]');
+    this.checkoutBtn = page.locator('[data-test="continue"]');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
 
   async goto(): Promise<void> {
-    await this.page.goto('/');
+    await this.page.goto('/checkout-step-one.html');
     await this.waitForPageLoad();
   }
 
   async waitForPageLoad(): Promise<void> {
-    await this.loginLogo.waitFor({ state: 'visible' });
+    await this.firstName.waitFor({ state: 'visible' });
   }
 
   // ── Actions ─────────────────────────────────────────────────────────────────
@@ -33,7 +39,7 @@ export class SD_InfoPage extends BasePage {
   // ── Assertions ──────────────────────────────────────────────────────────────
 
   async assertOnLoginPage(): Promise<void> {
-    await expect(this.loginLogo).toBeVisible();
-    await expect(this.page).toHaveURL('/');
+    await expect(this.firstName).toBeVisible();
+    await expect(this.page).toHaveURL('/checkout-step-one.html');
   }
 }

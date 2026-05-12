@@ -12,13 +12,7 @@ import * as allure from 'allure-js-commons';
 const TOTAL_ITEMS = 6; // Saucedemo always shows 6 products
 
 test.describe('Inventory Page', { tag: ['@ui'] }, () => {
-
-  // ── Navigate directly — auth state is injected via playwright.config.ts ───
-  test.beforeEach(async ({ page }) => {
-  });
-
   // ── Page load & structure ──────────────────────────────────────────────────
-
   test('should display the inventory page with the "Products" title', async ({ sd_inventoryPage }) => {
     await allure.step('Verify Authentication and Inventory Landing Page', async()=>{
       await sd_inventoryPage.assertOnInventoryPage();

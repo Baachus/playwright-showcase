@@ -8,23 +8,24 @@ import { BasePage } from '../../BasePage.js';
  */
 export class SD_ConfirmationPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
-  readonly loginLogo: Locator;
+  readonly thankYouLabel: Locator;
+  readonly backHomeBtn: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.loginLogo       = page.locator('.login_logo');
+    this.thankYouLabel  = page.locator('[data-test="complete-header"]');
+    this.backHomeBtn = page.locator('[data-test="back-to-products"]');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
-
   async goto(): Promise<void> {
-    await this.page.goto('/');
+    await this.page.goto('/checkout-complete.html');
     await this.waitForPageLoad();
   }
 
   async waitForPageLoad(): Promise<void> {
-    await this.loginLogo.waitFor({ state: 'visible' });
+    await this.thankYouLabel.waitFor({ state: 'visible' });
   }
 
   // ── Actions ─────────────────────────────────────────────────────────────────
@@ -33,7 +34,7 @@ export class SD_ConfirmationPage extends BasePage {
   // ── Assertions ──────────────────────────────────────────────────────────────
 
   async assertOnLoginPage(): Promise<void> {
-    await expect(this.loginLogo).toBeVisible();
-    await expect(this.page).toHaveURL('/');
+    await expect(this.thankYouLabel).toBeVisible();
+    await expect(this.page).toHaveURL('/checkout-complete.html');
   }
 }
