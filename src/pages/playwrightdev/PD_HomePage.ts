@@ -2,12 +2,12 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 
 /**
- * HomePage
+ * PD_HomePage
  * ─────────────────────────────────────────────────────────────────────────────
  * Represents the Playwright documentation home page (https://playwright.dev).
  * Encapsulates all locators and interactions for the landing page.
  */
-export class HomePage extends BasePage {
+export class PD_HomePage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly getStartedButton: Locator;
   readonly searchButton: Locator;

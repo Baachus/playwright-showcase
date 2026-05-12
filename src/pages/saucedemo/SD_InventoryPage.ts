@@ -26,14 +26,14 @@ export type SortOption =
   ;
 
 /**
- * InventoryPage
+ * SD_InventoryPage
  * ─────────────────────────────────────────────────────────────────────────────
  * Page Object for https://www.saucedemo.com/inventory.html
  *
  * Extends BasePage to reuse shared navigation helpers, screenshot, and wait
  * utilities, following the same pattern used in the playwrightdev page objects.
  */
-export class InventoryPage extends BasePage {
+export class SD_InventoryPage extends BasePage {
 
   // ── URL ─────────────────────────────────────────────────────────────────────
   private static readonly PATH = '/inventory.html';
@@ -85,7 +85,7 @@ export class InventoryPage extends BasePage {
   // ── BasePage implementation ──────────────────────────────────────────────────
 
   async goto(): Promise<void> {
-    await this.page.goto(`https://www.saucedemo.com${InventoryPage.PATH}`);
+    await this.page.goto(`https://www.saucedemo.com${SD_InventoryPage.PATH}`);
     await this.waitForPageLoad();
   }
 
@@ -201,7 +201,7 @@ export class InventoryPage extends BasePage {
    * Select a sort order from the dropdown.
    *
    * @example
-   * await inventoryPage.sortBy('lohi');
+   * await InventoryPage.sortBy('lohi');
    */
   async sortBy(option: SortOption): Promise<void> {
     await this.sortDropdown.selectOption(option);

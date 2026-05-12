@@ -15,33 +15,33 @@ test.describe('Home Page', () => {
   test.describe('Page Load & Core Elements', { tag: ['@ui', '@smoke']}, () => {
     test('should display the hero section with CTA',
       { annotation: [{ type: 'story', description: 'Page Load' }, { type: 'severity', description: 'critical' }] },
-      async ({ homePage }) => {
+      async ({ pd_homePage }) => {
         await allure.step('Assert all core elements are visible', async () => {
-          await homePage.assertPageLoaded();
+          await pd_homePage.assertPageLoaded();
         });
       });
 
     test('should have correct page title',
       { annotation: [{ type: 'story', description: 'Page Load' }, { type: 'severity', description: 'normal' }] },
-      async ({ homePage }) => {
+      async ({ pd_homePage }) => {
         await allure.step('Assert page title contains "Playwright"', async () => {
-          await homePage.assertTitle('Playwright');
+          await pd_homePage.assertTitle('Playwright');
         });
       });
 
     test('should display the navigation bar',
       { annotation: [{ type: 'story', description: 'Page Load' }, { type: 'severity', description: 'normal' }] },
-      async ({ homePage }) => {
+      async ({ pd_homePage }) => {
         await allure.step('Assert navbar is visible', async () => {
-          await expect(homePage.navbar).toBeVisible();
+          await expect(pd_homePage.navbar).toBeVisible();
         });
       });
 
     test('should display the GitHub link',
       { annotation: [{ type: 'story', description: 'Page Load' }, { type: 'severity', description: 'minor' }] },
-      async ({ homePage }) => {
+      async ({ pd_homePage }) => {
         await allure.step('Assert GitHub link is visible in nav', async () => {
-          await expect(homePage.githubLink).toBeVisible();
+          await expect(pd_homePage.githubLink).toBeVisible();
         });
       });
   });
@@ -49,9 +49,9 @@ test.describe('Home Page', () => {
   test.describe('Navigation', { tag: ['@ui']}, () => {
     test('should navigate to Docs on "Get Started" click',
       { annotation: [{ type: 'story', description: 'Navigation' }, { type: 'severity', description: 'critical' }] },
-      async ({ homePage, page }) => {
+      async ({ pd_homePage, page }) => {
         await allure.step('Click the Get Started CTA button', async () => {
-          await homePage.clickGetStarted();
+          await pd_homePage.clickGetStarted();
         });
         await allure.step('Assert URL navigated to /docs/', async () => {
           await expect(page).toHaveURL(/\/docs\//);
@@ -62,23 +62,23 @@ test.describe('Home Page', () => {
   test.describe('Search', { tag: ['@ui'] }, () => {
     test('should open search modal and accept input',
       { annotation: [{ type: 'story', description: 'Search' }, { type: 'severity', description: 'critical' }] },
-      async ({ homePage }) => {
+      async ({ pd_homePage }) => {
         await allure.step('Click the search button', async () => {
-          await homePage.searchFor('assertions');
+          await pd_homePage.searchFor('assertions');
         });
         await allure.step('Assert search input contains typed query', async () => {
-          await expect(homePage.searchInput).toHaveValue('assertions');
+          await expect(pd_homePage.searchInput).toHaveValue('assertions');
         });
       });
 
     test('should open search with keyboard shortcut',
       { annotation: [{ type: 'story', description: 'Search' }, { type: 'severity', description: 'normal' }] },
-      async ({ homePage, page }) => {
+      async ({ pd_homePage, page }) => {
         await allure.step('Press Ctrl+K shortcut', async () => {
           await page.keyboard.press('Control+K');
         });
         await allure.step('Assert search input becomes visible', async () => {
-          await expect(homePage.searchInput).toBeVisible();
+          await expect(pd_homePage.searchInput).toBeVisible();
         });
       });
   });

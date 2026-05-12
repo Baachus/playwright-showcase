@@ -2,12 +2,12 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 
 /**
- * DocsPage
+ * PD_DocsPage
  * ─────────────────────────────────────────────────────────────────────────────
  * Represents the Playwright documentation content pages.
  * Covers sidebar navigation, content area, and anchor links.
  */
-export class DocsPage extends BasePage {
+export class PD_DocsPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly sidebar: Locator;
   readonly mainContent: Locator;

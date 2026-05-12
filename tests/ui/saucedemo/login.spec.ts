@@ -1,5 +1,5 @@
 import { test, expect } from '../../../src/fixtures/index.js';
-import { LoginPage } from '../../../src/pages/saucedemo/LoginPage.js'
+import { SD_LoginPage } from '../../../src/pages/saucedemo/SD_LoginPage.js'
 import * as allure from 'allure-js-commons';
 
 test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
@@ -13,7 +13,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   test('shows error for invalid credentials', async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
-    const loginPage = new LoginPage(page);
+    const loginPage = new SD_LoginPage(page);
 
     await allure.step('Navigate to login page without utilizing stored authentication', async()=>{
       await loginPage.goto();
@@ -29,7 +29,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   test('clears error when dismissed', async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
-    const loginPage = new LoginPage(page);
+    const loginPage = new SD_LoginPage(page);
 
     await allure.step('Navigate to login page without utilizing stored authentication', async()=>{
       await loginPage.goto();

@@ -2,12 +2,12 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 
 /**
- * LoginPage
+ * SD_LoginPage
  * ─────────────────────────────────────────────────────────────────────────────
  * Represents the Saucedemo login page.
  * Covers credential input, form submission, error handling, and assertions.
  */
-export class LoginPage extends BasePage {
+export class SD_LoginPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
