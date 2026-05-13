@@ -20,6 +20,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Page Load and Structure' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Verify Authentication and Inventory Landing Page', async()=>{
       await sd_inventoryPage.assertOnInventoryPage();
     });
@@ -29,6 +30,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Page Load and Structure' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Verify Max Item Displays', async()=>{
       const count = await sd_inventoryPage.getItemCount();
       expect(count).toBe(TOTAL_ITEMS);
@@ -39,6 +41,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Page Load and Structure' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Verify Every Item has name, description, and price', async()=>{
       const items = await sd_inventoryPage.getAllItems();
 
@@ -56,6 +59,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Sorting' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Verify Sorting by A-Z', async()=>{
       await sd_inventoryPage.sortBy('az');
       await sd_inventoryPage.assertSortedAtoZ();
@@ -66,6 +70,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Sorting' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Verify Sorting by Z-A', async()=>{
       await sd_inventoryPage.sortBy('za');
       await sd_inventoryPage.assertSortedZtoA();
@@ -76,6 +81,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Sorting' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Verify Sorting Low to High', async()=>{
       await sd_inventoryPage.sortBy('lohi');
       await sd_inventoryPage.assertSortedLowToHigh();
@@ -86,6 +92,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Sorting' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Verify Sorting High to Low', async()=>{
       await sd_inventoryPage.sortBy('hilo');
       await sd_inventoryPage.assertSortedHighToLow();
@@ -98,6 +105,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Cart Interactions' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Add Item to Cart and Verify Badge', async()=>{
       const [firstItem] = await sd_inventoryPage.getAllItems();
       await sd_inventoryPage.addItemToCart(firstItem.name);
@@ -111,6 +119,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Cart Interactions' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Add Multiple Items to Cart and Verify Badge with Item Count', async()=>{
       const items = await sd_inventoryPage.getAllItems();
 
@@ -128,6 +137,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Cart Interactions' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     const [firstItem] = await sd_inventoryPage.getAllItems();
 
     await allure.step('Add Item to Cart', async()=>{
@@ -135,7 +145,6 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
       expect(await sd_inventoryPage.getCartCount()).toBe(1);
     });
     
-
     await allure.step('Remove Item From Cart and Verify Cart Count', async()=>{
       await sd_inventoryPage.removeItemFromCart(firstItem.name);
       expect(await sd_inventoryPage.getCartCount()).toBe(0);
@@ -148,6 +157,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Navigation' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ page, sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Navigate to First Item from Name', async()=>{
       const [firstItem] = await sd_inventoryPage.getAllItems();
       await sd_inventoryPage.openItemDetail(firstItem.name);
@@ -160,6 +170,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Navigation' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ page, sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     await allure.step('Navigate to Cart', async()=>{
       await sd_inventoryPage.goToCart();
       await expect(page).toHaveURL(/cart\.html/);
@@ -170,6 +181,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Navigation' }, 
       { type: 'severity', description: 'normal' }] }, 
       async ({ page, sd_inventoryPage }) => {
+    await allure.label('severity', 'normal');
     const BASE_URL    = 'https://www.saucedemo.com';
     await allure.step('Logout and Verify Logged Out', async()=>{
       await sd_inventoryPage.logout();
@@ -182,6 +194,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Social Media Links' }, 
       { type: 'severity', description: 'minor' }] }, 
       async ({ page, sd_inventoryPage }) => {
+    await allure.label('severity', 'minor');
     await allure.step('Click Facebook Link and Verify Navigation', async()=>{
       const page2Promise = page.waitForEvent('popup');
       sd_inventoryPage.clickSocialIcon('facebook');
@@ -194,6 +207,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Social Media Links' }, 
       { type: 'severity', description: 'minor' }] }, 
       async ({ page, sd_inventoryPage }) => {
+    await allure.label('severity', 'minor');
     await allure.step('Click Twitter Link and Verify Navigation', async()=>{
       const page2Promise = page.waitForEvent('popup');
       sd_inventoryPage.clickSocialIcon('twitter');
@@ -206,6 +220,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Social Media Links' }, 
       { type: 'severity', description: 'minor' }] }, 
       async ({ page, sd_inventoryPage }) => {
+    await allure.label('severity', 'minor');
     await allure.step('Click Indeed Link and Verify Navigation', async()=>{
       const page2Promise = page.waitForEvent('popup');
       sd_inventoryPage.clickSocialIcon('indeed');

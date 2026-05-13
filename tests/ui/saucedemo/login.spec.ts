@@ -19,6 +19,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
       { type: 'severity', description: 'critical' }], 
       tag: ['@smoke'] }, 
       async ({ page }) => {
+    await allure.label('severity', 'critical');
     await page.goto('/inventory.html');
     await expect(page).toHaveURL(/inventory/);
     await expect(page.locator('.inventory_list')).toBeVisible();
@@ -28,6 +29,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Valid Login' }, 
       { type: 'severity', description: 'minor' }] }, 
       async ({ browser }) => {
+    await allure.label('severity', 'minor');
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
@@ -48,6 +50,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Valid Login' }, 
       { type: 'severity', description: 'minor' }] }, 
       async ({ browser }) => {
+    await allure.label('severity', 'minor');
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
@@ -68,6 +71,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Valid Login' }, 
       { type: 'severity', description: 'minor' }] }, 
       async ({ browser }) => {
+      await allure.label('severity', 'minor');
       const context = await browser.newContext();
       const page = await context.newPage();
       const loginPage = new SD_LoginPage(page);
@@ -88,6 +92,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Invalid Login' }, 
       { type: 'severity', description: 'minor' }] }, 
       async ({ browser }) => {
+    await allure.label('severity', 'minor');
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
@@ -109,6 +114,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Invalid Login' }, 
       { type: 'severity', description: 'critical' }] }, 
       async ({ browser }) => {
+    await allure.label('severity', 'critical');
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
@@ -128,6 +134,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Invalid Login' }, 
       { type: 'severity', description: 'critical' }] }, 
       async ({ browser }) => {
+    await allure.label('severity', 'critical');
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
@@ -152,6 +159,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     annotation: [{ type: 'story', description: 'Invalid Login' }, 
       { type: 'severity', description: 'critical' }] }, 
       async ({ browser }) => {
+    await allure.label('severity', 'critical');
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);

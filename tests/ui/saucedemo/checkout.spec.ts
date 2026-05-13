@@ -24,6 +24,7 @@ test.describe('Checkout Page', { tag: ['@ui'] }, () => {
     sd_infoPage,
     sd_verificationPage,
     sd_confirmationPage }) => {
+        await allure.label('severity', 'critical');
         await allure.step('Add Item to Cart and Verify Badge', async()=>{
             await sd_inventoryPage.goto();
             const [firstItem] = await sd_inventoryPage.getAllItems();

@@ -17,6 +17,7 @@ test.describe('Home Page', () => {
         annotation: [{ type: 'story', description: 'Page Load' }, 
         { type: 'severity', description: 'critical' }] },
       async ({ pd_homePage }) => {
+        await allure.label('severity', 'critical');
         await allure.step('Assert all core elements are visible', async () => {
           await pd_homePage.assertPageLoaded();
         });
@@ -26,6 +27,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Page Load' }, 
       { type: 'severity', description: 'normal' }] },
       async ({ pd_homePage }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Assert page title contains "Playwright"', async () => {
           await pd_homePage.assertTitle('Playwright');
         });
@@ -35,6 +37,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Page Load' }, 
       { type: 'severity', description: 'normal' }] },
       async ({ pd_homePage }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Assert navbar is visible', async () => {
           await expect(pd_homePage.navbar).toBeVisible();
         });
@@ -44,6 +47,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Page Load' }, 
       { type: 'severity', description: 'minor' }] },
       async ({ pd_homePage }) => {
+        await allure.label('severity', 'minor');
         await allure.step('Assert GitHub link is visible in nav', async () => {
           await expect(pd_homePage.githubLink).toBeVisible();
         });
@@ -55,6 +59,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Navigation' }, 
       { type: 'severity', description: 'critical' }] },
       async ({ pd_homePage, page }) => {
+        await allure.label('severity', 'critical');
         await allure.step('Click the Get Started CTA button', async () => {
           await pd_homePage.clickGetStarted();
         });
@@ -69,6 +74,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Search' }, 
       { type: 'severity', description: 'critical' }] },
       async ({ pd_homePage }) => {
+        await allure.label('severity', 'critical');
         await allure.step('Click the search button', async () => {
           await pd_homePage.searchFor('assertions');
         });
@@ -81,6 +87,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Search' }, 
       { type: 'severity', description: 'normal' }] },
       async ({ pd_homePage, page }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Press Ctrl+K shortcut', async () => {
           await page.keyboard.press('Control+K');
         });
@@ -95,6 +102,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Responsive' }, 
       { type: 'severity', description: 'normal' }] },
       async ({ page }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Set mobile viewport 375x812', async () => {
           await page.setViewportSize({ width: 375, height: 812 });
         });
@@ -110,6 +118,7 @@ test.describe('Home Page', () => {
       annotation: [{ type: 'story', description: 'Responsive' }, 
       { type: 'severity', description: 'normal' }] },
       async ({ page }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Set tablet viewport 768x1024', async () => {
           await page.setViewportSize({ width: 768, height: 1024 });
         });
