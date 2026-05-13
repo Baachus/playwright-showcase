@@ -11,8 +11,14 @@ import { faker } from '@faker-js/faker';
  */
 
 test.describe('Checkout Page', { tag: ['@ui'] }, () => {
+  test.beforeEach(async ({}, testInfo) => {
+    testInfo.annotations.push({ type: 'epic', description: 'UI Testing' });
+    testInfo.annotations.push({ type: 'feature', description: 'Checkout Page' });
+    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  });
 
-  test('should add a single item to the cart and checkout', { tag: ['@smoke'] }, async ({ 
+  test('should add a single item to the cart and checkout',
+    { annotation: [{ type: 'story', description: 'Purchase' }, { type: 'severity', description: 'critical' }], tag: ['@smoke'] }, async ({ 
     sd_inventoryPage,
     sd_cartPage,
     sd_infoPage,

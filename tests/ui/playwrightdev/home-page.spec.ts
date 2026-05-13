@@ -2,7 +2,7 @@ import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**
- * UI Tests – Home Page
+ * UI Tests – Home Page on Playwright.dev
  */
 
 test.describe('Home Page', () => {

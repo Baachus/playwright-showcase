@@ -3,14 +3,19 @@ import { SD_LoginPage } from '../../../src/pages/saucedemo/SD_LoginPage.js'
 import * as allure from 'allure-js-commons';
 
 test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
+  test.beforeEach(async ({}, testInfo) => {
+    testInfo.annotations.push({ type: 'epic', description: 'UI Testing' });
+    testInfo.annotations.push({ type: 'feature', description: 'Login Page' });
+    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  });
 
-  test('is logged in via saved auth state', { tag: ['@smoke'] }, async ({ page }) => {
+  test('is logged in via saved auth state', { annotation: [{ type: 'story', description: 'Purchase' }, { type: 'severity', description: 'critical' }], tag: ['@smoke'] }, async ({ page }) => {
     await page.goto('/inventory.html');
     await expect(page).toHaveURL(/inventory/);
     await expect(page.locator('.inventory_list')).toBeVisible();
   });
 
-  test('shows error for invalid credentials', async ({ browser }) => {
+  test('shows error for invalid credentials', { annotation: [{ type: 'story', description: 'Purchase' }, { type: 'severity', description: 'critical' }] }, async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
@@ -26,7 +31,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     });
   });
 
-  test('clears error when dismissed', async ({ browser }) => {
+  test('clears error when dismissed', { annotation: [{ type: 'story', description: 'Purchase' }, { type: 'severity', description: 'critical' }] }, async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
