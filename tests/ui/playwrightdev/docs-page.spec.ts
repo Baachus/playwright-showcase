@@ -16,6 +16,7 @@ test.describe('Docs Page', () => {
     test('should load the intro page correctly',
       { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'critical' }] },
       async ({ pd_docsPage }) => {
+        await allure.label('severity', 'critical');
         await allure.step('Assert URL is under /docs/', async () => {
           await pd_docsPage.assertOnDocsPage();
         });
@@ -24,6 +25,7 @@ test.describe('Docs Page', () => {
     test('should display the sidebar navigation',
       { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'critical' }] },
       async ({ pd_docsPage }) => {
+        await allure.label('severity', 'critical');
         await allure.step('Assert sidebar nav is visible', async () => {
           await pd_docsPage.assertSidebarVisible();
         });
@@ -32,6 +34,7 @@ test.describe('Docs Page', () => {
     test('should display the main content area',
       { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'normal' }] },
       async ({ pd_docsPage }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Assert article content area is visible', async () => {
           await expect(pd_docsPage.mainContent).toBeVisible();
         });
@@ -40,6 +43,7 @@ test.describe('Docs Page', () => {
     test('should contain code examples on intro page',
       { annotation: [{ type: 'story', description: 'Page Structure' }, { type: 'severity', description: 'normal' }] },
       async ({ pd_docsPage }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Assert at least one code block is present', async () => {
           await pd_docsPage.assertCodeBlocksPresent();
         });
@@ -50,6 +54,7 @@ test.describe('Docs Page', () => {
     test('should list navigation links in the sidebar',
       { annotation: [{ type: 'story', description: 'Sidebar Navigation' }, { type: 'severity', description: 'normal' }] },
       async ({ pd_docsPage }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Get all sidebar links', async () => {
           const links = await pd_docsPage.getSidebarLinks();
           expect(links.length).toBeGreaterThan(5);
@@ -59,6 +64,7 @@ test.describe('Docs Page', () => {
     test('should navigate to the Installation page',
       { annotation: [{ type: 'story', description: 'Sidebar Navigation' }, { type: 'severity', description: 'critical' }] },
       async ({ pd_docsPage, page }) => {
+        await allure.label('severity', 'critical');
         await allure.step('Click Installation link in sidebar', async () => {
           await pd_docsPage.clickSidebarLink('Installation');
         });
@@ -73,6 +79,7 @@ test.describe('Docs Page', () => {
     test('should navigate to Writing Tests page',
       { annotation: [{ type: 'story', description: 'Sidebar Navigation' }, { type: 'severity', description: 'normal' }] },
       async ({ pd_docsPage, page }) => {
+        await allure.label('severity', 'normal');
         await allure.step('Click Writing tests link in sidebar', async () => {
           await pd_docsPage.clickSidebarLink('Writing tests');
         });
@@ -86,6 +93,7 @@ test.describe('Docs Page', () => {
     test('should have multiple code blocks on the intro page',
       { annotation: [{ type: 'story', description: 'Code Blocks' }, { type: 'severity', description: 'minor' }] },
       async ({ pd_docsPage }) => {
+        await allure.label('severity', 'minor');
         await allure.step('Count code blocks on page', async () => {
           const count = await pd_docsPage.getCodeBlockCount();
           expect(count).toBeGreaterThan(0);
@@ -95,6 +103,7 @@ test.describe('Docs Page', () => {
     test('should render code block content',
       { annotation: [{ type: 'story', description: 'Code Blocks' }, { type: 'severity', description: 'minor' }] },
       async ({ pd_docsPage }) => {
+        await allure.label('severity', 'minor');
         await allure.step('Get content of first code block', async () => {
           const content = await pd_docsPage.getCodeBlockContent(0);
           expect(content).not.toBeNull();
@@ -112,6 +121,7 @@ test.describe('Docs Page', () => {
       test(`should load the ${label} page`, 
         { annotation: [{ type: 'story', description: 'Direct Navigation' }, { type: 'severity', description: 'normal' }] },
         async ({ pd_docsPage }) => {
+          await allure.label('severity', 'normal');
           await allure.step(`Navigate to /docs/${section}`, async () => {
             await pd_docsPage.gotoSection(section);
           });
