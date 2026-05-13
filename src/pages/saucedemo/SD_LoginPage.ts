@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
+import { resolveCredentials } from '@utils/authentication.utils.js';
 
 /**
  * SD_LoginPage
@@ -43,9 +44,14 @@ export class SD_LoginPage extends BasePage {
   /**
    * Fill in credentials and submit the login form.
    */
-  async login(username: string, password: string): Promise<void> {
+  async login(username: string, password?: string): Promise<void> {
+    const localPassword = resolveCredentials()
+
     await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
+    if(password)
+      await this.passwordInput.fill(password);
+    else 
+      await this.passwordInput.fill(localPassword.password);
     await this.loginButton.click();
   }
 
