@@ -6,24 +6,20 @@ import { faker } from '@faker-js/faker';
 /**
  * UI Tests – Checkout Page
  */
+test.beforeEach(async()=>{
+    await allure.epic('Saucedemo');
+    await allure.feature('Checkout');
+});
 
 test.describe('Checkout Page', { tag: ['@ui'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'UI Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Checkout Page' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
-  });
-
-  test('should add a single item to the cart and checkout', { 
-    annotation: [{ type: 'story', description: 'Purchase' }, 
-    { type: 'severity', description: 'critical' }], 
-    tag: ['@smoke'] }, 
+  test('should add a single item to the cart and checkout', { tag: ['@smoke'] }, 
     async ({ 
     sd_inventoryPage,
     sd_cartPage,
     sd_infoPage,
     sd_verificationPage,
     sd_confirmationPage }) => {
+        await allure.story('Checkout With One Item');
         await allure.label('severity', 'critical');
         await allure.step('Add Item to Cart and Verify Badge', async()=>{
             await sd_inventoryPage.goto();

@@ -6,29 +6,23 @@ import * as allure from 'allure-js-commons';
  * UI Tests – Login Page
  */
 
-test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'UI Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Login Page' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
-  });
+test.beforeEach(async()=>{
+    await allure.epic('Saucedemo');
+    await allure.feature('Authentication');
+});
 
+test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   // ── Valid Login ──────────────────────────────────────────────────
-  test('is logged in via saved auth state', { 
-    annotation: [{ type: 'story', description: 'Valid Login' }, 
-      { type: 'severity', description: 'critical' }], 
-      tag: ['@smoke'] }, 
-      async ({ page }) => {
+  test('is logged in via saved auth state', { tag: ['@smoke'] }, async ({ page }) => {
+    await allure.story('Valid User Login');
     await allure.label('severity', 'critical');
     await page.goto('/inventory.html');
     await expect(page).toHaveURL(/inventory/);
     await expect(page.locator('.inventory_list')).toBeVisible();
   });
 
-  test('shows user can login with error user', { 
-    annotation: [{ type: 'story', description: 'Valid Login' }, 
-      { type: 'severity', description: 'minor' }] }, 
-      async ({ browser }) => {
+  test('shows user can login with error user', async ({ browser }) => {
+    await allure.story('Error User Login');
     await allure.label('severity', 'minor');
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -46,10 +40,8 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     });
   });
 
-  test('shows user can login for visual user', { 
-    annotation: [{ type: 'story', description: 'Valid Login' }, 
-      { type: 'severity', description: 'minor' }] }, 
-      async ({ browser }) => {
+  test('shows user can login for visual user', async ({ browser }) => {
+    await allure.story('Visual User Login');
     await allure.label('severity', 'minor');
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -67,11 +59,9 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     });
   });
 
-  test('show user can login with performance glitch user', { 
-    annotation: [{ type: 'story', description: 'Valid Login' }, 
-      { type: 'severity', description: 'minor' }] }, 
-      async ({ browser }) => {
-      await allure.label('severity', 'minor');
+  test('show user can login with performance glitch user', async ({ browser }) => {
+    await allure.story('Performance Glitch Login');
+    await allure.label('severity', 'minor');
       const context = await browser.newContext();
       const page = await context.newPage();
       const loginPage = new SD_LoginPage(page);
@@ -88,10 +78,8 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     });
   });
 
-  test('shows user can login for problem user', { 
-    annotation: [{ type: 'story', description: 'Invalid Login' }, 
-      { type: 'severity', description: 'minor' }] }, 
-      async ({ browser }) => {
+  test('shows user can login for problem user', async ({ browser }) => {
+    await allure.story('Problem User Login');
     await allure.label('severity', 'minor');
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -110,10 +98,8 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   });
 
   // ── Invalid Login ──────────────────────────────────────────────────
-  test('shows error for invalid credentials', { 
-    annotation: [{ type: 'story', description: 'Invalid Login' }, 
-      { type: 'severity', description: 'critical' }] }, 
-      async ({ browser }) => {
+  test('shows error for invalid credentials', async ({ browser }) => {
+    await allure.story('Invalid User');
     await allure.label('severity', 'critical');
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -130,10 +116,8 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     });
   });
 
-  test('clears error when dismissed', { 
-    annotation: [{ type: 'story', description: 'Invalid Login' }, 
-      { type: 'severity', description: 'critical' }] }, 
-      async ({ browser }) => {
+  test('clears error when dismissed', async ({ browser }) => {
+    await allure.story('Dismiss Error');
     await allure.label('severity', 'critical');
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -155,11 +139,10 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
     });
   });
 
-  test('shows error for locked out user', { 
-    annotation: [{ type: 'story', description: 'Invalid Login' }, 
-      { type: 'severity', description: 'critical' }] }, 
-      async ({ browser }) => {
+  test('shows error for locked out user', async ({ browser }) => {
+    await allure.story('Locked Out User');
     await allure.label('severity', 'critical');
+
     const context = await browser.newContext();
     const page = await context.newPage();
     const loginPage = new SD_LoginPage(page);
