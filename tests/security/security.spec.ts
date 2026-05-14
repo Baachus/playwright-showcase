@@ -17,16 +17,17 @@ const HOME_URL = 'https://playwright.dev/';
 const DOCS_URL = 'https://playwright.dev/docs/intro';
 
 test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'HTTP Headers' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+     await allure.epic('Playwright.dev');
+     await allure.feature('Security Headers Required');
   });
 
   // Note: Fails due to x-content-type-options not present
   test.skip('required security headers should all be present',
-    { annotation: [{ type: 'story', description: 'OWASP Header Audit' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.story('OWASP Header Audit');
+      await allure.label('severity', 'critical');
+    
       const response = await request.get(HOME_URL);
 
       await allure.step('Run full OWASP security header audit', async () => {
@@ -47,9 +48,12 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
     });
 
   test('HSTS should be present and valid',
-    { annotation: [{ type: 'story', description: 'HSTS' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.story('HSTS');
+      await allure.label('severity', 'critical');
+
       const response = await request.get(HOME_URL);
+
       await allure.step('Assert Strict-Transport-Security header is present', async () => {
         assertHeaderPresent(response, 'strict-transport-security');
         const hsts = response.headers()['strict-transport-security'];
@@ -59,10 +63,13 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
     });
 
   test('HSTS max-age should be at least 1 year',
-    { annotation: [{ type: 'story', description: 'HSTS' }, { type: 'severity', description: 'normal' }] },
     async ({ request }) => {
+      await allure.story('HSTS');
+      await allure.label('severity', 'normal');
+
       const response = await request.get(HOME_URL);
       const hsts = response.headers()['strict-transport-security'] ?? '';
+
       await allure.step('Assert HSTS max-age >= 31536000 seconds', async () => {
         const maxAgeMatch = hsts.match(/max-age=(\d+)/i);
         if (maxAgeMatch) {
@@ -74,9 +81,12 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
 
   // Note: Fails due to x-content-type-options not present
   test.skip('X-Content-Type-Options should be nosniff',
-    { annotation: [{ type: 'story', description: 'Content Type Sniffing' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.story('Content Type Sniffing');
+      await allure.label('severity', 'critical');
+
       const response = await request.get(HOME_URL);
+
       await allure.step('Assert X-Content-Type-Options: nosniff', async () => {
         assertHeaderPresent(response, 'x-content-type-options', 'nosniff');
       });
@@ -84,10 +94,9 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
 });
 
 test.describe('Security – HTTP Headers (Recommended Audit)', { tag: ['@security'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'OWASP Recommended Headers' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+     await allure.epic('Playwright.dev');
+     await allure.feature('Security Headers Recommended');
   });
 
   const recommendedHeaders = [
@@ -99,43 +108,50 @@ test.describe('Security – HTTP Headers (Recommended Audit)', { tag: ['@securit
 
   for (const header of recommendedHeaders) {
     test(`audit: ${header} presence`,
-      { annotation: [{ type: 'story', description: 'Recommended Header Audit' }, { type: 'severity', description: 'minor' }] },
       async ({ request }, testInfo) => {
-        const response = await request.get(HOME_URL);
-        const value = getHeader(response, header);
+      await allure.story('Recommended Header Audit');
+      await allure.label('severity', 'minor');
 
-        await allure.step(`Check ${header} header`, async () => {
-          await allure.attachment(header, value ?? 'NOT SET', { contentType: 'text/plain' });
-        });
+      const response = await request.get(HOME_URL);
+      const value = getHeader(response, header);
 
-        testInfo.annotations.push({
-          type: value ? 'present' : 'missing-recommended',
-          description: value ?? 'Header not set — consider adding for OWASP compliance',
-        });
+      await allure.step(`Check ${header} header`, async () => {
+        await allure.attachment(header, value ?? 'NOT SET', { contentType: 'text/plain' });
       });
+
+      testInfo.annotations.push({
+        type: value ? 'present' : 'missing-recommended',
+        description: value ?? 'Header not set — consider adding for OWASP compliance',
+      });
+    });
   }
 });
 
 test.describe('Security – Sensitive Header Exposure', { tag: ['@security'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Header Exposure' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+    await allure.epic('Playwright.dev');
+    await allure.feature('Header Exposure');
   });
 
   test('should not expose X-Powered-By header',
-    { annotation: [{ type: 'story', description: 'Information Disclosure' }, { type: 'severity', description: 'normal' }] },
     async ({ request }) => {
+      await allure.story('Information Disclosure');
+      await allure.label('severity', 'normal');
+
       const response = await request.get(HOME_URL);
+
       await allure.step('Assert X-Powered-By is absent', async () => {
         assertHeaderAbsent(response, 'x-powered-by');
       });
     });
 
   test('should not expose detailed Server version',
-    { annotation: [{ type: 'story', description: 'Information Disclosure' }, { type: 'severity', description: 'normal' }] },
     async ({ request }) => {
+      await allure.story('Information Disclosure');
+      await allure.label('severity', 'normal');
+
       const response = await request.get(HOME_URL);
+
       await allure.step('Assert Server header contains no version number', async () => {
         const server = response.headers()['server'] ?? '';
         await allure.attachment('Server Header', server || '(not set)', { contentType: 'text/plain' });
@@ -145,9 +161,12 @@ test.describe('Security – Sensitive Header Exposure', { tag: ['@security'] }, 
 
   for (const header of ['x-aspnet-version', 'x-aspnetmvc-version'] as const) {
     test(`should not expose ${header}`,
-      { annotation: [{ type: 'story', description: 'Information Disclosure' }, { type: 'severity', description: 'normal' }] },
       async ({ request }) => {
+        await allure.story('Information Disclosure');
+        await allure.label('severity', 'normal');
+
         const response = await request.get(HOME_URL);
+
         await allure.step(`Assert ${header} is absent`, async () => {
           assertHeaderAbsent(response, header);
         });
@@ -156,16 +175,18 @@ test.describe('Security – Sensitive Header Exposure', { tag: ['@security'] }, 
 });
 
 test.describe('Security – HTTPS & Transport', { tag: ['@security'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'HTTPS & Transport' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+    await allure.epic('Playwright.dev');
+    await allure.feature('HTTPS & Transport');
   });
 
   test('home page final response URL should use HTTPS',
-    { annotation: [{ type: 'story', description: 'HTTPS Enforcement' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.story('HTTPS Enforcement');
+      await allure.label('severity', 'critical');
+
       const response = await request.get(HOME_URL);
+
       await allure.step('Assert final URL scheme is https://', async () => {
         await allure.attachment('Final URL', response.url(), { contentType: 'text/plain' });
         expect(response.url()).toMatch(/^https:\/\//);
@@ -175,7 +196,11 @@ test.describe('Security – HTTPS & Transport', { tag: ['@security'] }, () => {
   test('docs page should be served over HTTPS',
     { annotation: [{ type: 'story', description: 'HTTPS Enforcement' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.story('HTTPS Enforcement');
+      await allure.label('severity', 'critical');
+
       const response = await request.get(DOCS_URL);
+
       await allure.step('Assert docs page URL is https:// and status 200', async () => {
         expect(response.url()).toMatch(/^https:\/\//);
         expect(response.status()).toBe(200);
@@ -184,17 +209,19 @@ test.describe('Security – HTTPS & Transport', { tag: ['@security'] }, () => {
 });
 
 test.describe('Security – Content Integrity', { tag: ['@security'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Content Integrity' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+    await allure.epic('Playwright.dev');
+    await allure.feature('Content Integrity');
   });
 
   test('home page body should not contain XSS injection markers',
-    { annotation: [{ type: 'story', description: 'XSS Prevention' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.story('XSS Prevention');
+      await allure.label('severity', 'critical');
+
       const response = await request.get(HOME_URL);
       const body = await response.text();
+
       await allure.step('Assert no XSS markers present in response body', async () => {
         expect(body).not.toContain('<script>alert(');
         expect(body).not.toContain('onerror="alert');
@@ -203,10 +230,13 @@ test.describe('Security – Content Integrity', { tag: ['@security'] }, () => {
     });
 
   test('response should not expose directory listing',
-    { annotation: [{ type: 'story', description: 'Directory Traversal' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.story('Directory Traversal');
+      await allure.label('severity', 'critical');
+
       const response = await request.get(HOME_URL);
       const body = await response.text();
+
       await allure.step('Assert no directory listing markers in body', async () => {
         expect(body).not.toContain('Index of /');
         expect(body).not.toContain('Parent Directory');
@@ -215,16 +245,18 @@ test.describe('Security – Content Integrity', { tag: ['@security'] }, () => {
 });
 
 test.describe('Security – Cookie Attributes', { tag: ['@security'] }, () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Security Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Cookie Security' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+    await allure.epic('Playwright.dev');
+    await allure.feature('Cookie Security');
   });
 
   test('site cookies should have the Secure attribute',
-    { annotation: [{ type: 'story', description: 'Cookie Flags' }, { type: 'severity', description: 'critical' }] },
     async ({ page, context }) => {
+      await allure.story('Cookie Flags');
+      await allure.label('severity', 'critical');
+
       await page.goto(HOME_URL);
+      
       await allure.step('Inspect all playwright.dev cookies for Secure flag', async () => {
         const cookies = await context.cookies();
         const siteCookies = cookies.filter((c) => c.domain.includes('playwright.dev'));
@@ -238,9 +270,12 @@ test.describe('Security – Cookie Attributes', { tag: ['@security'] }, () => {
     });
 
   test('site cookies should have the HttpOnly attribute',
-    { annotation: [{ type: 'story', description: 'Cookie Flags' }, { type: 'severity', description: 'critical' }] },
     async ({ page, context }) => {
+      await allure.story('Cookie Flags');
+      await allure.label('severity', 'critical');
+
       await page.goto(HOME_URL);
+
       await allure.step('Inspect all playwright.dev cookies for HttpOnly flag', async () => {
         const cookies = await context.cookies();
         const siteCookies = cookies.filter((c) => c.domain.includes('playwright.dev'));
