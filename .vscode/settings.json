@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
         "HSTS",
+        "networkidle",
         "nosniff",
-        "playwrightdev"
+        "playwrightdev",
+        "TTFB"
     ]
 }

@@ -62,10 +62,9 @@ async function attachLighthouseToAllure(result: LighthouseResult): Promise<void>
 test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Performance Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Home Page' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+    await allure.epic('Playwright.dev');
+    await allure.feature('Performance Testing');
   });
 
   test.beforeAll(async () => {
@@ -77,83 +76,104 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
   });
 
   test('Performance score should meet threshold',
-    { annotation: [{ type: 'story', description: 'Desktop Scores' }, { type: 'severity', description: 'critical' }] },
     async () => {
+      await allure.story('Desktop Scores');
+      await allure.label('severity', 'critical');
+      
       await allure.step('Attach Lighthouse results', async () => {
         await attachLighthouseToAllure(result);
       });
+
       await allure.step(`Assert Performance >= ${SCORE_THRESHOLDS.performance * 100}`, async () => {
         assertLighthouseScores(result, { performance: SCORE_THRESHOLDS.performance });
       });
     });
 
   test('Accessibility score should meet threshold',
-    { annotation: [{ type: 'story', description: 'Desktop Scores' }, { type: 'severity', description: 'critical' }] },
     async () => {
+      await allure.story('Desktop Scores');
+      await allure.label('severity', 'critical');
+
       await allure.step(`Assert Accessibility >= ${SCORE_THRESHOLDS.accessibility * 100}`, async () => {
         assertLighthouseScores(result, { accessibility: SCORE_THRESHOLDS.accessibility });
       });
     });
 
   test('Best Practices score should meet threshold',
-    { annotation: [{ type: 'story', description: 'Desktop Scores' }, { type: 'severity', description: 'normal' }] },
     async () => {
+      await allure.story('Desktop Scores');
+      await allure.label('severity', 'critical');
+
       await allure.step(`Assert Best Practices >= ${SCORE_THRESHOLDS.bestPractices * 100}`, async () => {
         assertLighthouseScores(result, { bestPractices: SCORE_THRESHOLDS.bestPractices });
       });
     });
 
   test('SEO score should meet threshold',
-    { annotation: [{ type: 'story', description: 'Desktop Scores' }, { type: 'severity', description: 'normal' }] },
     async () => {
+      await allure.story('Desktop Scores');
+      await allure.label('severity', 'normal');
+
       await allure.step(`Assert SEO >= ${SCORE_THRESHOLDS.seo * 100}`, async () => {
         assertLighthouseScores(result, { seo: SCORE_THRESHOLDS.seo });
       });
     });
 
   test('FCP should be within budget',
-    { annotation: [{ type: 'story', description: 'Web Vitals' }, { type: 'severity', description: 'normal' }] },
     async () => {
+      await allure.story('Web Vitals');
+      await allure.label('severity', 'normal');
+
       await allure.step(`Assert FCP < ${VITALS_THRESHOLDS.fcp}ms (actual: ${result.vitals.fcp}ms)`, async () => {
         if (result.vitals.fcp !== null) expect(result.vitals.fcp).toBeLessThan(VITALS_THRESHOLDS.fcp);
       });
     });
 
   test('LCP should be within budget',
-    { annotation: [{ type: 'story', description: 'Web Vitals' }, { type: 'severity', description: 'critical' }] },
     async () => {
+      await allure.story('Web Vitals');
+      await allure.label('severity', 'critical');
+
       await allure.step(`Assert LCP < ${VITALS_THRESHOLDS.lcp}ms (actual: ${result.vitals.lcp}ms)`, async () => {
         if (result.vitals.lcp !== null) expect(result.vitals.lcp).toBeLessThan(VITALS_THRESHOLDS.lcp);
       });
     });
 
   test('TBT should be within budget',
-    { annotation: [{ type: 'story', description: 'Web Vitals' }, { type: 'severity', description: 'normal' }] },
     async () => {
+      await allure.story('Web Vitals');
+      await allure.label('severity', 'normal');
+
       await allure.step(`Assert TBT < ${VITALS_THRESHOLDS.tbt}ms (actual: ${result.vitals.tbt}ms)`, async () => {
         if (result.vitals.tbt !== null) expect(result.vitals.tbt).toBeLessThan(VITALS_THRESHOLDS.tbt);
       });
     });
 
   test('CLS should be within budget',
-    { annotation: [{ type: 'story', description: 'Web Vitals' }, { type: 'severity', description: 'critical' }] },
     async () => {
+      await allure.story('Web Vitals');
+      await allure.label('severity', 'critical');
+
       await allure.step(`Assert CLS < ${VITALS_THRESHOLDS.cls} (actual: ${result.vitals.cls})`, async () => {
         if (result.vitals.cls !== null) expect(result.vitals.cls).toBeLessThan(VITALS_THRESHOLDS.cls);
       });
     });
 
   test('TTFB should be within budget',
-    { annotation: [{ type: 'story', description: 'Web Vitals' }, { type: 'severity', description: 'normal' }] },
     async () => {
+      await allure.story('Web Vitals');
+      await allure.label('severity', 'normal');
+
       await allure.step(`Assert TTFB < ${VITALS_THRESHOLDS.ttfb}ms (actual: ${result.vitals.ttfb}ms)`, async () => {
         if (result.vitals.ttfb !== null) expect(result.vitals.ttfb).toBeLessThan(VITALS_THRESHOLDS.ttfb);
       });
     });
 
   test('HTML report should have been saved to disk',
-    { annotation: [{ type: 'story', description: 'Report Generation' }, { type: 'severity', description: 'minor' }] },
     async () => {
+      await allure.story('Report Generation');
+      await allure.label('severity', 'minor');
+
       await allure.step('Attach full Lighthouse HTML report', async () => {
         await attachLighthouseToAllure(result);
         expect(result.htmlReportPath).not.toBeNull();
@@ -167,10 +187,9 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Performance Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Home Page Mobile' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+    await allure.epic('Playwright.dev');
+    await allure.feature('Performance Testing - Mobile');
   });
 
   test.beforeAll(async () => {
@@ -182,11 +201,14 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
   });
 
   test('Performance score should meet mobile threshold',
-    { annotation: [{ type: 'story', description: 'Mobile Scores' }, { type: 'severity', description: 'critical' }] },
     async () => {
+      await allure.story('Mobile Scores');
+      await allure.label('severity', 'critical');
+
       await allure.step('Attach Lighthouse mobile results', async () => {
         await attachLighthouseToAllure(result);
       });
+
       await allure.step('Assert Performance >= 70 (mobile threshold)', async () => {
         assertLighthouseScores(result, { performance: 0.7 });
       });
@@ -195,6 +217,9 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
   test('Accessibility score should meet threshold on mobile',
     { annotation: [{ type: 'story', description: 'Mobile Scores' }, { type: 'severity', description: 'critical' }] },
     async () => {
+      await allure.story('Mobile Scores');
+      await allure.label('severity', 'critical');
+
       await allure.step(`Assert Accessibility >= ${SCORE_THRESHOLDS.accessibility * 100}`, async () => {
         assertLighthouseScores(result, { accessibility: SCORE_THRESHOLDS.accessibility });
       });
@@ -203,6 +228,9 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
   test('SEO score should meet threshold on mobile',
     { annotation: [{ type: 'story', description: 'Mobile Scores' }, { type: 'severity', description: 'normal' }] },
     async () => {
+      await allure.story('Mobile Scores');
+      await allure.label('severity', 'normal');
+
       await allure.step(`Assert SEO >= ${SCORE_THRESHOLDS.seo * 100}`, async () => {
         assertLighthouseScores(result, { seo: SCORE_THRESHOLDS.seo });
       });
@@ -214,10 +242,9 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
 test.describe('Lighthouse – Docs Page (Desktop)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push({ type: 'epic', description: 'Performance Testing' });
-    testInfo.annotations.push({ type: 'feature', description: 'Docs Page' });
-    testInfo.annotations.push({ type: 'owner', description: 'Playwright Showcase' });
+  test.beforeEach(async ({}) => {
+    await allure.epic('Playwright.dev');
+    await allure.feature('Performance Testing - Docs Page');
   });
 
   test.beforeAll(async () => {
@@ -229,29 +256,36 @@ test.describe('Lighthouse – Docs Page (Desktop)', { tag: ['@performance'] }, (
   });
 
   test('all category scores should meet thresholds',
-    { annotation: [{ type: 'story', description: 'Desktop Scores' }, { type: 'severity', description: 'critical' }] },
-    async () => {
-      await allure.step('Attach Lighthouse docs page results', async () => {
-        await attachLighthouseToAllure(result);
-      });
-      await allure.step('Assert all category scores meet thresholds', async () => {
-        assertLighthouseScores(result, SCORE_THRESHOLDS);
-      });
+  async () => {
+    await allure.story('Desktop Scores');
+    await allure.label('severity', 'critical');
+
+    await allure.step('Attach Lighthouse docs page results', async () => {
+      await attachLighthouseToAllure(result);
     });
+
+    await allure.step('Assert all category scores meet thresholds', async () => {
+      assertLighthouseScores(result, SCORE_THRESHOLDS);
+    });
+  });
 
   test('LCP should be within budget',
-    { annotation: [{ type: 'story', description: 'Web Vitals' }, { type: 'severity', description: 'critical' }] },
-    async () => {
-      await allure.step(`Assert LCP < ${VITALS_THRESHOLDS.lcp}ms (actual: ${result.vitals.lcp}ms)`, async () => {
-        if (result.vitals.lcp !== null) expect(result.vitals.lcp).toBeLessThan(VITALS_THRESHOLDS.lcp);
-      });
+  async () => {
+    await allure.story('Web Vitals');
+    await allure.label('severity', 'critical');
+
+    await allure.step(`Assert LCP < ${VITALS_THRESHOLDS.lcp}ms (actual: ${result.vitals.lcp}ms)`, async () => {
+      if (result.vitals.lcp !== null) expect(result.vitals.lcp).toBeLessThan(VITALS_THRESHOLDS.lcp);
     });
+  });
 
   test('CLS should be within budget',
-    { annotation: [{ type: 'story', description: 'Web Vitals' }, { type: 'severity', description: 'normal' }] },
-    async () => {
-      await allure.step(`Assert CLS < ${VITALS_THRESHOLDS.cls} (actual: ${result.vitals.cls})`, async () => {
-        if (result.vitals.cls !== null) expect(result.vitals.cls).toBeLessThan(VITALS_THRESHOLDS.cls);
-      });
+  async () => {
+    await allure.story('Web Vitals');
+    await allure.label('severity', 'normal');
+
+    await allure.step(`Assert CLS < ${VITALS_THRESHOLDS.cls} (actual: ${result.vitals.cls})`, async () => {
+      if (result.vitals.cls !== null) expect(result.vitals.cls).toBeLessThan(VITALS_THRESHOLDS.cls);
     });
+  });
 });
