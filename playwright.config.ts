@@ -3,7 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright Configuration
- * Multi-project setup covering desktop, mobile, API, visual regression, and network mocking.
+ * Multi-project setup covering desktop, mobile, API, visual regression, network mocking,
+ * and component-level testing.
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
@@ -61,26 +62,28 @@ export default defineConfig({
     { name: 'setup-playwrightdev', testMatch: /.*playwrightdev\.setup\.ts/ },
 
     // Playwright.dev - Desktop
+    // Component tests live in tests/components/ and are excluded here so they
+    // only run once under the dedicated Components project below.
     {
       name: 'Playwright.dev Chromium',
       testDir: './tests',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/visual/**', '**/mocking/**'],
+      testIgnore: ['**/saucedemo/**', '**/visual/**', '**/mocking/**', '**/components/**'],
     },
     {
       name: 'Playwright.dev Firefox',
       testDir: './tests',
       use: { ...devices['Desktop Firefox'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**'],
     },
     {
       name: 'Playwright.dev Webkit',
       testDir: './tests',
       use: { ...devices['Desktop Safari'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**'],
     },
 
     // Playwright.dev - Mobile
@@ -89,14 +92,31 @@ export default defineConfig({
       testDir: './tests',
       use: { ...devices['Pixel 5'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**'],
     },
     {
       name: 'Playwright.dev Mobile-safari',
       testDir: './tests',
       use: { ...devices['iPhone 13'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**'],
+    },
+
+    // Component Testing
+    // Isolated component-focused tests targeting specific UI sections of playwright.dev.
+    // Runs on Chromium only to keep the suite fast; components are browser-agnostic by design.
+    // Tags: @component (all), @smoke (critical subset).
+    // Run just this project: npx playwright test --project=Components
+    {
+      name: 'Components',
+      testMatch: '**/components/**/*.spec.ts',
+      testDir: './tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'https://playwright.dev',
+        storageState: '.auth/playwrightdev.json',
+      },
+      dependencies: ['setup-playwrightdev'],
     },
 
     // API
@@ -120,7 +140,7 @@ export default defineConfig({
     // Runs on Chromium only for consistent pixel baselines.
     // Snapshots stored in tests/visual/**/__snapshots__/ and committed to VCS.
     // First run creates baselines automatically; subsequent runs diff against them.
-    // To update baselines: npm run test:visual:update
+    // To update baselines: npx playwright test --project=Visual --update-snapshots
     {
       name: 'Visual',
       testMatch: '**/visual/**/*.spec.ts',
