@@ -1,9 +1,21 @@
 {
     "cSpell.words": [
+        "accessdenied",
+        "addressunreachable",
+        "blockedbyclient",
+        "connectionaborted",
+        "connectionclosed",
+        "connectionfailed",
+        "connectionrefused",
+        "connectionreset",
+        "domcontentloaded",
         "HSTS",
+        "internetdisconnected",
+        "namenotresolved",
         "networkidle",
         "nosniff",
         "playwrightdev",
+        "timedout",
         "TTFB"
     ]
 }
