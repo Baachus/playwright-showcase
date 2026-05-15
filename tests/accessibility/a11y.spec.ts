@@ -159,6 +159,7 @@ test.describe('Accessibility – Keyboard Navigation', { tag: ['@accessibility']
       await allure.label('severity', 'critical');
 
       await page.goto('https://playwright.dev/');
+      await page.waitForLoadState('networkidle');
 
       await allure.step('Press Ctrl+K to open search', async () => {
         await page.keyboard.press('Control+K');

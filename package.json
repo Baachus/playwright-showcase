@@ -2,7 +2,7 @@
   "name": "playwright-showcase",
   "version": "1.0.0",
   "type": "module",
-  "description": "A production-grade Playwright + TypeScript testing showcase covering UI, API, Accessibility, Performance, and Security testing.",
+  "description": "A production-grade Playwright + TypeScript testing showcase covering UI, API, Accessibility, Performance, Security, Visual Regression, and Network Mocking.",
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test tests/ui",
@@ -10,6 +10,9 @@
     "test:a11y": "playwright test tests/accessibility",
     "test:perf": "playwright test tests/performance",
     "test:security": "playwright test tests/security",
+    "test:visual": "playwright test tests/visual --project=Visual",
+    "test:visual:update": "playwright test tests/visual --project=Visual --update-snapshots",
+    "test:mock": "playwright test tests/mocking --project=Mocking",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:report": "playwright show-report",

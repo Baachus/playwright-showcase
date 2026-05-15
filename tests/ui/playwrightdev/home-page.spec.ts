@@ -83,6 +83,7 @@ test.describe('Home Page', () => {
       await allure.label('severity', 'normal');
 
       await allure.step('Press Ctrl+K shortcut', async () => {
+        await page.waitForLoadState('networkidle');
         await page.keyboard.press('Control+K');
       });
 
