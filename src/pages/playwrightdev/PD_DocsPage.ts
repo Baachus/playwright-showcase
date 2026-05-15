@@ -10,6 +10,8 @@ import { BasePage } from '../BasePage.js';
 export class PD_DocsPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly sidebar: Locator;
+  readonly mobileSidebar
+  readonly mobileSidebarToggle: Locator;
   readonly mainContent: Locator;
   readonly breadcrumb: Locator;
   readonly tocLinks: Locator;
@@ -23,6 +25,9 @@ export class PD_DocsPage extends BasePage {
     super(page);
 
     this.sidebar = page.getByRole('navigation', { name: 'Docs sidebar' });
+    this.mobileSidebar = page.getByText('← Back to main menuGetting');
+    // On mobile (Docusaurus), the sidebar is hidden behind this toggle button
+    this.mobileSidebarToggle = page.getByRole('button', { name: /toggle navigation bar/i });
     this.mainContent = page.locator('article');
     this.breadcrumb = page.locator('nav[aria-label="Breadcrumbs"]');
     this.tocLinks = page.locator('.table-of-contents a');
@@ -49,6 +54,31 @@ export class PD_DocsPage extends BasePage {
     await this.waitForPageLoad();
   }
 
+  // ── Viewport Helpers ────────────────────────────────────────────────────────
+
+  /**
+   * Returns true when the current viewport is narrow enough that the sidebar
+   * is collapsed behind a toggle button (i.e. a mobile-sized browser).
+   */
+  private async isMobileViewport(): Promise<boolean> {
+    const viewportSize = this.page.viewportSize();
+    return viewportSize !== null && viewportSize.width < 997;
+  }
+
+  /**
+   * On mobile, opens the sidebar via the toggle button so it becomes visible.
+   * No-ops on desktop where the sidebar is already rendered in the layout.
+   */
+  async openMobileSidebarIfNeeded(): Promise<void> {
+    if (await this.isMobileViewport()) {
+      const isToggleVisible = await this.mobileSidebarToggle.isVisible();
+      if (isToggleVisible) {
+        await this.mobileSidebarToggle.click();
+        await this.mobileSidebar.waitFor({ state: 'visible' });
+      }
+    }
+  }
+
   // ── Sidebar Navigation ──────────────────────────────────────────────────────
 
   /**
@@ -66,7 +96,12 @@ export class PD_DocsPage extends BasePage {
    * Click a specific sidebar link by its text.
    */
   async clickSidebarLink(linkText: string): Promise<void> {
-    await this.sidebar.getByRole('link', { name: linkText }).click();
+    await this.openMobileSidebarIfNeeded();
+    if (await this.isMobileViewport()) {
+      await this.mobileSidebar.getByRole('link', { name: linkText }).click();
+    } else {
+      await this.sidebar.getByRole('link', { name: linkText }).click();
+    }
     await this.waitForPageLoad();
   }
 
@@ -74,7 +109,13 @@ export class PD_DocsPage extends BasePage {
    * Return all visible sidebar link texts as an array.
    */
   async getSidebarLinks(): Promise<string[]> {
-    const links = this.sidebar.getByRole('link');
+    let links;
+    await this.openMobileSidebarIfNeeded();
+    if (await this.isMobileViewport()) {
+      links = this.mobileSidebar.getByRole('link');
+    } else {
+      links = this.sidebar.getByRole('link');
+    }
     return links.allTextContents();
   }
 
@@ -117,7 +158,12 @@ export class PD_DocsPage extends BasePage {
   }
 
   async assertSidebarVisible(): Promise<void> {
-    await expect(this.sidebar).toBeVisible();
+    await this.openMobileSidebarIfNeeded();
+    if (await this.isMobileViewport()) {
+      await expect(this.mobileSidebar).toBeVisible();
+    } else {
+      await expect(this.sidebar).toBeVisible();
+    }
   }
 
   async assertCodeBlocksPresent(): Promise<void> {

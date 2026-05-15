@@ -316,30 +316,37 @@ test.describe('Response Modification', { tag: ['@mocking'] }, () => {
       'into an otherwise real API response.',
     );
 
-    await allure.step('Register response transformer for /api/data', async () => {
-      await mockJsonResponse(page, '**/api/data', { value: 'original', extra: 'real-data' });
-    });
-
-    // Now register a modifier on top — the modifier will get the mocked response
-    await allure.step('Register modifier that injects featureFlag field', async () => {
-      await modifyJsonResponse(page, '**/api/data', (body) => ({
-        ...(body as object),
-        featureFlag: 'enabled',
-        injectedBy: 'playwright-mock',
-      }));
+    // Single route registration — stacking a mockJsonResponse for the same pattern
+    // would shadow this handler (Playwright uses LIFO ordering) and route.fetch()
+    // would never be reached. The fallbackBody option supplies the base data when
+    // the real server doesn't return JSON (playwright.dev has no /api/data endpoint).
+    await allure.step('Register modifier that injects featureFlag into base response', async () => {
+      await modifyJsonResponse(
+        page,
+        '**/api/data',
+        (body) => ({
+          ...(body as object),
+          featureFlag: 'enabled',
+          injectedBy: 'playwright-mock',
+        }),
+        { fallbackBody: { value: 'original', extra: 'real-data' } },
+      );
     });
 
     await page.goto('/');
 
-    // Note: when two routes match, the last-registered wins. We demonstrate the concept here.
     const result = await page.evaluate(async () => {
       const res = await fetch('/api/data');
       return res.json();
     });
 
-    await allure.step('Assert modification fields are present', async () => {
-      // The last-registered route (modifier) wins in Playwright
-      expect(result).toBeDefined();
+    await allure.step('Assert base fields and injected modifications are present', async () => {
+      expect(result).toMatchObject({
+        value: 'original',
+        extra: 'real-data',
+        featureFlag: 'enabled',
+        injectedBy: 'playwright-mock',
+      });
     });
   });
 });
@@ -393,11 +400,24 @@ test.describe('Conditional Mocking', { tag: ['@mocking'] }, () => {
     let secondCallStatus: number;
 
     await allure.step('Register Nth-call mock: fail call 0, pass call 1+', async () => {
-      await mockNthCall(page, '**/api/retry-me', 0, async (route) => {
-        await route.fulfill({ status: 503, body: JSON.stringify({ error: 'Transient failure' }) });
-      });
-      // Subsequent calls: return success
-      await mockJsonResponse(page, '**/api/retry-me', { result: 'success' }, { status: 200 });
+      // Both behaviors are in ONE route registration. Registering a second route for
+      // the same pattern would shadow this one (Playwright uses LIFO ordering), causing
+      // every call to hit the later handler and never reach the Nth-call logic.
+      await mockNthCall(
+        page,
+        '**/api/retry-me',
+        0,
+        async (route) => {
+          await route.fulfill({ status: 503, body: JSON.stringify({ error: 'Transient failure' }) });
+        },
+        async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ result: 'success' }),
+          });
+        },
+      );
     });
 
     await page.goto('/');

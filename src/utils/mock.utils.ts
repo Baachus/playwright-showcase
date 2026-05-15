@@ -297,23 +297,57 @@ export async function withOfflineMode(page: Page, action: () => Promise<void>): 
 
 // ── Response Modification ─────────────────────────────────────────────────────
 
+/** Options for modifyJsonResponse. */
+export interface ModifyJsonOptions {
+  /**
+   * Synthetic base body to use when the real server does not return JSON
+   * (e.g. returns HTML, or the endpoint doesn't exist in the test environment).
+   * When provided, the transform receives this value instead of the server body
+   * and the response is fulfilled with status 200 + application/json.
+   * When omitted and the server returns non-JSON, the response is forwarded
+   * to the browser unmodified.
+   */
+  fallbackBody?: unknown;
+}
+
 /**
  * Intercept a request, let it hit the real server, then modify the response
  * body before returning it to the browser. Useful when you want real data
  * but need to surgically alter one field (e.g. inject a feature flag).
  *
- * @param transform - Receives the parsed JSON body and returns the modified version.
+ * When the real server does not return JSON (e.g. the endpoint only exists in
+ * production, or returns HTML in the test environment), supply `fallbackBody`
+ * to provide a synthetic base that the transform will receive instead.
+ *
+ * IMPORTANT: Register only this single route for the URL pattern. Do NOT stack
+ * a `mockJsonResponse` call for the same pattern — Playwright processes routes
+ * LIFO (last-registered wins), so the later registration would intercept first
+ * and this handler would never reach `route.fetch()`.
+ *
+ * @param transform - Receives the parsed (or fallback) JSON body and returns
+ *                    the modified version.
+ * @param options   - Optional `fallbackBody` for non-JSON server responses.
  *
  * @example
+ *   // Against a real JSON endpoint:
  *   await modifyJsonResponse(page, /\/api\/config/, (body) => ({
  *     ...body,
  *     featureFlags: { newCheckout: true },
  *   }));
+ *
+ *   // When the endpoint returns HTML in the test environment:
+ *   await modifyJsonResponse(
+ *     page,
+ *     /\/api\/config/,
+ *     (body) => ({ ...(body as object), featureFlags: { newCheckout: true } }),
+ *     { fallbackBody: { theme: 'dark', locale: 'en-US' } },
+ *   );
  */
 export async function modifyJsonResponse(
   page: Page,
   urlPattern: string | RegExp,
   transform: (body: unknown) => unknown,
+  options: ModifyJsonOptions = {},
 ): Promise<UnrouteFunction> {
   const handler = async (route: Route) => {
     const response = await route.fetch();
@@ -321,14 +355,19 @@ export async function modifyJsonResponse(
     try {
       body = await response.json();
     } catch {
-      // Not JSON — pass through unmodified
-      await route.fulfill({ response });
-      return;
+      if (options.fallbackBody !== undefined) {
+        // Real server didn't return JSON; use the synthetic base instead
+        body = options.fallbackBody;
+      } else {
+        // No fallback configured — forward the raw response unmodified
+        await route.fulfill({ response });
+        return;
+      }
     }
     await route.fulfill({
-      response,
-      body: JSON.stringify(transform(body)),
+      status: 200,
       contentType: 'application/json',
+      body: JSON.stringify(transform(body)),
     });
   };
 
@@ -339,22 +378,35 @@ export async function modifyJsonResponse(
 // ── Conditional Mocking ───────────────────────────────────────────────────────
 
 /**
- * Mock only the Nth call to a URL (zero-indexed). All other requests pass through.
- * Useful for simulating "first call fails, retry succeeds" retry logic.
+ * Mock only the Nth call to a URL (zero-indexed). All other requests are handled
+ * by `fallbackHandler` if provided, or passed through to the real server otherwise.
  *
  * @param targetCallIndex - Which call to intercept (0 = first call, 1 = second, …).
+ * @param mockHandler     - Handler invoked for the Nth call.
+ * @param fallbackHandler - Optional handler for every other call. When omitted the
+ *                          request is forwarded to the real server via `route.continue()`.
+ *
+ * IMPORTANT: Register only this single route for the URL pattern. Do NOT stack a
+ * second `page.route()` call for the same pattern alongside this one — Playwright
+ * processes routes LIFO (last-registered wins), so a second registration would
+ * shadow this handler and intercept all calls before this one runs.
  *
  * @example
- *   // Simulate a transient failure on the first attempt only
- *   await mockNthCall(page, /\/api\/submit/, 0, async (route) => {
- *     await route.fulfill({ status: 503, body: 'Service Unavailable' });
- *   });
+ *   // Simulate a transient failure on the first attempt, then succeed:
+ *   await mockNthCall(
+ *     page,
+ *     /\/api\/submit/,
+ *     0,
+ *     async (route) => route.fulfill({ status: 503, body: 'Service Unavailable' }),
+ *     async (route) => route.fulfill({ status: 200, body: JSON.stringify({ ok: true }) }),
+ *   );
  */
 export async function mockNthCall(
   page: Page,
   urlPattern: string | RegExp,
   targetCallIndex: number,
   mockHandler: (route: Route) => Promise<void>,
+  fallbackHandler?: (route: Route) => Promise<void>,
 ): Promise<UnrouteFunction> {
   let callCount = 0;
 
@@ -364,7 +416,11 @@ export async function mockNthCall(
       await mockHandler(route);
     } else {
       callCount++;
-      await route.continue();
+      if (fallbackHandler) {
+        await fallbackHandler(route);
+      } else {
+        await route.continue();
+      }
     }
   };
 

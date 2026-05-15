@@ -58,7 +58,11 @@ test.describe('Component Screenshots', { tag: ['@visual'] }, () => {
       'structural changes to the navigation tree independently of article content.',
     );
 
-    const sidebar = page.locator('aside, nav[class*="sidebar"], [class*="sidebar"]').first();
+    // Use the ARIA label selector — consistent with PD_DocsPage.assertSidebarVisible()
+    // and immune to class-name churn. The substring match [class*="sidebar"] was
+    // timing out because .first() could resolve to a hidden mobile overlay element
+    // before the visible desktop nav had painted.
+    const sidebar = page.getByRole('navigation', { name: 'Docs sidebar' });
     await sidebar.waitFor({ state: 'visible' });
 
     await allure.step('Assert sidebar screenshot matches baseline', async () => {
