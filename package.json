@@ -13,6 +13,7 @@
     "test:visual": "playwright test tests/visual --project=Visual",
     "test:visual:update": "playwright test tests/visual --project=Visual --update-snapshots",
     "test:mock": "playwright test tests/mocking --project=Mocking",
+    "test:components": "playwright test tests/components --project=Components",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:report": "playwright show-report",
