@@ -2,7 +2,7 @@ import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**
- * Component Tests -- Footer
+ * Component Tests - Footer
  * ---------------------------------------------------------------------------
  * Covers the site-wide Docusaurus footer on playwright.dev:
  * visibility, link columns, copyright text, and key link presence.
@@ -93,14 +93,11 @@ test.describe('Footer Component', () => {
       await allure.story('Non-Empty Link Labels');
       await allure.label('severity', 'minor');
 
-      await allure.step('Get all footer link texts', async () => {
+      await allure.step('Get all footer link texts and assert none are empty', async () => {
         const texts = await pd_footer.getAllLinkTexts();
-
-        await allure.step('Assert every link has a non-empty label', async () => {
-          for (const text of texts) {
-            expect(text.trim().length).toBeGreaterThan(0);
-          }
-        });
+        for (const text of texts) {
+          expect(text.trim().length).toBeGreaterThan(0);
+        }
       });
     });
   });

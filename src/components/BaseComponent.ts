@@ -2,21 +2,14 @@ import { Page, Locator, expect } from '@playwright/test';
 
 /**
  * BaseComponent
- * ─────────────────────────────────────────────────────────────────────────────
+ * ---------------------------------------------------------------------------
  * Abstract base class for all Component Object Models.
  *
  * Mirrors the BasePage pattern but scoped to a discrete UI component rather
- * than a full page.  Every child component receives:
- *   • `page`  – the Playwright Page, for keyboard/global interactions
- *   • `root`  – the Locator that wraps the component's DOM root, so that all
- *                child locators are automatically scoped to that subtree.
- *
- * Design principles:
- *  - Components do NOT navigate; navigation is the test's or page-object's job.
- *  - All child locators should be created with `this.root.locator(...)` or
- *    `this.root.getByRole(...)` so queries cannot leak outside the component.
- *  - Shared assertion helpers live here; component-specific ones belong in the
- *    subclass.
+ * than a full page. Every child component receives:
+ *   - page: the Playwright Page, for keyboard/global interactions
+ *   - root: the Locator that wraps the component's DOM root, so that all
+ *            child locators are automatically scoped to that subtree.
  */
 export abstract class BaseComponent {
   protected readonly page: Page;
@@ -27,7 +20,7 @@ export abstract class BaseComponent {
     this.root = root;
   }
 
-  // ── Lifecycle ───────────────────────────────────────────────────────────────
+  // -- Lifecycle ---------------------------------------------------------------
 
   /**
    * Wait until the component's root element is visible in the DOM.
@@ -37,7 +30,7 @@ export abstract class BaseComponent {
     await this.root.waitFor({ state: 'visible' });
   }
 
-  // ── State helpers ────────────────────────────────────────────────────────────
+  // -- State helpers -----------------------------------------------------------
 
   /** Returns true when the component root is currently visible. */
   async isVisible(): Promise<boolean> {
@@ -49,7 +42,7 @@ export abstract class BaseComponent {
     return this.root.isVisible({ timeout: 0 }).then(() => true).catch(() => false);
   }
 
-  // ── Shared assertions ────────────────────────────────────────────────────────
+  // -- Shared assertions -------------------------------------------------------
 
   /** Assert that the component root is visible. */
   async assertVisible(): Promise<void> {
@@ -72,7 +65,10 @@ export abstract class BaseComponent {
    * Assert that a locator scoped to this component has a specific ARIA role
    * and is visible.
    */
-  async assertRoleVisible(role: Parameters<Locator['getByRole']>[0], options?: Parameters<Locator['getByRole']>[1]): Promise<void> {
+  async assertRoleVisible(
+    role: Parameters<Locator['getByRole']>[0],
+    options?: Parameters<Locator['getByRole']>[1],
+  ): Promise<void> {
     await expect(this.root.getByRole(role, options)).toBeVisible();
   }
 }
