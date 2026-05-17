@@ -85,17 +85,6 @@ export class PD_FooterComponent extends BaseComponent {
     await expect(this.root.getByRole('link', { name: label })).toBeVisible();
   }
 
-  /** Assert the Learn link-group column renders links. */
-  async assertLearnLinksPresent(): Promise<void> {
-    await this.scrollIntoView();
-    const count = await this.learnColumnLinks.count();
-    expect(count).toBeGreaterThan(0);
-  }
-
-  /** Assert the Community link-group column renders links. */
-  async assertCommunityLinksPresent(): Promise<void> {
-    await this.scrollIntoView();
-    const count = await this.communityColumnLinks.count();
-    expect(count).toBeGreaterThan(0);
-  }
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
 }

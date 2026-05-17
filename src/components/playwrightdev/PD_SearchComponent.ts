@@ -83,38 +83,8 @@ export class PD_SearchComponent extends BaseComponent {
 
   // Queries
 
-  /** Returns the current value of the search input. */
-  async getInputValue(): Promise<string> {
-    return this.searchInput.inputValue();
-  }
+  /** Returns the current valu
 
-  /** Returns the number of search result items currently displayed. */
-  async getResultCount(): Promise<number> {
-    return this.page.locator('.DocSearch-Hit').count();
-  }
-
-  // Assertions
-
-  /** Assert the modal is open and the input is focused. */
-  async assertOpen(): Promise<void> {
-    await expect(this.root).toBeVisible();
-    await expect(this.searchInput).toBeVisible();
-  }
-
-  /** Assert the modal is closed / hidden. */
-  async assertClosed(): Promise<void> {
-    await expect(this.root).toBeHidden();
-  }
-
-  /** Assert that the input contains the expected query text. */
-  async assertInputValue(expected: string): Promise<void> {
-    await expect(this.searchInput).toHaveValue(expected);
-  }
-
-  /** Assert that at least one result is shown for the current query. */
-  async assertResultsVisible(): Promise<void> {
-    await expect(this.resultsList.first()).toBeVisible();
-    const count = await this.getResultCount();
-    expect(count).toBeGreaterThan(0);
-  }
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
 }

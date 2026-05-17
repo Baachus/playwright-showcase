@@ -224,7 +224,7 @@ export default defineConfig({
       name: 'Security',
       testMatch: '**/security/**/*.spec.ts',
       testDir: './tests',
-      use: { ...devices['Desktop Chrome'], baseURL: 'https://playwright.dev' },
+            use: { ...devices['Desktop Chrome'], baseURL: 'https://playwright.dev' },
     },
 
     // ---- Accessibility ----

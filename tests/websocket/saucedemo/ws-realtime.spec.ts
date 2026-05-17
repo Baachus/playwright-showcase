@@ -2,30 +2,27 @@ import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**
- * Real WebSocket Tests -- Saucedemo
+ * Real WebSocket Tests
  * ---------------------------------------------------------------------------
  * Tests real WebSocket connections using Playwright's built-in WS observation
  * APIs (page.on('websocket'), webSocket.on('framereceived'), etc.).
  *
- * A WebSocket connection is opened from inside the Saucedemo page context via
- * page.evaluate() and pointed at a public echo server. Playwright captures the
- * WS lifecycle events at the framework level without any mocking layer.
+ * Originally these tests pointed at the public `wss://echo.websocket.events`
+ * service, but that endpoint proved unreliable in CI / sandboxed environments
+ * (every test was failing with an immediate "WS error").  The `echoServer`
+ * fixture now spins up an in-process Node `ws` server bound to
+ * 127.0.0.1:<random> for each test, giving deterministic, network-independent
+ * behaviour while still exercising a real browser-side WebSocket and
+ * Playwright's `page.on('websocket')` observation API.
  *
- * Public echo server used: wss://echo.websocket.events
- *   - Echoes every frame back verbatim
- *   - Sends a welcome message on connect: "echo.websocket.events sponsored by ..."
- *   - No auth required; free tier; may occasionally be slow
- *
- * Tests in this file are tagged @ws-realtime and marked test.slow() because
- * they involve real network round-trips.
- *
- * NOTE: If the echo server is unreachable, tests will fail with a timeout.
- * Run with --project=WebSocket-Realtime to execute these in isolation.
+ * Because the local server is plain ws:// (not wss://), the page must be in a
+ * non-secure context (about:blank is used) to avoid the browser's mixed-content
+ * block that prevents HTTPS pages from opening insecure WebSockets.  The
+ * Saucedemo navigation that was in the original tests was incidental -- these
+ * tests only need any document to evaluate `new WebSocket(url)` against.
  */
 
-const ECHO_SERVER = 'wss://echo.websocket.events';
-
-/** Open a real WebSocket from inside the page and return the socket handle. */
+/** Open a real WebSocket from inside the page and return once it is open. */
 async function openRealWebSocket(page: import('@playwright/test').Page, url: string): Promise<void> {
   await page.evaluate((wsUrl: string) => {
     (window as any).__realWs = {
@@ -58,15 +55,15 @@ test.beforeEach(async () => {
   await allure.feature('WebSocket -- Real Server');
 });
 
-test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realtime'] }, () => {
+test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-realtime'] }, () => {
 
-  // Mark all tests in this suite as slow (real network RTT)
-  test.slow();
+  // Per-test the echoServer fixture stands up a fresh local ws:// echo server.
+  // We still mark slow() for tests that run the full open->message->close cycle.
 
   // ---------------------------------------------------------------- observation
   test.describe('Playwright WS Observation API', { tag: ['@smoke'] }, () => {
 
-    test('should observe a real WS connection via page.on("websocket")', async ({ page }) => {
+    test('should observe a real WS connection via page.on("websocket")', async ({ page, echoServer }) => {
       await allure.story('WS Connection Observation');
       await allure.label('severity', 'critical');
 
@@ -81,19 +78,19 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
         });
       });
 
-      await allure.step('Navigate to Saucedemo and open a real WebSocket', async () => {
-        await page.goto('https://www.saucedemo.com/inventory.html');
-        await openRealWebSocket(page, ECHO_SERVER);
+      await allure.step('Navigate to about:blank and open a real WebSocket', async () => {
+        await page.goto('about:blank');
+        await openRealWebSocket(page, echoServer.url);
       });
 
       await allure.step('Assert Playwright observed the WS open event', async () => {
         const openEvent = wsEvents.find(e => e.startsWith('open:'));
         expect(openEvent).toBeTruthy();
-        expect(openEvent).toContain('echo.websocket.events');
+        expect(openEvent).toContain(echoServer.url);
       });
     });
 
-    test('should observe frames sent and received via Playwright WS events', async ({ page }) => {
+    test('should observe frames sent and received via Playwright WS events', async ({ page, echoServer }) => {
       await allure.story('Frame Observation');
       await allure.label('severity', 'critical');
 
@@ -105,13 +102,12 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
         ws.on('framereceived', ({ payload }) => receivedFrames.push(String(payload)));
       });
 
-      await page.goto('https://www.saucedemo.com/inventory.html');
-      await openRealWebSocket(page, ECHO_SERVER);
+      await page.goto('about:blank');
+      await openRealWebSocket(page, echoServer.url);
 
       await allure.step('Send a message and wait for the echo', async () => {
         await page.evaluate(() => (window as any).__realWs.send('playwright-observe-test'));
 
-        // Wait for at least one non-welcome received frame containing our payload
         await page.waitForFunction(
           () => ((window as any).__realWs.received as string[]).some((m: string) => m.includes('playwright-observe-test')),
           { timeout: 8_000 },
@@ -128,12 +124,12 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
   // ---------------------------------------------------------------- round-trip
   test.describe('Round-Trip Message Exchange', () => {
 
-    test('should send a message and receive the echo back from the server', async ({ page }) => {
+    test('should send a message and receive the echo back from the server', async ({ page, echoServer }) => {
       await allure.story('Echo Round-Trip');
       await allure.label('severity', 'critical');
 
-      await page.goto('https://www.saucedemo.com/inventory.html');
-      await openRealWebSocket(page, ECHO_SERVER);
+      await page.goto('about:blank');
+      await openRealWebSocket(page, echoServer.url);
 
       const payload = `saucedemo-test-${Date.now()}`;
 
@@ -155,24 +151,25 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
       });
     });
 
-    test('should send multiple messages and receive all echoes', async ({ page }) => {
+    test('should send multiple messages and receive all echoes', async ({ page, echoServer }) => {
       await allure.story('Multiple Echo Round-Trips');
       await allure.label('severity', 'normal');
 
-      await page.goto('https://www.saucedemo.com/inventory.html');
-      await openRealWebSocket(page, ECHO_SERVER);
+      await page.goto('about:blank');
+      await openRealWebSocket(page, echoServer.url);
 
       const messages = ['alpha', 'beta', 'gamma', 'delta'];
 
       await allure.step('Send all messages sequentially', async () => {
         for (const msg of messages) {
           await page.evaluate((m: string) => (window as any).__realWs.send(m), msg);
-          // Brief pause to avoid frame merging
-          await page.waitForTimeout(100);
+          await page.waitForTimeout(50);
         }
       });
 
       await allure.step('Wait for all echoes to arrive', async () => {
+        // Filter the welcome line ("echo.websocket.events sponsored by ...")
+        // and count distinct echoes that match one of the sent messages.
         await page.waitForFunction(
           (count: number) => {
             const received: string[] = (window as any).__realWs.received;
@@ -195,7 +192,7 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
   // ---------------------------------------------------------------- lifecycle
   test.describe('Connection Lifecycle', { tag: ['@smoke'] }, () => {
 
-    test('should transition through open -> message -> close states', async ({ page }) => {
+    test('should transition through open -> message -> close states', async ({ page, echoServer }) => {
       await allure.story('Full Connection Lifecycle');
       await allure.label('severity', 'critical');
 
@@ -211,10 +208,10 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
         ws.on('close', () => lifecycleEvents.push('close'));
       });
 
-      await page.goto('https://www.saucedemo.com/inventory.html');
+      await page.goto('about:blank');
 
       await allure.step('Open real WS connection', async () => {
-        await openRealWebSocket(page, ECHO_SERVER);
+        await openRealWebSocket(page, echoServer.url);
       });
 
       await allure.step('Wait for the server welcome message', async () => {
@@ -244,12 +241,12 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
       });
     });
 
-    test('should handle a graceful server close without client error', async ({ page }) => {
+    test('should handle a graceful server close without client error', async ({ page, echoServer }) => {
       await allure.story('Graceful Server Close Handling');
       await allure.label('severity', 'normal');
 
-      await page.goto('https://www.saucedemo.com/inventory.html');
-      await openRealWebSocket(page, ECHO_SERVER);
+      await page.goto('about:blank');
+      await openRealWebSocket(page, echoServer.url);
 
       await allure.step('Wait for connection to be fully established', async () => {
         const isOpen: boolean = await page.evaluate(() => (window as any).__realWs.isOpen);
@@ -275,34 +272,43 @@ test.describe('Real WebSocket -- Echo Server', { tag: ['@websocket', '@ws-realti
   // ---------------------------------------------------------------- concurrent
   test.describe('Concurrent Connections', () => {
 
-    test('should support two independent real WS connections simultaneously', async ({ page }) => {
+    test('should support two independent real WS connections simultaneously', async ({ page, echoServer }) => {
       await allure.story('Concurrent Real Connections');
       await allure.label('severity', 'normal');
 
       const observedUrls: string[] = [];
       page.on('websocket', (ws) => observedUrls.push(ws.url()));
 
-      await page.goto('https://www.saucedemo.com/inventory.html');
+      await page.goto('about:blank');
 
       await allure.step('Open two separate WebSocket connections from the same page', async () => {
-        // Open connection 1
+        // Open both connections and wait for each to reach OPEN before continuing
+        // -- this guarantees Playwright has observed the websocket events before
+        // we assert on `observedUrls`.
         await page.evaluate((url: string) => {
-          (window as any).__ws1 = new WebSocket(url);
-        }, ECHO_SERVER);
+          return new Promise<void>((resolve, reject) => {
+            const w1 = new WebSocket(url);
+            (window as any).__ws1 = w1;
+            w1.addEventListener('open', () => resolve());
+            w1.addEventListener('error', () => reject(new Error('ws1 error')));
+            setTimeout(() => reject(new Error('ws1 open timeout')), 8_000);
+          });
+        }, echoServer.url);
 
-        await page.waitForTimeout(500);
-
-        // Open connection 2
         await page.evaluate((url: string) => {
-          (window as any).__ws2 = new WebSocket(url);
-        }, ECHO_SERVER);
-
-        await page.waitForTimeout(500);
+          return new Promise<void>((resolve, reject) => {
+            const w2 = new WebSocket(url);
+            (window as any).__ws2 = w2;
+            w2.addEventListener('open', () => resolve());
+            w2.addEventListener('error', () => reject(new Error('ws2 error')));
+            setTimeout(() => reject(new Error('ws2 open timeout')), 8_000);
+          });
+        }, echoServer.url);
       });
 
       await allure.step('Assert Playwright observed both WS connections', async () => {
         expect(observedUrls.length).toBeGreaterThanOrEqual(2);
-        expect(observedUrls.every(u => u.includes('echo.websocket.events'))).toBe(true);
+        expect(observedUrls.every(u => u === echoServer.url)).toBe(true);
       });
     });
   });

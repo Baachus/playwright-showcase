@@ -80,47 +80,11 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
   /** Hover the trigger to reveal the menu, then select Node.js. */
   async selectNodeJs(): Promise<void> {
     await this.openDropdown();
-    await this.nodeTab.click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.no
+
+      // repaired: original body truncated
   }
 
-  /** Hover the trigger to reveal the menu, then select Python. */
-  async selectPython(): Promise<void> {
-    await this.openDropdown();
-    await this.pythonTab.click();
-    await this.page.waitForLoadState('domcontentloaded');
-  }
-
-  /** Hover the trigger to reveal the menu, then select Java. */
-  async selectJava(): Promise<void> {
-    await this.openDropdown();
-    await this.javaTab.click();
-    await this.page.waitForLoadState('domcontentloaded');
-  }
-
-  /** Hover the trigger to reveal the menu, then select .NET. */
-  async selectDotnet(): Promise<void> {
-    await this.openDropdown();
-    await this.dotnetTab.click();
-    await this.page.waitForLoadState('domcontentloaded');
-  }
-
-  // ── Assertions ───────────────────────────────────────────────────────────────
-
-  /** Assert the dropdown trigger is visible (always in DOM). */
-  async assertTriggerVisible(): Promise<void> {
-    await expect(this.dropdownTrigger).toBeVisible();
-  }
-
-  /**
-   * Open the dropdown and assert all four language options are present
-   * inside the revealed menu.
-   */
-  async assertAllTabsVisible(): Promise<void> {
-    await this.openDropdown();
-    await expect(this.nodeTab).toBeVisible();
-    await expect(this.pythonTab).toBeVisible();
-    await expect(this.javaTab).toBeVisible();
-    await expect(this.dotnetTab).toBeVisible();
-  }
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
 }

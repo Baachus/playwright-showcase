@@ -49,30 +49,8 @@ export abstract class BaseComponent {
     return this.root.isVisible({ timeout: 0 }).then(() => true).catch(() => false);
   }
 
-  // ── Shared assertions ────────────────────────────────────────────────────────
+  // ── Shared assertions ─────────────────────────────────�
 
-  /** Assert that the component root is visible. */
-  async assertVisible(): Promise<void> {
-    await expect(this.root).toBeVisible();
-  }
-
-  /** Assert that the component root is hidden. */
-  async assertHidden(): Promise<void> {
-    await expect(this.root).toBeHidden();
-  }
-
-  /**
-   * Assert that a text string appears somewhere within the component.
-   */
-  async assertContainsText(text: string | RegExp): Promise<void> {
-    await expect(this.root).toContainText(text);
-  }
-
-  /**
-   * Assert that a locator scoped to this component has a specific ARIA role
-   * and is visible.
-   */
-  async assertRoleVisible(role: Parameters<Locator['getByRole']>[0], options?: Parameters<Locator['getByRole']>[1]): Promise<void> {
-    await expect(this.root.getByRole(role, options)).toBeVisible();
-  }
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
 }

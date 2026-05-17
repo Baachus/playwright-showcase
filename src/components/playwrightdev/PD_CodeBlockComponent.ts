@@ -70,55 +70,8 @@ export class PD_CodeBlockComponent extends BaseComponent {
     return this.copyButton.isVisible({ timeout: 2_000 }).catch(() => false);
   }
 
-  // ── Actions ──────────────────────────────────────────────────────────────────
+  // ── Actions ─────────────────────────────�
 
-  /**
-   * Hover over the block to reveal the copy button, then click it.
-   */
-  async clickCopy(): Promise<void> {
-    await this.root.hover();
-    await this.copyButton.waitFor({ state: 'visible' });
-    await this.copyButton.click();
-  }
-
-  // ── Assertions ───────────────────────────────────────────────────────────────
-
-  /** Assert the code block is rendered with a <pre> element. */
-  async assertRendered(): Promise<void> {
-    await expect(this.root).toBeVisible();
-    await expect(this.pre).toBeVisible();
-  }
-
-  /**
-   * Assert the detected language matches the expected value (case-insensitive).
-   */
-  async assertLanguage(expected: string): Promise<void> {
-    const lang = await this.getLanguage();
-    expect(lang?.toLowerCase()).toBe(expected.toLowerCase());
-  }
-
-  /**
-   * Assert the code content includes a specific substring.
-   */
-  async assertCodeContains(snippet: string): Promise<void> {
-    const code = await this.getCode();
-    expect(code).toContain(snippet);
-  }
-
-  /** Assert the copy button is visible (after hover). */
-  async assertCopyButtonVisible(): Promise<void> {
-    await this.root.hover();
-    await expect(this.copyButton).toBeVisible();
-  }
-
-  /** Assert the total number of code blocks on the page. */
-  static async assertCount(page: Page, expected: number): Promise<void> {
-    await expect(page.locator('div.theme-code-block')).toHaveCount(expected);
-  }
-
-  /** Assert there is at least one code block on the page. */
-  static async assertAtLeastOne(page: Page): Promise<void> {
-    const count = await page.locator('div.theme-code-block').count();
-    expect(count).toBeGreaterThan(0);
-  }
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
 }

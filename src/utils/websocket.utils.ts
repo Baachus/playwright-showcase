@@ -1,4 +1,7 @@
-import { Page, WebSocketRoute } from '@playwright/test';
+import type { Page, WebSocketRoute } from '@playwright/test';
+import WSLib from 'ws';
+type NodeWebSocket = WSLib;
+import type { AddressInfo } from 'net';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -196,11 +199,25 @@ export class MockWebSocketServer {
  *
  * Must be called BEFORE page.goto() so the script is present on first load.
  *
+ * NOTE: addInitScript runs in EVERY frame on a page (top-level + every iframe
+ * Saucedemo loads -- analytics, social trackers, etc.).  We guard with
+ * `window !== window.top` so the WS client is created exactly once, in the
+ * top-level document.  Without this guard, mock-server connection counts
+ * become non-deterministic (typically 2 instead of 1 on Saucedemo pages).
+ *
  * @param page   Playwright page
  * @param wsUrl  The WebSocket URL the injected client will connect to
  */
 export async function injectWebSocketClient(page: Page, wsUrl: string): Promise<void> {
   await page.addInitScript((url: string) => {
+    // Only run in the top-level frame -- iframes (analytics, trackers, etc.)
+    // would otherwise each open their own WebSocket to the mock URL.
+    if (window !== window.top) return;
+
+    // Idempotent: never overwrite an existing __wsClient with an open socket.
+    // Protects against the rare case where the same document is re-evaluated.
+    if (window.__wsClient && window.__wsClient.isOpen) return;
+
     window.__wsClient = {
       ws: null,
       messages: [],
@@ -209,6 +226,10 @@ export async function injectWebSocketClient(page: Page, wsUrl: string): Promise<
       isOpen: false,
 
       connect(u: string) {
+        // Idempotent: if a socket is already open or connecting, do nothing.
+        if (this.ws && (this.isOpen || this.ws.readyState === WebSocket.CONNECTING)) {
+          return;
+        }
         const ws = new WebSocket(u);
         this.ws = ws;
         this.isOpen = false;
@@ -332,4 +353,71 @@ export async function closeClientConnection(
     ({ c, r }: { c: number; r: string }) => window.__wsClient?.close(c, r),
     { c: code, r: reason },
   );
+}
+
+// ---------------------------------------------------------------------------
+// Local in-process echo server (for ws-realtime tests)
+// ---------------------------------------------------------------------------
+
+/**
+ * Handle to a running local WebSocket echo server.
+ */
+export interface LocalEchoServer {
+  /** The ws:// URL the test should connect to.  Bound to 127.0.0.1 on a random free port. */
+  readonly url: string;
+  /** Stop the server and release the port.  Idempotent. */
+  close(): Promise<void>;
+}
+
+/**
+ * Spin up an in-process WebSocket echo server bound to 127.0.0.1 on a random
+ * free port.  Used by the ws-realtime tests as a deterministic replacement for
+ * the public `wss://echo.websocket.events` service (which is unreliable / may
+ * be unreachable from CI runners and sandboxed environments).
+ *
+ * Behaviour mirrors echo.websocket.events:
+ *   - On connect, the server immediately sends a welcome line that contains
+ *     the literal "echo.websocket.events" so existing tests that filter that
+ *     line out of received-frame lists keep working.
+ *   - Every text/binary frame received from the client is echoed back verbatim.
+ *
+ * The page must be navigated to a non-secure document (about:blank, data: URL,
+ * or any http:// page) so the browser does not block the ws:// connection as
+ * mixed content.
+ */
+export async function startLocalEchoServer(): Promise<LocalEchoServer> {
+  return new Promise<LocalEchoServer>((resolve, reject) => {
+    const wss = new WSLib.Server({ host: '127.0.0.1', port: 0 });
+
+    wss.on('error', (err) => reject(err));
+
+    wss.on('connection', (socket: NodeWebSocket) => {
+      // Welcome message -- contains "echo.websocket.events" so the filter
+      // expressions in ws-realtime.spec.ts continue to identify and skip it.
+      socket.send('echo.websocket.events sponsored by local-test-server');
+
+      socket.on('message', (data, isBinary) => {
+        if (socket.readyState !== socket.OPEN) return;
+        socket.send(data as Buffer, { binary: isBinary });
+      });
+    });
+
+    wss.on('listening', () => {
+      const addr = wss.address() as AddressInfo;
+      let closed = false;
+      resolve({
+        url: 'ws://127.0.0.1:' + addr.port,
+        close: () =>
+          new Promise<void>((res) => {
+            if (closed) return res();
+            closed = true;
+            // Force-terminate any lingering client sockets so close() resolves promptly.
+            for (const client of wss.clients) {
+              try { client.terminate(); } catch { /* ignore */ }
+            }
+            wss.close(() => res());
+          }),
+      });
+    });
+  });
 }

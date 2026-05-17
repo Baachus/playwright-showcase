@@ -15,6 +15,8 @@ import { SD_CartPage } from '@pages/saucedemo/SD_CartPage.js';
 import { SD_ConfirmationPage } from '@pages/saucedemo/checkout/SD_ConfirmationPage.js';
 import { SD_InfoPage } from '@pages/saucedemo/checkout/SD_InfoPage.js';
 import { SD_VerificationPage } from '@pages/saucedemo/checkout/SD_VerificationPage.js';
+// WebSocket utilities
+import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.utils.js';
 
 /**
  * Custom Fixtures
@@ -50,6 +52,9 @@ type PageFixtures = {
   sd_confirmationPage: SD_ConfirmationPage;
   sd_infoPage: SD_InfoPage;
   sd_verificationPage: SD_VerificationPage;
+
+  // WebSocket -- shared local echo server
+  echoServer: LocalEchoServer;
 };
 
 export const test = base.extend<PageFixtures>({
@@ -163,6 +168,19 @@ export const test = base.extend<PageFixtures>({
     const sd_verificationPage = new SD_VerificationPage(page);
     await sd_verificationPage.goto();
     await use(sd_verificationPage);
+  },
+  /**
+   * echoServer -- per-test in-process WebSocket echo server bound to
+   * ws://127.0.0.1:<random>.  Replaces the unreliable public
+   * wss://echo.websocket.events used by ws-realtime tests.  Sends a welcome
+   * line on connect containing "echo.websocket.events" so the existing test
+   * filters that skip the welcome message continue to work, and echoes every
+   * frame the client sends.  The server is torn down at test end.
+   */
+  echoServer: async ({}, use) => {
+    const server = await startLocalEchoServer();
+    await use(server);
+    await server.close();
   },
 });
 

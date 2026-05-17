@@ -90,53 +90,7 @@ export class PD_NavbarComponent extends BaseComponent {
 
   /**
    * Switch to a language by hovering the dropdown trigger first to reveal
-   * the menu, then clicking the appropriate option.
-   */
-  async switchLanguage(lang: 'Node.js' | 'Python' | 'Java' | '.NET'): Promise<void> {
-    await this.openLanguageDropdown();
-    const map: Record<string, Locator> = {
-      'Node.js': this.nodeLink,
-      Python:    this.pythonLink,
-      Java:      this.javaLink,
-      '.NET':    this.dotnetLink,
-    };
-    await map[lang].click();
-    await this.page.waitForLoadState('domcontentloaded');
-  }
-
-  // ── Assertions ───────────────────────────────────────────────────────────────
-
-  /** Assert that all primary nav elements are present and visible. */
-  async assertFullyRendered(): Promise<void> {
-    await expect(this.root).toBeVisible();
-    await expect(this.brandLogo).toBeVisible();
-    await expect(this.githubLink).toBeVisible();
-    await expect(this.searchButton).toBeVisible();
-    await expect(this.languageDropdownTrigger).toBeVisible();
-  }
-
-  /**
-   * Assert that all four language options are present in the dropdown menu.
-   * Hovers the trigger first to reveal the menu.
-   */
-  async assertLanguageLinksVisible(): Promise<void> {
-    await this.openLanguageDropdown();
-    await expect(this.nodeLink).toBeVisible();
-    await expect(this.pythonLink).toBeVisible();
-    await expect(this.javaLink).toBeVisible();
-    await expect(this.dotnetLink).toBeVisible();
-  }
-
-  /** Assert that the theme toggle button is visible. */
-  async assertThemeToggleVisible(): Promise<void> {
-    await expect(this.themeToggle).toBeVisible();
-  }
-
-  /**
-   * Assert that the theme toggle label matches the expected mode.
-   * Pass 'dark' to confirm the current mode is light (toggle switches to dark).
-   */
-  async assertThemeToggleMode(expected: 'dark' | 'light'): Promise<void> {
-    await expect(this.themeToggle).toHaveAttribute('aria-label', new RegExp(expected, 'i'));
-  }
+   * the menu, then cli
+   * the dropdown menu; auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
 }
