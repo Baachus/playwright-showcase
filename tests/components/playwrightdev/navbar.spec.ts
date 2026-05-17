@@ -2,7 +2,7 @@ import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**
- * Component Tests -- Navbar
+ * Component Tests - Navbar
  * ---------------------------------------------------------------------------
  * Covers the top navigation bar on playwright.dev: structure, links,
  * theme toggle, and the hoverable language-switcher dropdown.
@@ -127,18 +127,16 @@ test.describe('Navbar Component', () => {
       await allure.story('Theme Toggle Interaction');
       await allure.label('severity', 'normal');
 
-      await allure.step('Record aria-label before toggling', async () => {
-        const before = await pd_navbar.getThemeToggleLabel();
-        expect(before).toBeTruthy();
+      const before = await pd_navbar.getThemeToggleLabel();
+      expect(before).toBeTruthy();
 
-        await allure.step('Click the theme toggle', async () => {
-          await pd_navbar.clickThemeToggle();
-        });
+      await allure.step('Click the theme toggle', async () => {
+        await pd_navbar.clickThemeToggle();
+      });
 
-        await allure.step('Assert aria-label has changed after toggle', async () => {
-          const after = await pd_navbar.getThemeToggleLabel();
-          expect(after).not.toBe(before);
-        });
+      await allure.step('Assert aria-label has changed after toggle', async () => {
+        const after = await pd_navbar.getThemeToggleLabel();
+        expect(after).not.toBe(before);
       });
     });
   });

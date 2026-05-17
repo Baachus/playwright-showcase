@@ -3,7 +3,7 @@ import { PD_CodeBlockComponent } from '../../../src/components/playwrightdev/PD_
 import * as allure from 'allure-js-commons';
 
 /**
- * Component Tests -- Code Block
+ * Component Tests - Code Block
  * ---------------------------------------------------------------------------
  * Covers Prism-highlighted code blocks on the Playwright docs pages:
  * rendering, language detection, copy button, and content integrity.

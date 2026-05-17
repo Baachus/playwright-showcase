@@ -14,18 +14,15 @@ import { BaseComponent } from '../BaseComponent.js';
  *   trigger first before interacting with the menu items.
  */
 export class PD_NavbarComponent extends BaseComponent {
-  // ── Core nav elements ────────────────────────────────────────────────────────
+  // -- Core nav elements -------------------------------------------------------
   readonly brandLogo: Locator;
   readonly githubLink: Locator;
   readonly searchButton: Locator;
   readonly themeToggle: Locator;
 
-  // ── Language dropdown ────────────────────────────────────────────────────────
-  // The visible trigger that the user hovers to open the menu.
+  // -- Language dropdown -------------------------------------------------------
   readonly languageDropdownTrigger: Locator;
-  // The hidden menu revealed on hover.
   readonly languageDropdownMenu: Locator;
-  // Individual language options inside the menu.
   readonly nodeLink: Locator;
   readonly pythonLink: Locator;
   readonly javaLink: Locator;
@@ -39,59 +36,47 @@ export class PD_NavbarComponent extends BaseComponent {
     this.searchButton = this.root.getByLabel(/search/i);
     this.themeToggle  = this.root.getByRole('button', { name: /switch between dark and light/i });
 
-    // The dropdown wrapper scoped to navbar
-    const dropdown         = this.root.locator('.navbar__item.dropdown');
+    const dropdown               = this.root.locator('.navbar__item.dropdown');
     this.languageDropdownTrigger = dropdown.locator('a.navbar__link').first();
     this.languageDropdownMenu    = dropdown.locator('ul.dropdown__menu');
 
-    // Menu items -- only visible after hovering the trigger
     this.nodeLink   = this.languageDropdownMenu.getByRole('link', { name: 'Node.js' });
     this.pythonLink = this.languageDropdownMenu.getByRole('link', { name: 'Python' });
     this.javaLink   = this.languageDropdownMenu.getByRole('link', { name: 'Java' });
     this.dotnetLink = this.languageDropdownMenu.getByRole('link', { name: '.NET' });
   }
 
-  // ── Private helpers ──────────────────────────────────────────────────────────
+  // -- Private helpers ---------------------------------------------------------
 
-  /** Hover the dropdown trigger so the language menu becomes visible. */
   private async openLanguageDropdown(): Promise<void> {
     await this.languageDropdownTrigger.hover();
     await this.languageDropdownMenu.waitFor({ state: 'visible' });
   }
 
-  // ── Queries ──────────────────────────────────────────────────────────────────
+  // -- Queries -----------------------------------------------------------------
 
-  /** Returns the resolved href of the brand logo anchor. */
   async getBrandHref(): Promise<string | null> {
     return this.brandLogo.getAttribute('href');
   }
 
-  /** Returns the current aria-label of the theme toggle button. */
   async getThemeToggleLabel(): Promise<string | null> {
     return this.themeToggle.getAttribute('aria-label');
   }
 
-  /** Returns the visible label on the language dropdown trigger (e.g. "Node.js"). */
   async getCurrentLanguageLabel(): Promise<string> {
     return (await this.languageDropdownTrigger.textContent() ?? '').trim();
   }
 
-  // ── Actions ──────────────────────────────────────────────────────────────────
+  // -- Actions -----------------------------------------------------------------
 
-  /** Click the brand logo to return to the home page. */
   async clickBrand(): Promise<void> {
     await this.brandLogo.click();
   }
 
-  /** Click the theme toggle to switch between light and dark mode. */
   async clickThemeToggle(): Promise<void> {
     await this.themeToggle.click();
   }
 
-  /**
-   * Switch to a language by hovering the dropdown trigger first to reveal
-   * the menu, then clicking the appropriate option.
-   */
   async switchLanguage(lang: 'Node.js' | 'Python' | 'Java' | '.NET'): Promise<void> {
     await this.openLanguageDropdown();
     const map: Record<string, Locator> = {
@@ -104,9 +89,8 @@ export class PD_NavbarComponent extends BaseComponent {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
-  // ── Assertions ───────────────────────────────────────────────────────────────
+  // -- Assertions --------------------------------------------------------------
 
-  /** Assert that all primary nav elements are present and visible. */
   async assertFullyRendered(): Promise<void> {
     await expect(this.root).toBeVisible();
     await expect(this.brandLogo).toBeVisible();
@@ -115,10 +99,6 @@ export class PD_NavbarComponent extends BaseComponent {
     await expect(this.languageDropdownTrigger).toBeVisible();
   }
 
-  /**
-   * Assert that all four language options are present in the dropdown menu.
-   * Hovers the trigger first to reveal the menu.
-   */
   async assertLanguageLinksVisible(): Promise<void> {
     await this.openLanguageDropdown();
     await expect(this.nodeLink).toBeVisible();
@@ -127,16 +107,12 @@ export class PD_NavbarComponent extends BaseComponent {
     await expect(this.dotnetLink).toBeVisible();
   }
 
-  /** Assert that the theme toggle button is visible. */
   async assertThemeToggleVisible(): Promise<void> {
     await expect(this.themeToggle).toBeVisible();
   }
 
-  /**
-   * Assert that the theme toggle label matches the expected mode.
-   * Pass 'dark' to confirm the current mode is light (toggle switches to dark).
-   */
-  async assertThemeToggleMode(expected: 'dark' | 'light'): Promise<void> {
-    await expect(this.themeToggle).toHaveAttribute('aria-label', new RegExp(expected, 'i'));
+  async assertThemeToggleMode(expectedMode: 'light' | 'dark'): Promise<void> {
+    const label = await this.getThemeToggleLabel();
+    expect(label?.toLowerCase()).toContain(expectedMode);
   }
 }
