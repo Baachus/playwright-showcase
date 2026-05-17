@@ -27,7 +27,11 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:websocket": "playwright test tests/websocket --project=WebSocket-Mock --project=WebSocket-Realtime",
+    "test:ws-mock": "playwright test tests/websocket --project=WebSocket-Mock",
+    "test:ws-realtime": "playwright test tests/websocket --project=WebSocket-Realtime",
+    "test:ws-mock:smoke": "playwright test tests/websocket --project=WebSocket-Mock --grep @smoke"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
