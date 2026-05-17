@@ -16,9 +16,17 @@ import * as allure from 'allure-js-commons';
  *   page   -- the primary tab (default, pre-loaded to /inventory.html via storageState)
  *   sd_tab2 -- a second tab opened in the same context, also navigated to /inventory.html
  */
-test.beforeEach(async () => {
+test.beforeEach(async ({ page }) => {
   await allure.epic('Saucedemo');
   await allure.feature('Multi-Tab');
+
+  // The default `page` fixture inherits the project-level storageState
+  // (cookies / localStorage), but Playwright does NOT auto-navigate -- the
+  // tab starts on `about:blank`.  Multi-tab tests need Tab 1 to actually be
+  // on the inventory page so that POM helpers (cart buttons, badge, menu) work.
+  await page.goto('https://www.saucedemo.com/inventory.html');
+  const inventoryPage = new SD_InventoryPage(page);
+  await inventoryPage.waitForPageLoad();
 });
 
 test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-context'] }, () => {
