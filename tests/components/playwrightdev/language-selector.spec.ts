@@ -2,10 +2,10 @@ import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**
- * Component Tests -- Language Selector
+ * Component Tests - Language Selector
  * ---------------------------------------------------------------------------
  * Covers the Node.js / Python / Java / .NET language-switcher dropdown in
- * the navbar.  The dropdown is hoverable -- options are only visible after
+ * the navbar. The dropdown is hoverable -- options are only visible after
  * hovering the trigger, and all select* helpers handle this automatically.
  */
 test.beforeEach(async () => {

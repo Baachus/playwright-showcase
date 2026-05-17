@@ -2,8 +2,8 @@ import { test, expect } from '../../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
 
 /**
- * Component Tests – Search Modal
- * ─────────────────────────────────────────────────────────────────────────────
+ * Component Tests - Search Modal
+ * ---------------------------------------------------------------------------
  * Covers the Algolia DocSearch modal: opening, input, results, and closing.
  */
 test.beforeEach(async () => {
@@ -113,17 +113,15 @@ test.describe('Search Component', () => {
       await allure.story('Page State After Close');
       await allure.label('severity', 'normal');
 
-      await allure.step('Record the URL before opening search', async () => {
-        const urlBefore = page.url();
+      const urlBefore = page.url();
 
-        await allure.step('Open and then close the search modal', async () => {
-          await pd_search.open();
-          await pd_search.closeWithEscape();
-        });
+      await allure.step('Open and then close the search modal', async () => {
+        await pd_search.open();
+        await pd_search.closeWithEscape();
+      });
 
-        await allure.step('Assert the URL has not changed', async () => {
-          expect(page.url()).toBe(urlBefore);
-        });
+      await allure.step('Assert the URL has not changed', async () => {
+        expect(page.url()).toBe(urlBefore);
       });
     });
   });

@@ -4,6 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright Configuration
  * Multi-project setup covering desktop, mobile, API, visual regression, network mocking,
+ * component-level testing, and multi-context (multi-tab / multi-window / multi-user) testing.
  * component-level testing, multi-context testing, and WebSocket / realtime testing.
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -63,45 +64,47 @@ export default defineConfig({
     { name: 'setup-playwrightdev',        testMatch: /.*playwrightdev\.setup\.ts/       },
 
     // ---- Playwright.dev - Desktop ----
+    // Component tests live in tests/components/ and are excluded here so they
+    // only run once under the dedicated Components project below.
     {
       name: 'Playwright.dev Chromium',
       testDir: './tests',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**'],
+      testIgnore: ['**/saucedemo/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
     {
       name: 'Playwright.dev Firefox',
       testDir: './tests',
       use: { ...devices['Desktop Firefox'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
     {
       name: 'Playwright.dev Webkit',
       testDir: './tests',
       use: { ...devices['Desktop Safari'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
 
-    // ---- Playwright.dev - Mobile ----
+    // ---- ---- Playwright.dev - Mobile ---- ----
     {
       name: 'Playwright.dev Mobile-chrome',
       testDir: './tests',
       use: { ...devices['Pixel 5'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
     {
       name: 'Playwright.dev Mobile-safari',
       testDir: './tests',
       use: { ...devices['iPhone 13'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
 
-    // ---- Component Testing ----
+    // ---- ---- Component Testing ---- ----
     // Isolated component-focused tests targeting specific UI sections of playwright.dev.
     // Runs on Chromium only; components are browser-agnostic by design.
     // Tags: @component (all), @smoke (critical subset).
@@ -204,6 +207,8 @@ export default defineConfig({
     },
 
     // ---- Network Mocking ----
+    // Tests that intercept and control network traffic via page.route().
+    // Single browser keeps the suite fast; mocking behavior is browser-agnostic.
     {
       name: 'Mocking',
       testMatch: '**/mocking/**/*.spec.ts',

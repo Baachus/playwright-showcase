@@ -9,18 +9,13 @@ import { BaseComponent } from '../BaseComponent.js';
  *
  * The selector is a Docusaurus "dropdown--hoverable" element:
  *   - A trigger anchor shows the current language and is always visible.
- *   - Hovering the trigger reveals a <ul class="dropdown__menu"> with all
- *     four language options as links.
+ *   - Hovering the trigger reveals a ul.dropdown__menu with all four options.
  *
- * All select* methods hover the trigger before clicking, and all assertion
- * helpers that check menu items also hover first.
+ * All select* methods hover the trigger before clicking.
  */
 export class PD_LanguageSelectorComponent extends BaseComponent {
-  // The visible trigger (always in DOM, shows current language)
   readonly dropdownTrigger: Locator;
-  // The menu revealed on hover
   readonly dropdownMenu: Locator;
-  // Individual options inside the menu
   readonly nodeTab: Locator;
   readonly pythonTab: Locator;
   readonly javaTab: Locator;
@@ -38,20 +33,15 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
     this.dotnetTab = this.dropdownMenu.getByRole('link', { name: '.NET' });
   }
 
-  // ── Private helpers ──────────────────────────────────────────────────────────
+  // -- Private helpers ---------------------------------------------------------
 
-  /** Hover the trigger to open the dropdown menu. */
   private async openDropdown(): Promise<void> {
     await this.dropdownTrigger.hover();
     await this.dropdownMenu.waitFor({ state: 'visible' });
   }
 
-  // ── Queries ──────────────────────────────────────────────────────────────────
+  // -- Queries -----------------------------------------------------------------
 
-  /**
-   * Returns the label of the currently active language by inspecting the URL.
-   * Node.js is the default (no URL prefix).
-   */
   async getActiveLanguage(): Promise<string> {
     const url = this.page.url();
     if (url.includes('/python/'))  return 'Python';
@@ -60,24 +50,17 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
     return 'Node.js';
   }
 
-  /**
-   * Returns the visible label on the trigger button (e.g. "Node.js").
-   */
   async getTriggerLabel(): Promise<string> {
     return (await this.dropdownTrigger.textContent() ?? '').trim();
   }
 
-  /**
-   * Opens the dropdown and returns all four option labels as strings.
-   */
   async getTabLabels(): Promise<string[]> {
     await this.openDropdown();
     return this.dropdownMenu.getByRole('link').allTextContents();
   }
 
-  // ── Actions ──────────────────────────────────────────────────────────────────
+  // -- Actions -----------------------------------------------------------------
 
-  /** Hover the trigger to reveal the menu, then select Node.js. */
   async selectNodeJs(): Promise<void> {
     await this.openDropdown();
     await this.no
@@ -87,4 +70,35 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
 
   /** Auto-closed stub to repair truncated source. */
   async __repairedClose(): Promise<void> { /* no-op */ }
+  async selectPython(): Promise<void> {
+    await this.openDropdown();
+    await this.pythonTab.click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async selectJava(): Promise<void> {
+    await this.openDropdown();
+    await this.javaTab.click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async selectDotnet(): Promise<void> {
+    await this.openDropdown();
+    await this.dotnetTab.click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  // -- Assertions --------------------------------------------------------------
+
+  async assertTriggerVisible(): Promise<void> {
+    await expect(this.dropdownTrigger).toBeVisible();
+  }
+
+  async assertAllTabsVisible(): Promise<void> {
+    await this.openDropdown();
+    await expect(this.nodeTab).toBeVisible();
+    await expect(this.pythonTab).toBeVisible();
+    await expect(this.javaTab).toBeVisible();
+    await expect(this.dotnetTab).toBeVisible();
+  }
 }

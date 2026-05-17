@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, BrowserContext, Page } from '@playwright/test';
 // Playwright.dev - Pages
 import { PD_HomePage } from '../pages/playwrightdev/PD_HomePage.js';
 import { PD_DocsPage } from '../pages/playwrightdev/PD_DocsPage.js';
@@ -8,21 +8,24 @@ import { PD_SearchComponent } from '../components/playwrightdev/PD_SearchCompone
 import { PD_CodeBlockComponent } from '../components/playwrightdev/PD_CodeBlockComponent.js';
 import { PD_LanguageSelectorComponent } from '../components/playwrightdev/PD_LanguageSelectorComponent.js';
 import { PD_FooterComponent } from '../components/playwrightdev/PD_FooterComponent.js';
-// Saucedemo
+// Saucedemo - Pages
 import { SD_LoginPage } from '../pages/saucedemo/SD_LoginPage.js';
 import { SD_InventoryPage } from '../pages/saucedemo/SD_InventoryPage.js';
 import { SD_CartPage } from '@pages/saucedemo/SD_CartPage.js';
 import { SD_ConfirmationPage } from '@pages/saucedemo/checkout/SD_ConfirmationPage.js';
 import { SD_InfoPage } from '@pages/saucedemo/checkout/SD_InfoPage.js';
 import { SD_VerificationPage } from '@pages/saucedemo/checkout/SD_VerificationPage.js';
+// Multi-context utilities
+import { MultiContextHelper } from '../utils/multi-context.utils.js';
+import { getSaucedemoAuthFile } from '../utils/authentication.utils.js';
 // WebSocket utilities
 import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.utils.js';
 
 /**
  * Custom Fixtures
  * ---------------------------------------------------------------------------
- * Extends Playwright's base `test` with pre-instantiated Page Object Models
- * AND Component Object Models.
+ * Extends Playwright's base `test` with pre-instantiated Page Object Models,
+ * Component Object Models, and multi-context helpers.
  * Tests import `{ test, expect }` from this file instead of `@playwright/test`.
  *
  * Benefits:
@@ -30,6 +33,21 @@ import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.u
  *  - Each fixture is scoped to the test -- fully isolated
  *  - Easy to add new pages/components without touching existing tests
  */
+
+// ---- Multi-context fixture types ----
+// sd_tab2: a second Page in the SAME BrowserContext (shared session/cookies)
+// sd_standard_ctx: an independent BrowserContext logged in as standard_user
+// sd_problem_ctx: an independent BrowserContext logged in as problem_user
+// sd_glitch_ctx: an independent BrowserContext logged in as performance_glitch_user
+// sd_unauth_ctx: a fresh unauthenticated BrowserContext at the login page
+type MultiContextFixtures = {
+  sd_multiContextHelper: MultiContextHelper;
+  sd_tab2: Page;
+  sd_standard_ctx: { context: BrowserContext; page: Page; inventoryPage: SD_InventoryPage };
+  sd_problem_ctx: { context: BrowserContext; page: Page; inventoryPage: SD_InventoryPage };
+  sd_glitch_ctx: { context: BrowserContext; page: Page; inventoryPage: SD_InventoryPage };
+  sd_unauth_ctx: { context: BrowserContext; page: Page; loginPage: SD_LoginPage };
+};
 
 // Define the shape of our custom fixtures
 type PageFixtures = {
@@ -45,7 +63,7 @@ type PageFixtures = {
   pd_languageSelector: PD_LanguageSelectorComponent;
   pd_footer: PD_FooterComponent;
 
-  // Saucedemo
+  // Saucedemo - Standard pages
   sd_inventoryPage: SD_InventoryPage;
   sd_loginPage: SD_LoginPage;
   sd_cartPage: SD_CartPage;
@@ -55,7 +73,7 @@ type PageFixtures = {
 
   // WebSocket -- shared local echo server
   echoServer: LocalEchoServer;
-};
+} & MultiContextFixtures;
 
 export const test = base.extend<PageFixtures>({
   // ---- Playwright.dev - Pages ----
@@ -133,7 +151,8 @@ export const test = base.extend<PageFixtures>({
     await use(component);
   },
 
-  // ---- Saucedemo ----
+  // ---- Saucedemo - Standard pages ----
+
   sd_inventoryPage: async ({ page }, use) => {
     const sd_inventoryPage = new SD_InventoryPage(page);
     await sd_inventoryPage.goto();
@@ -182,7 +201,99 @@ export const test = base.extend<PageFixtures>({
     await use(server);
     await server.close();
   },
+
+  // ---- Saucedemo - Multi-context fixtures ----
+
+  /**
+   * MultiContextHelper -- wraps the browser object and exposes helpers for
+   * creating extra tabs (same session) and windows (independent sessions).
+   * Available in all multi-context tests via fixture injection.
+   */
+  sd_multiContextHelper: async ({ browser }, use) => {
+    await use(new MultiContextHelper(browser));
+  },
+
+  /**
+   * sd_tab2 -- A second Page opened inside the DEFAULT test context.
+   * Because it shares the same context as `page`, it inherits the same
+   * cookies / localStorage (i.e. the same logged-in session).
+   * Useful for verifying that cart state, navigation, etc. persist across tabs.
+   */
+  sd_tab2: async ({ context }, use) => {
+    const tab2 = await context.newPage();
+    await tab2.goto('https://www.saucedemo.com/inventory.html');
+    await tab2.waitForLoadState('domcontentloaded');
+    await use(tab2);
+    await tab2.close();
+  },
+
+  /**
+   * sd_standard_ctx -- An INDEPENDENT BrowserContext logged in as standard_user.
+   * Use alongside sd_problem_ctx to run two users simultaneously in separate windows.
+   * The context is closed automatically after the test.
+   */
+  sd_standard_ctx: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      baseURL: 'https://www.saucedemo.com',
+      storageState: getSaucedemoAuthFile('standard_user'),
+    });
+    const page = await context.newPage();
+    await page.goto('https://www.saucedemo.com/inventory.html');
+    const inventoryPage = new SD_InventoryPage(page);
+    await inventoryPage.waitForPageLoad();
+    await use({ context, page, inventoryPage });
+    await context.close();
+  },
+
+  /**
+   * sd_problem_ctx -- An INDEPENDENT BrowserContext logged in as problem_user.
+   * problem_user sees broken images on all inventory items -- good for
+   * comparing rendering differences between user sessions.
+   */
+  sd_problem_ctx: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      baseURL: 'https://www.saucedemo.com',
+      storageState: getSaucedemoAuthFile('problem_user'),
+    });
+    const page = await context.newPage();
+    await page.goto('https://www.saucedemo.com/inventory.html');
+    const inventoryPage = new SD_InventoryPage(page);
+    await inventoryPage.waitForPageLoad();
+    await use({ context, page, inventoryPage });
+    await context.close();
+  },
+
+  /**
+   * sd_glitch_ctx -- An INDEPENDENT BrowserContext logged in as performance_glitch_user.
+   * performance_glitch_user experiences artificial load delays -- useful for
+   * demonstrating that independent contexts do not interfere with each other's timing.
+   */
+  sd_glitch_ctx: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      baseURL: 'https://www.saucedemo.com',
+      storageState: getSaucedemoAuthFile('performance_glitch_user'),
+    });
+    const page = await context.newPage();
+    await page.goto('https://www.saucedemo.com/inventory.html');
+    const inventoryPage = new SD_InventoryPage(page);
+    await inventoryPage.waitForPageLoad();
+    await use({ context, page, inventoryPage });
+    await context.close();
+  },
+
+  /**
+   * sd_unauth_ctx -- A fresh UNAUTHENTICATED BrowserContext at the login page.
+   * Use for testing login rejection flows (e.g. locked_out_user) in isolation
+   * without touching the default test session.
+   */
+  sd_unauth_ctx: async ({ browser }, use) => {
+    const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com' });
+    const page = await context.newPage();
+    const loginPage = new SD_LoginPage(page);
+    await loginPage.goto();
+    await use({ context, page, loginPage });
+    await context.close();
+  },
 });
 
-// Re-export expect so tests only need one import
 export { expect };

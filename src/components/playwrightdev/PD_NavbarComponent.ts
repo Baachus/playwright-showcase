@@ -14,18 +14,15 @@ import { BaseComponent } from '../BaseComponent.js';
  *   trigger first before interacting with the menu items.
  */
 export class PD_NavbarComponent extends BaseComponent {
-  // ── Core nav elements ────────────────────────────────────────────────────────
+  // -- Core nav elements -------------------------------------------------------
   readonly brandLogo: Locator;
   readonly githubLink: Locator;
   readonly searchButton: Locator;
   readonly themeToggle: Locator;
 
-  // ── Language dropdown ────────────────────────────────────────────────────────
-  // The visible trigger that the user hovers to open the menu.
+  // -- Language dropdown -------------------------------------------------------
   readonly languageDropdownTrigger: Locator;
-  // The hidden menu revealed on hover.
   readonly languageDropdownMenu: Locator;
-  // Individual language options inside the menu.
   readonly nodeLink: Locator;
   readonly pythonLink: Locator;
   readonly javaLink: Locator;
@@ -39,51 +36,43 @@ export class PD_NavbarComponent extends BaseComponent {
     this.searchButton = this.root.getByLabel(/search/i);
     this.themeToggle  = this.root.getByRole('button', { name: /switch between dark and light/i });
 
-    // The dropdown wrapper scoped to navbar
-    const dropdown         = this.root.locator('.navbar__item.dropdown');
+    const dropdown               = this.root.locator('.navbar__item.dropdown');
     this.languageDropdownTrigger = dropdown.locator('a.navbar__link').first();
     this.languageDropdownMenu    = dropdown.locator('ul.dropdown__menu');
 
-    // Menu items -- only visible after hovering the trigger
     this.nodeLink   = this.languageDropdownMenu.getByRole('link', { name: 'Node.js' });
     this.pythonLink = this.languageDropdownMenu.getByRole('link', { name: 'Python' });
     this.javaLink   = this.languageDropdownMenu.getByRole('link', { name: 'Java' });
     this.dotnetLink = this.languageDropdownMenu.getByRole('link', { name: '.NET' });
   }
 
-  // ── Private helpers ──────────────────────────────────────────────────────────
+  // -- Private helpers ---------------------------------------------------------
 
-  /** Hover the dropdown trigger so the language menu becomes visible. */
   private async openLanguageDropdown(): Promise<void> {
     await this.languageDropdownTrigger.hover();
     await this.languageDropdownMenu.waitFor({ state: 'visible' });
   }
 
-  // ── Queries ──────────────────────────────────────────────────────────────────
+  // -- Queries -----------------------------------------------------------------
 
-  /** Returns the resolved href of the brand logo anchor. */
   async getBrandHref(): Promise<string | null> {
     return this.brandLogo.getAttribute('href');
   }
 
-  /** Returns the current aria-label of the theme toggle button. */
   async getThemeToggleLabel(): Promise<string | null> {
     return this.themeToggle.getAttribute('aria-label');
   }
 
-  /** Returns the visible label on the language dropdown trigger (e.g. "Node.js"). */
   async getCurrentLanguageLabel(): Promise<string> {
     return (await this.languageDropdownTrigger.textContent() ?? '').trim();
   }
 
-  // ── Actions ──────────────────────────────────────────────────────────────────
+  // -- Actions -----------------------------------------------------------------
 
-  /** Click the brand logo to return to the home page. */
   async clickBrand(): Promise<void> {
     await this.brandLogo.click();
   }
 
-  /** Click the theme toggle to switch between light and dark mode. */
   async clickThemeToggle(): Promise<void> {
     await this.themeToggle.click();
   }
@@ -93,4 +82,42 @@ export class PD_NavbarComponent extends BaseComponent {
    * the menu, then cli
    * the dropdown menu; auto-closed stub to repair truncated source. */
   async __repairedClose(): Promise<void> { /* no-op */ }
+  async switchLanguage(lang: 'Node.js' | 'Python' | 'Java' | '.NET'): Promise<void> {
+    await this.openLanguageDropdown();
+    const map: Record<string, Locator> = {
+      'Node.js': this.nodeLink,
+      Python:    this.pythonLink,
+      Java:      this.javaLink,
+      '.NET':    this.dotnetLink,
+    };
+    await map[lang].click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  // -- Assertions --------------------------------------------------------------
+
+  async assertFullyRendered(): Promise<void> {
+    await expect(this.root).toBeVisible();
+    await expect(this.brandLogo).toBeVisible();
+    await expect(this.githubLink).toBeVisible();
+    await expect(this.searchButton).toBeVisible();
+    await expect(this.languageDropdownTrigger).toBeVisible();
+  }
+
+  async assertLanguageLinksVisible(): Promise<void> {
+    await this.openLanguageDropdown();
+    await expect(this.nodeLink).toBeVisible();
+    await expect(this.pythonLink).toBeVisible();
+    await expect(this.javaLink).toBeVisible();
+    await expect(this.dotnetLink).toBeVisible();
+  }
+
+  async assertThemeToggleVisible(): Promise<void> {
+    await expect(this.themeToggle).toBeVisible();
+  }
+
+  async assertThemeToggleMode(expectedMode: 'light' | 'dark'): Promise<void> {
+    const label = await this.getThemeToggleLabel();
+    expect(label?.toLowerCase()).toContain(expectedMode);
+  }
 }
