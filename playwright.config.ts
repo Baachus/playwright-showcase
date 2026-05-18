@@ -43,9 +43,12 @@ export default defineConfig({
     { name: 'setup-playwrightdev',       testMatch: /.*playwrightdev\.setup\.ts/ },
     {
       name: 'Unit Tests',
-      testMatch: '**/Unit tests/**/*.unit.ts',
+      testMatch: '**/unit/**/*.unit.ts',
       testDir: './tests',
-      use: {},
+      // browserName is set so tests that use the `page` fixture (e.g.
+      // accessibility tests running real axe scans) get a browser.
+      // Tests that don't use any browser fixture still run without launching one.
+      use: { browserName: 'chromium' },
     },
     {
       name: 'Playwright.dev Chromium', testDir: './tests',

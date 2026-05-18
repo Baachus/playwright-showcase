@@ -13,6 +13,7 @@
         "framesent",
         "HSTS",
         "internetdisconnected",
+        "multiuser",
         "namenotresolved",
         "networkidle",
         "nosniff",
