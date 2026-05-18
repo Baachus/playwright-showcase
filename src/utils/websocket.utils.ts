@@ -1,6 +1,7 @@
 import type { Page, WebSocketRoute } from '@playwright/test';
 import WSLib from 'ws';
 type NodeWebSocket = WSLib;
+import { createServer, type Server as HttpServer } from 'http';
 import type { AddressInfo } from 'net';
 
 // ---------------------------------------------------------------------------
@@ -365,6 +366,14 @@ export async function closeClientConnection(
 export interface LocalEchoServer {
   /** The ws:// URL the test should connect to.  Bound to 127.0.0.1 on a random free port. */
   readonly url: string;
+  /**
+   * The http:// URL serving a tiny HTML host page on the SAME host/port as the
+   * ws:// endpoint.  Tests should `page.goto(pageUrl)` before opening the
+   * WebSocket so the connection is same-origin -- this avoids Chromium's
+   * opaque-origin / Private Network Access edge cases that cause `ws://` from
+   * `about:blank` to fail with an immediate `error` event on some platforms.
+   */
+  readonly pageUrl: string;
   /** Stop the server and release the port.  Idempotent. */
   close(): Promise<void>;
 }
@@ -375,21 +384,48 @@ export interface LocalEchoServer {
  * the public `wss://echo.websocket.events` service (which is unreliable / may
  * be unreachable from CI runners and sandboxed environments).
  *
- * Behaviour mirrors echo.websocket.events:
+ * Architecture: we create a single Node http.Server bound to 127.0.0.1 and
+ * attach the `ws` server to it via `{ server }`.  The same port therefore
+ * responds to:
+ *   - GET /            -> a minimal HTML host page (text/html)
+ *   - HTTP Upgrade /   -> WebSocket handshake (handled by `ws`)
+ *
+ * Behaviour of the WS half mirrors echo.websocket.events:
  *   - On connect, the server immediately sends a welcome line that contains
  *     the literal "echo.websocket.events" so existing tests that filter that
  *     line out of received-frame lists keep working.
  *   - Every text/binary frame received from the client is echoed back verbatim.
  *
- * The page must be navigated to a non-secure document (about:blank, data: URL,
- * or any http:// page) so the browser does not block the ws:// connection as
- * mixed content.
+ * Why an HTTP host page rather than navigating to `about:blank`:
+ *   - `about:blank` has an opaque origin.  In some Chromium builds (and under
+ *     enterprise policies like Private Network Access) WebSocket connections
+ *     from an opaque origin to 127.0.0.1 are blocked and fire `error`
+ *     immediately, with no observable network frames.  Navigating the page to
+ *     an `http://127.0.0.1:<port>/` document gives the page a real,
+ *     same-origin context for the subsequent `ws://127.0.0.1:<port>/` upgrade,
+ *     which Chromium reliably allows.
  */
 export async function startLocalEchoServer(): Promise<LocalEchoServer> {
   return new Promise<LocalEchoServer>((resolve, reject) => {
-    const wss = new WSLib.Server({ host: '127.0.0.1', port: 0 });
+    // Tiny HTTP server -- serves a single empty HTML document for any GET so
+    // the page has a real http://127.0.0.1:<port>/ origin to navigate to.
+    const httpServer: HttpServer = createServer((req, res) => {
+      // Only respond to plain GETs; the WS upgrade is handled by `ws` before
+      // this listener is invoked.
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+      });
+      res.end(
+        '<!doctype html><html><head><meta charset="utf-8">' +
+        '<title>local-echo</title></head><body>local-echo</body></html>',
+      );
+    });
 
-    wss.on('error', (err) => reject(err));
+    const wss = new WSLib.Server({ server: httpServer });
+
+    httpServer.on('error', (err: Error) => reject(err));
+    wss.on('error', (err: Error) => reject(err));
 
     wss.on('connection', (socket: NodeWebSocket) => {
       // Welcome message -- contains "echo.websocket.events" so the filter
@@ -402,11 +438,13 @@ export async function startLocalEchoServer(): Promise<LocalEchoServer> {
       });
     });
 
-    wss.on('listening', () => {
-      const addr = wss.address() as AddressInfo;
+    httpServer.listen(0, '127.0.0.1', () => {
+      const addr = httpServer.address() as AddressInfo;
+      const port = addr.port;
       let closed = false;
       resolve({
-        url: 'ws://127.0.0.1:' + addr.port,
+        url:     'ws://127.0.0.1:'   + port + '/',
+        pageUrl: 'http://127.0.0.1:' + port + '/',
         close: () =>
           new Promise<void>((res) => {
             if (closed) return res();
@@ -415,7 +453,9 @@ export async function startLocalEchoServer(): Promise<LocalEchoServer> {
             for (const client of wss.clients) {
               try { client.terminate(); } catch { /* ignore */ }
             }
-            wss.close(() => res());
+            wss.close(() => {
+              httpServer.close(() => res());
+            });
           }),
       });
     });

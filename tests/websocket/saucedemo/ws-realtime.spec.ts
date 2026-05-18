@@ -6,20 +6,6 @@ import * as allure from 'allure-js-commons';
  * ---------------------------------------------------------------------------
  * Tests real WebSocket connections using Playwright's built-in WS observation
  * APIs (page.on('websocket'), webSocket.on('framereceived'), etc.).
- *
- * Originally these tests pointed at the public `wss://echo.websocket.events`
- * service, but that endpoint proved unreliable in CI / sandboxed environments
- * (every test was failing with an immediate "WS error").  The `echoServer`
- * fixture now spins up an in-process Node `ws` server bound to
- * 127.0.0.1:<random> for each test, giving deterministic, network-independent
- * behaviour while still exercising a real browser-side WebSocket and
- * Playwright's `page.on('websocket')` observation API.
- *
- * Because the local server is plain ws:// (not wss://), the page must be in a
- * non-secure context (about:blank is used) to avoid the browser's mixed-content
- * block that prevents HTTPS pages from opening insecure WebSockets.  The
- * Saucedemo navigation that was in the original tests was incidental -- these
- * tests only need any document to evaluate `new WebSocket(url)` against.
  */
 
 /** Open a real WebSocket from inside the page and return once it is open. */
@@ -78,8 +64,8 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
         });
       });
 
-      await allure.step('Navigate to about:blank and open a real WebSocket', async () => {
-        await page.goto('about:blank');
+      await allure.step('Navigate to the echo server host page and open a real WebSocket', async () => {
+        await page.goto(echoServer.pageUrl);
         await openRealWebSocket(page, echoServer.url);
       });
 
@@ -102,7 +88,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
         ws.on('framereceived', ({ payload }) => receivedFrames.push(String(payload)));
       });
 
-      await page.goto('about:blank');
+      await page.goto(echoServer.pageUrl);
       await openRealWebSocket(page, echoServer.url);
 
       await allure.step('Send a message and wait for the echo', async () => {
@@ -128,7 +114,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
       await allure.story('Echo Round-Trip');
       await allure.label('severity', 'critical');
 
-      await page.goto('about:blank');
+      await page.goto(echoServer.pageUrl);
       await openRealWebSocket(page, echoServer.url);
 
       const payload = `saucedemo-test-${Date.now()}`;
@@ -155,7 +141,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
       await allure.story('Multiple Echo Round-Trips');
       await allure.label('severity', 'normal');
 
-      await page.goto('about:blank');
+      await page.goto(echoServer.pageUrl);
       await openRealWebSocket(page, echoServer.url);
 
       const messages = ['alpha', 'beta', 'gamma', 'delta'];
@@ -208,7 +194,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
         ws.on('close', () => lifecycleEvents.push('close'));
       });
 
-      await page.goto('about:blank');
+      await page.goto(echoServer.pageUrl);
 
       await allure.step('Open real WS connection', async () => {
         await openRealWebSocket(page, echoServer.url);
@@ -245,7 +231,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
       await allure.story('Graceful Server Close Handling');
       await allure.label('severity', 'normal');
 
-      await page.goto('about:blank');
+      await page.goto(echoServer.pageUrl);
       await openRealWebSocket(page, echoServer.url);
 
       await allure.step('Wait for connection to be fully established', async () => {
@@ -279,7 +265,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
       const observedUrls: string[] = [];
       page.on('websocket', (ws) => observedUrls.push(ws.url()));
 
-      await page.goto('about:blank');
+      await page.goto(echoServer.pageUrl);
 
       await allure.step('Open two separate WebSocket connections from the same page', async () => {
         // Open both connections and wait for each to reach OPEN before continuing
