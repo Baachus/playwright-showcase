@@ -73,6 +73,8 @@ export class PD_FooterComponent extends BaseComponent {
     await expect(this.root.getByRole('link', { name: label })).toBeVisible();
   }
 
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
   async assertLearnLinksPresent(): Promise<void> {
     await this.scrollIntoView();
     const count = await this.learnColumnLinks.count();

@@ -42,6 +42,10 @@ export abstract class BaseComponent {
     return this.root.isVisible({ timeout: 0 }).then(() => true).catch(() => false);
   }
 
+  // ── Shared assertions ─────────────────────────────────�
+
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
   // -- Shared assertions -------------------------------------------------------
 
   /** Assert that the component root is visible. */

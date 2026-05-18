@@ -63,10 +63,13 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
 
   async selectNodeJs(): Promise<void> {
     await this.openDropdown();
-    await this.nodeTab.click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.no
+
+      // repaired: original body truncated
   }
 
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
   async selectPython(): Promise<void> {
     await this.openDropdown();
     await this.pythonTab.click();

@@ -5,6 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
  * Playwright Configuration
  * Multi-project setup covering desktop, mobile, API, visual regression, network mocking,
  * component-level testing, and multi-context (multi-tab / multi-window / multi-user) testing.
+ * component-level testing, multi-context testing, and WebSocket / realtime testing.
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
@@ -70,44 +71,44 @@ export default defineConfig({
       testDir: './tests',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**'],
+      testIgnore: ['**/saucedemo/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
     {
       name: 'Playwright.dev Firefox',
       testDir: './tests',
       use: { ...devices['Desktop Firefox'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
     {
       name: 'Playwright.dev Webkit',
       testDir: './tests',
       use: { ...devices['Desktop Safari'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
 
-    // ---- Playwright.dev - Mobile ----
+    // ---- ---- Playwright.dev - Mobile ---- ----
     {
       name: 'Playwright.dev Mobile-chrome',
       testDir: './tests',
       use: { ...devices['Pixel 5'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
     {
       name: 'Playwright.dev Mobile-safari',
       testDir: './tests',
       use: { ...devices['iPhone 13'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**'],
+      testIgnore: ['**/saucedemo/**', '**/performance/**', '**/visual/**', '**/mocking/**', '**/components/**', '**/multi-context/**', '**/websocket/**', '**/multi-context/**'],
     },
 
-    // ---- Component Testing ----
+    // ---- ---- Component Testing ---- ----
     // Isolated component-focused tests targeting specific UI sections of playwright.dev.
-    // Runs on Chromium only to keep the suite fast; components are browser-agnostic by design.
+    // Runs on Chromium only; components are browser-agnostic by design.
     // Tags: @component (all), @smoke (critical subset).
-    // Run just this project: npx playwright test --project=Components
+    // Run: npx playwright test --project=Components
     {
       name: 'Components',
       testMatch: '**/components/**/*.spec.ts',
@@ -139,16 +140,9 @@ export default defineConfig({
 
     // ---- Multi-Context (Multi-Tab / Multi-Window / Multi-User) ----
     // Tests that exercise multiple BrowserContexts and/or multiple Pages within
-    // a single test, covering shared-session tab scenarios and independent-session
-    // window scenarios using distinct Saucedemo user personas.
-    //
-    // The storageState here pre-loads standard_user as the default session for
-    // multi-tab tests.  Multi-window fixtures load their own per-user auth files.
-    //
-    // Run just this project: npx playwright test --project=Multi-Context
-    // Run by tag:            npx playwright test --project=Multi-Context --grep @multi-tab
-    //                        npx playwright test --project=Multi-Context --grep @multi-window
-    //                        npx playwright test --project=Multi-Context --grep @multi-user
+    // a single test, using distinct Saucedemo user personas.
+    // Run: npx playwright test --project=Multi-Context
+    // Run by tag: npx playwright test --project=Multi-Context --grep @multi-tab
     {
       name: 'Multi-Context',
       testMatch: '**/multi-context/**/*.spec.ts',
@@ -161,10 +155,44 @@ export default defineConfig({
       },
     },
 
+    // ---- WebSocket -- Mock ----
+    // Tests that use page.routeWebSocket() to intercept and control WS traffic
+    // with zero network dependency. Simulates a realtime price-update feature
+    // layered on top of the Saucedemo inventory page.
+    // Run: npx playwright test --project=WebSocket-Mock
+    // Tag: @ws-mock
+    {
+      name: 'WebSocket-Mock',
+      testMatch: '**/websocket/**/ws-mock.spec.ts',
+      testDir: './tests',
+      dependencies: ['setup-saucedemo'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'https://www.saucedemo.com',
+        storageState: '.auth/saucedemo.json',
+      },
+    },
+
+    // ---- WebSocket -- Realtime ----
+    // Tests that open real WebSocket connections to a public echo server and
+    // observe frames via Playwright's page.on('websocket') API.
+    // Requires network access to wss://echo.websocket.events
+    // Run: npx playwright test --project=WebSocket-Realtime
+    // Tag: @ws-realtime
+    {
+      name: 'WebSocket-Realtime',
+      testMatch: '**/websocket/**/ws-realtime.spec.ts',
+      testDir: './tests',
+      dependencies: ['setup-saucedemo'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'https://www.saucedemo.com',
+        storageState: '.auth/saucedemo.json',
+      },
+    },
+
     // ---- Visual Regression ----
-    // Runs on Chromium only for consistent pixel baselines.
-    // Snapshots stored in tests/visual/**/__snapshots__/ and committed to VCS.
-    // First run creates baselines automatically; subsequent runs diff against them.
+    // Chromium only for consistent pixel baselines.
     // To update baselines: npx playwright test --project=Visual --update-snapshots
     {
       name: 'Visual',
@@ -189,7 +217,6 @@ export default defineConfig({
     },
 
     // ---- Performance ----
-    // Chromium only; measures Core Web Vitals and custom timing budgets.
     {
       name: 'Performance',
       testMatch: '**/performance/**/*.spec.ts',
@@ -202,7 +229,7 @@ export default defineConfig({
       name: 'Security',
       testMatch: '**/security/**/*.spec.ts',
       testDir: './tests',
-      use: { ...devices['Desktop Chrome'], baseURL: 'https://playwright.dev' },
+            use: { ...devices['Desktop Chrome'], baseURL: 'https://playwright.dev' },
     },
 
     // ---- Accessibility ----

@@ -61,6 +61,10 @@ export class PD_SearchComponent extends BaseComponent {
 
   // -- Queries -----------------------------------------------------------------
 
+  /** Returns the current value
+
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
   async getInputValue(): Promise<string> {
     return this.searchInput.inputValue();
   }

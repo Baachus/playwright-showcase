@@ -50,6 +50,7 @@ export function resolveCredentials(): { username: string; password: string } {
     return JSON.parse(fs.readFileSync(CREDENTIALS_FILE, 'utf-8'));
   }
 
+
   // 3. Default to standard_user with the well-known test password
   console.warn('[setup] No credentials found -- defaulting to standard_user / secret_sauce');
   return { username: 'standard_user', password: SD_PASSWORD };

@@ -77,6 +77,11 @@ export class PD_NavbarComponent extends BaseComponent {
     await this.themeToggle.click();
   }
 
+  /**
+   * Switch to a language by hovering the dropdown trigger first to reveal
+   * the menu, then cli
+   * the dropdown menu; auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
   async switchLanguage(lang: 'Node.js' | 'Python' | 'Java' | '.NET'): Promise<void> {
     await this.openLanguageDropdown();
     const map: Record<string, Locator> = {

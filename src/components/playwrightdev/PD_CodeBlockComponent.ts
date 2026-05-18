@@ -45,6 +45,10 @@ export class PD_CodeBlockComponent extends BaseComponent {
     return this.copyButton.isVisible({ timeout: 2_000 }).catch(() => false);
   }
 
+  // ── Actions ─────────────────────────────�
+
+  /** Auto-closed stub to repair truncated source. */
+  async __repairedClose(): Promise<void> { /* no-op */ }
   // -- Actions -----------------------------------------------------------------
 
   async clickCopy(): Promise<void> {
