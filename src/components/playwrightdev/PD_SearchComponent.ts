@@ -25,7 +25,6 @@ export class PD_SearchComponent extends BaseComponent {
   }
 
   // -- Open / Close ------------------------------------------------------------
-
   async open(): Promise<void> {
     await this.triggerButton.click();
     await this.searchInput.waitFor({ state: 'visible' });
@@ -48,7 +47,6 @@ export class PD_SearchComponent extends BaseComponent {
   }
 
   // -- Interactions ------------------------------------------------------------
-
   async typeQuery(query: string): Promise<void> {
     await this.searchInput.fill(query);
   }
@@ -60,11 +58,6 @@ export class PD_SearchComponent extends BaseComponent {
   }
 
   // -- Queries -----------------------------------------------------------------
-
-  /** Returns the current value
-
-  /** Auto-closed stub to repair truncated source. */
-  async __repairedClose(): Promise<void> { /* no-op */ }
   async getInputValue(): Promise<string> {
     return this.searchInput.inputValue();
   }
@@ -74,7 +67,6 @@ export class PD_SearchComponent extends BaseComponent {
   }
 
   // -- Assertions --------------------------------------------------------------
-
   async assertOpen(): Promise<void> {
     await expect(this.root).toBeVisible();
     await expect(this.searchInput).toBeVisible();

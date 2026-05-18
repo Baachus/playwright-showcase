@@ -186,9 +186,9 @@ function buildBehaviorsData(resultsDir) {
   const rootUid = makeUid('behaviors-root');
   const root    = { uid: rootUid, name: 'behaviors', children: [] };
 
-  const epicNodes    = new Map(); // epic            → node
-  const featureNodes = new Map(); // "epic:feature"  → node
-  const storyNodes   = new Map(); // "epic:feat:story"→ node
+  const epicNodes    = new Map(); // epic                 → node
+  const featureNodes = new Map(); // "epic:feature"       → node
+  const storyNodes   = new Map(); // "epic:feature:story" → node
 
   for (const result of loadResults(resultsDir)) {
     const labels     = result.labels ?? [];
