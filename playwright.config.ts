@@ -216,6 +216,18 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], baseURL: 'https://playwright.dev' },
     },
 
+    // ---- Unit Tests ----
+    // Pure-logic unit tests for every utility in src/utils/.
+    // Most tests run without a browser; a Chromium project is listed so
+    // page-fixture tests (e.g. accessibility shim) still resolve correctly.
+    // Run: npx playwright test --project="Unit Tests"
+    {
+      name: 'Unit Tests',
+      testMatch: '**/Unit tests/**/*.unit.ts',
+      testDir: './tests',
+      use: { ...devices['Desktop Chrome'] },
+    },
+
     // ---- Performance ----
     {
       name: 'Performance',
