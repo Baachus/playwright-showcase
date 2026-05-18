@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 
 const CREDENTIALS_FILE = path.resolve('.auth/saucedemo-credentials.json');
+const { username, password } = resolveCredentials();
 
-// All Saucedemo test users (password is the same for all)
-export const SD_PASSWORD = 'secret_sauce';
+export const SD_PASSWORD = password;
 
 export type SaucedemoUser =
   | 'standard_user'
@@ -52,6 +52,6 @@ export function resolveCredentials(): { username: string; password: string } {
 
 
   // 3. Default to standard_user with the well-known test password
-  console.warn('[setup] No credentials found -- defaulting to standard_user / secret_sauce');
+  console.warn('[setup] No credentials found -- defaulting to standard_user / password');
   return { username: 'standard_user', password: SD_PASSWORD };
 }
