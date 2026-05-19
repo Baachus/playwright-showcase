@@ -1,6 +1,5 @@
 import type { Page, WebSocketRoute } from '@playwright/test';
-import ws from 'ws';
-type NodeWebSocket = InstanceType<typeof ws>;
+import { WebSocket as NodeWebSocket, WebSocketServer } from 'ws';
 import { createServer, type Server as HttpServer } from 'http';
 import type { AddressInfo } from 'net';
 
@@ -416,7 +415,7 @@ export async function startLocalEchoServer(): Promise<LocalEchoServer> {
       );
     });
 
-    const wss = new ws.WebSocketServer({ server: httpServer });
+    const wss = new WebSocketServer({ server: httpServer });
 
     httpServer.on('error', (err: Error) => reject(err));
     wss.on('error', (err: Error) => reject(err));
