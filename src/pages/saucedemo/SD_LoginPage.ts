@@ -29,7 +29,6 @@ export class SD_LoginPage extends BasePage {
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
-
   async goto(): Promise<void> {
     await this.page.goto('/');
     await this.waitForPageLoad();
@@ -40,7 +39,6 @@ export class SD_LoginPage extends BasePage {
   }
 
   // ── Actions ─────────────────────────────────────────────────────────────────
-
   /**
    * Fill in credentials and submit the login form.
    */
@@ -71,7 +69,6 @@ export class SD_LoginPage extends BasePage {
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-
   async assertOnLoginPage(): Promise<void> {
     await expect(this.loginLogo).toBeVisible();
     await expect(this.page).toHaveURL('/');

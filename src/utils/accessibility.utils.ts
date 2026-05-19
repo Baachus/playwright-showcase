@@ -1,5 +1,5 @@
-import { Page, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { Page } from '@playwright/test';
+import { AxeBuilder } from '@axe-core/playwright';
 import type { AxeResults, Result } from 'axe-core';
 
 /**

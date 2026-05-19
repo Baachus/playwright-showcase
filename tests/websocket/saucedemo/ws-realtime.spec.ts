@@ -46,10 +46,11 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
   // Per-test the echoServer fixture stands up a fresh local ws:// echo server.
   // We still mark slow() for tests that run the full open->message->close cycle.
 
-  // ---------------------------------------------------------------- observation
+  // --observation-------------------------------------------------------------- 
   test.describe('Playwright WS Observation API', { tag: ['@smoke'] }, () => {
 
     test('should observe a real WS connection via page.on("websocket")', async ({ page, echoServer }) => {
+      await allure.allureId('WS-REAL-001');
       await allure.story('WS Connection Observation');
       await allure.label('severity', 'critical');
 
@@ -77,6 +78,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
     });
 
     test('should observe frames sent and received via Playwright WS events', async ({ page, echoServer }) => {
+      await allure.allureId('WS-REAL-002');
       await allure.story('Frame Observation');
       await allure.label('severity', 'critical');
 
@@ -107,10 +109,11 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
     });
   });
 
-  // ---------------------------------------------------------------- round-trip
+  // --round-trip-------------------------------------------------------------- 
   test.describe('Round-Trip Message Exchange', () => {
 
     test('should send a message and receive the echo back from the server', async ({ page, echoServer }) => {
+      await allure.allureId('WS-REAL-003');
       await allure.story('Echo Round-Trip');
       await allure.label('severity', 'critical');
 
@@ -138,6 +141,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
     });
 
     test('should send multiple messages and receive all echoes', async ({ page, echoServer }) => {
+      await allure.allureId('WS-REAL-004');
       await allure.story('Multiple Echo Round-Trips');
       await allure.label('severity', 'normal');
 
@@ -175,10 +179,11 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
     });
   });
 
-  // ---------------------------------------------------------------- lifecycle
+  // --lifecycle-------------------------------------------------------------- 
   test.describe('Connection Lifecycle', { tag: ['@smoke'] }, () => {
 
     test('should transition through open -> message -> close states', async ({ page, echoServer }) => {
+      await allure.allureId('WS-REAL-005');
       await allure.story('Full Connection Lifecycle');
       await allure.label('severity', 'critical');
 
@@ -228,6 +233,7 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
     });
 
     test('should handle a graceful server close without client error', async ({ page, echoServer }) => {
+      await allure.allureId('WS-REAL-006');
       await allure.story('Graceful Server Close Handling');
       await allure.label('severity', 'normal');
 
@@ -255,10 +261,11 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
     });
   });
 
-  // ---------------------------------------------------------------- concurrent
+  // --concurrent-------------------------------------------------------------- 
   test.describe('Concurrent Connections', () => {
 
     test('should support two independent real WS connections simultaneously', async ({ page, echoServer }) => {
+      await allure.allureId('WS-REAL-007');
       await allure.story('Concurrent Real Connections');
       await allure.label('severity', 'normal');
 

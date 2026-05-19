@@ -35,9 +35,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 // ── Full-Page Captures ────────────────────────────────────────────────────────
-
 test.describe('Full-Page Screenshots', { tag: ['@visual'] }, () => {
   test('home page matches baseline', async ({ page }) => {
+    await allure.allureId('VIS-HP-001');
     await allure.story('Full Page');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -52,6 +52,7 @@ test.describe('Full-Page Screenshots', { tag: ['@visual'] }, () => {
   });
 
   test('home page viewport matches baseline', async ({ page }) => {
+    await allure.allureId('VIS-HP-002');
     await allure.story('Viewport');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -65,9 +66,9 @@ test.describe('Full-Page Screenshots', { tag: ['@visual'] }, () => {
 });
 
 // ── Component-Level Captures ──────────────────────────────────────────────────
-
 test.describe('Component Screenshots', { tag: ['@visual'] }, () => {
   test('navbar matches baseline', async ({ page }) => {
+    await allure.allureId('VIS-HP-003');
     await allure.story('Navbar');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -83,6 +84,7 @@ test.describe('Component Screenshots', { tag: ['@visual'] }, () => {
   });
 
   test('hero section matches baseline', async ({ page }) => {
+    await allure.allureId('VIS-HP-004');
     await allure.story('Hero Section');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -99,6 +101,7 @@ test.describe('Component Screenshots', { tag: ['@visual'] }, () => {
   });
 
   test('language selector tabs match baseline', async ({ page }) => {
+    await allure.allureId('VIS-HP-005');
     await allure.story('Language Tabs');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -136,9 +139,9 @@ test.describe('Component Screenshots', { tag: ['@visual'] }, () => {
 });
 
 // ── Theme / Color-Scheme Captures ───────────────────────────────────────────
-
 test.describe('Theme Variants', { tag: ['@visual'] }, () => {
   test('home page renders correctly in dark mode', async ({ page }) => {
+    await allure.allureId('VIS-HP-006');
     await allure.story('Dark Mode');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -156,6 +159,7 @@ test.describe('Theme Variants', { tag: ['@visual'] }, () => {
   });
 
   test('home page renders correctly in light mode', async ({ page }) => {
+    await allure.allureId('VIS-HP-007');
     await allure.story('Light Mode');
     await allure.label('severity', 'normal');
 
@@ -171,9 +175,9 @@ test.describe('Theme Variants', { tag: ['@visual'] }, () => {
 });
 
 // ── Responsive / Viewport Captures ───────────────────────────────────────────
-
 test.describe('Responsive Layouts', { tag: ['@visual'] }, () => {
   test('home page renders correctly on tablet viewport', async ({ page }) => {
+    await allure.allureId('VIS-HP-008');
     await allure.story('Tablet Layout');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -190,6 +194,7 @@ test.describe('Responsive Layouts', { tag: ['@visual'] }, () => {
   });
 
   test('home page renders correctly on mobile viewport', async ({ page }) => {
+    await allure.allureId('VIS-HP-009');
     await allure.story('Mobile Layout');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -207,9 +212,9 @@ test.describe('Responsive Layouts', { tag: ['@visual'] }, () => {
 });
 
 // ── Masked / Volatile Content ─────────────────────────────────────────────────
-
 test.describe('Masked Dynamic Content', { tag: ['@visual'] }, () => {
   test('home page with dynamic regions masked', async ({ page }) => {
+    await allure.allureId('VIS-HP-010');
     await allure.story('Dynamic Masking');
     await allure.label('severity', 'minor');
     await allure.description(

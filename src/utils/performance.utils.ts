@@ -20,7 +20,6 @@ import lighthouse from 'lighthouse';
  */
 
 // ── Types ────────────────────────────────────────────────────────────────────
-
 export interface LighthouseScores {
   /** 0–1 float (e.g. 0.95 = 95). Null if the category was not audited. */
   performance: number | null;
@@ -86,7 +85,6 @@ export interface LighthouseOptions {
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-
 function numericValue(
   audits: Record<string, { numericValue?: number }>,
   key: string,
@@ -115,7 +113,6 @@ function ensureDir(dir: string): void {
 }
 
 // ── Core runner ──────────────────────────────────────────────────────────────
-
 /**
  * Run a Lighthouse audit against `url` and return typed scores, vitals,
  * and saved report paths.
@@ -252,7 +249,6 @@ export async function runLighthouse(
 }
 
 // ── Assertion & reporting helpers ────────────────────────────────────────────
-
 /**
  * Pretty-print a Lighthouse result summary to the console.
  */

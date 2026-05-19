@@ -21,6 +21,7 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
 
   test('should have no WCAG 2.1 AA violations',
     async ({ page }) => {
+      await allure.allureId('A11Y-001');
       await allure.story('WCAG 2.1 AA');
       await allure.label('severity', 'critical');
 
@@ -33,6 +34,7 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
 
   test('should have no critical accessibility violations',
     async ({ page }) => {
+      await allure.allureId('A11Y-002');
       await allure.story('Violation Severity');
       await allure.label('severity', 'critical');
 
@@ -45,6 +47,7 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
 
   test('should have no serious accessibility violations',
     async ({ page }) => {
+      await allure.allureId('A11Y-003');
       await allure.story('Violation Severity');
       await allure.label('severity', 'critical');
 
@@ -56,6 +59,7 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
 
   test('should have a main landmark region',
     async ({ page }) => {
+      await allure.allureId('A11Y-004');
       await allure.story('Landmarks');
       await allure.label('severity', 'normal');
 
@@ -66,6 +70,7 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
 
   test('should have a navigation landmark',
     async ({ page }) => {
+      await allure.allureId('A11Y-005');
       await allure.story('Landmarks');
       await allure.label('severity', 'normal');
 
@@ -76,6 +81,7 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
 
   test('should have a descriptive page title',
     async ({ page }) => {
+      await allure.allureId('A11Y-006');
       await allure.story('Page Metadata');
       await allure.label('severity', 'normal');
 
@@ -89,6 +95,7 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
 
   test('images should have alt text',
     async ({ page }) => {
+      await allure.allureId('A11Y-007');
       await allure.story('Image Alt Text');
       await allure.label('severity', 'critical');
 
@@ -111,6 +118,7 @@ test.describe('Accessibility – Docs Page', { tag: ['@accessibility'] }, () => 
 
   test('should have no WCAG 2.1 AA violations on intro page',
     async ({ page }) => {
+      await allure.allureId('A11Y-008');
       await allure.story('WCAG 2.1 AA');
       await allure.label('severity', 'critical');
 
@@ -124,6 +132,7 @@ test.describe('Accessibility – Docs Page', { tag: ['@accessibility'] }, () => 
   test('should have proper heading hierarchy',
     { annotation: [{ type: 'story', description: 'Heading Structure' }, { type: 'severity', description: 'normal' }] },
     async ({ page }) => {
+      await allure.allureId('A11Y-009');
       await allure.story('Heading Structure');
       await allure.label('severity', 'normal');
 
@@ -136,6 +145,7 @@ test.describe('Accessibility – Docs Page', { tag: ['@accessibility'] }, () => 
 
   test('should have no color contrast violations in main content',
     async ({ page }) => {
+      await allure.allureId('A11Y-010');
       await allure.story('Color Contrast');
       await allure.label('severity', 'normal');
 
@@ -155,6 +165,7 @@ test.describe('Accessibility – Keyboard Navigation', { tag: ['@accessibility']
 
   test('search should be accessible via keyboard',
     async ({ page }) => {
+      await allure.allureId('A11Y-011');
       await allure.story('Keyboard Shortcuts');
       await allure.label('severity', 'critical');
 
@@ -174,6 +185,7 @@ test.describe('Accessibility – Keyboard Navigation', { tag: ['@accessibility']
 
   test('should trap focus in modals and close on Escape',
     async ({ page }) => {
+      await allure.allureId('A11Y-012');
       await allure.story('Focus Trap');
       await allure.label('severity', 'critical');
 

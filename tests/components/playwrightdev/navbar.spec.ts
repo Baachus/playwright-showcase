@@ -5,7 +5,7 @@ import * as allure from 'allure-js-commons';
  * Component Tests - Navbar
  * ---------------------------------------------------------------------------
  * Covers the top navigation bar on playwright.dev: structure, links,
- * theme toggle, and the hoverable language-switcher dropdown.
+ * theme toggle, and the hover-able language-switcher dropdown.
  */
 test.beforeEach(async () => {
   await allure.epic('Playwright.dev');
@@ -16,6 +16,7 @@ test.describe('Navbar Component', () => {
 
   test.describe('Structure & Rendering', { tag: ['@component', '@smoke'] }, () => {
     test('should render all core navbar elements', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-001');
       await allure.story('Core Rendering');
       await allure.label('severity', 'critical');
 
@@ -25,6 +26,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should display the brand logo with a valid href', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-002');
       await allure.story('Brand Logo');
       await allure.label('severity', 'normal');
 
@@ -36,6 +38,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should display the GitHub link', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-003');
       await allure.story('GitHub Link');
       await allure.label('severity', 'minor');
 
@@ -45,6 +48,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should display the search trigger button', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-004');
       await allure.story('Search Trigger');
       await allure.label('severity', 'normal');
 
@@ -56,6 +60,7 @@ test.describe('Navbar Component', () => {
 
   test.describe('Language Switcher Dropdown', { tag: ['@component'] }, () => {
     test('should show the language dropdown trigger in the navbar', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-005');
       await allure.story('Dropdown Trigger Visible');
       await allure.label('severity', 'critical');
 
@@ -65,6 +70,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should reveal all four language options on hover', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-006');
       await allure.story('All Language Options on Hover');
       await allure.label('severity', 'critical');
 
@@ -74,6 +80,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should navigate to Python docs when Python option is clicked', async ({ pd_navbar, page }) => {
+      await allure.allureId('COMP-NB-007');
       await allure.story('Python Option Navigation');
       await allure.label('severity', 'normal');
 
@@ -87,6 +94,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should navigate to Java docs when Java option is clicked', async ({ pd_navbar, page }) => {
+      await allure.allureId('COMP-NB-008');
       await allure.story('Java Option Navigation');
       await allure.label('severity', 'normal');
 
@@ -100,6 +108,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should navigate to .NET docs when .NET option is clicked', async ({ pd_navbar, page }) => {
+      await allure.allureId('COMP-NB-009');
       await allure.story('.NET Option Navigation');
       await allure.label('severity', 'normal');
 
@@ -115,6 +124,7 @@ test.describe('Navbar Component', () => {
 
   test.describe('Theme Toggle', { tag: ['@component'] }, () => {
     test('should display the theme toggle button', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-010');
       await allure.story('Theme Toggle Visible');
       await allure.label('severity', 'minor');
 
@@ -124,6 +134,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should switch theme when the toggle is clicked', async ({ pd_navbar }) => {
+      await allure.allureId('COMP-NB-011');
       await allure.story('Theme Toggle Interaction');
       await allure.label('severity', 'normal');
 
@@ -143,6 +154,7 @@ test.describe('Navbar Component', () => {
 
   test.describe('Brand Navigation', { tag: ['@component'] }, () => {
     test('should return to home page when brand logo is clicked from docs', async ({ page }) => {
+      await allure.allureId('COMP-NB-012');
       await allure.story('Brand Logo Click');
       await allure.label('severity', 'normal');
 

@@ -22,7 +22,6 @@ import { Page, Locator, PageScreenshotOptions, LocatorScreenshotOptions } from '
  */
 
 // ── Types ────────────────────────────────────────────────────────────────────
-
 /** Options passed to `buildSnapshotOptions`. */
 export interface SnapshotOptions {
   /** Locators to black-box (replaced with a solid rectangle). */
@@ -48,7 +47,6 @@ export const VIEWPORTS = {
 export type ViewportName = keyof typeof VIEWPORTS;
 
 // ── Animation Freezing ───────────────────────────────────────────────────────
-
 /**
  * Inject a global `<style>` that sets all CSS animation and transition
  * durations to zero. Call this in `beforeEach` (or at the top of a test)
@@ -76,7 +74,6 @@ export async function freezeAnimations(page: Page): Promise<void> {
 }
 
 // ── Mask Builders ────────────────────────────────────────────────────────────
-
 /**
  * Build a list of `Locator` masks from CSS selectors. The masked areas are
  * replaced with a solid pink rectangle in screenshots, hiding dynamic content.
@@ -116,7 +113,6 @@ export function maskVolatileRegions(page: Page, extraSelectors: string[] = []): 
 }
 
 // ── Snapshot Option Factories ────────────────────────────────────────────────
-
 /**
  * Build a typed options object for `expect(page).toHaveScreenshot()`.
  * Applies sensible defaults while allowing per-call overrides.
@@ -156,7 +152,6 @@ export function buildLocatorSnapshotOptions(opts: Omit<SnapshotOptions, 'fullPag
 }
 
 // ── Viewport Helpers ─────────────────────────────────────────────────────────
-
 /**
  * Set the page viewport to a named preset, wait for the layout to settle,
  * then restore to the original size after `action` completes.
@@ -183,7 +178,6 @@ export async function withViewport(
 }
 
 // ── Theme Helpers ─────────────────────────────────────────────────────────────
-
 /**
  * Force the page into dark mode via the `prefers-color-scheme` media emulation,
  * execute `action`, then restore to light mode.
@@ -203,7 +197,6 @@ export async function withDarkMode(page: Page, action: () => Promise<void>): Pro
 }
 
 // ── Wait Helpers ─────────────────────────────────────────────────────────────
-
 /**
  * Wait for all images on the page to finish loading before taking a
  * screenshot. Avoids capturing partially-loaded images that would cause

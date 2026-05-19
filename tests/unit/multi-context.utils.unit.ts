@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import type { Browser, BrowserContext, Page } from '@playwright/test';
 import { MultiContextHelper } from '../../src/utils/multi-context.utils.js';
 
@@ -18,7 +19,6 @@ import { MultiContextHelper } from '../../src/utils/multi-context.utils.js';
  */
 
 // ── Mock factories ────────────────────────────────────────────────────────────
-
 interface NavRecord {
   url: string;
   loadState?: string;
@@ -93,15 +93,16 @@ function createBrowserMock(): Browser & { _contextOptions: unknown[] } {
 }
 
 // ── Constructor ───────────────────────────────────────────────────────────────
-
 test.describe('multi-context.utils › MultiContextHelper (constructor)', () => {
 
-  test('can be instantiated with a Browser mock', () => {
+  test('can be instantiated with a Browser mock', async () => {
+    await allure.allureId('UNIT-CTX-001');
     const browser = createBrowserMock();
     expect(() => new MultiContextHelper(browser)).not.toThrow();
   });
 
-  test('is an instance of MultiContextHelper', () => {
+  test('is an instance of MultiContextHelper', async () => {
+    await allure.allureId('UNIT-CTX-002');
     const browser = createBrowserMock();
     const helper  = new MultiContextHelper(browser);
     expect(helper).toBeInstanceOf(MultiContextHelper);
@@ -109,10 +110,10 @@ test.describe('multi-context.utils › MultiContextHelper (constructor)', () => 
 });
 
 // ── newTab ────────────────────────────────────────────────────────────────────
-
 test.describe('multi-context.utils › MultiContextHelper.newTab', () => {
 
   test('calls context.newPage() to open a new tab', async () => {
+    await allure.allureId('UNIT-CTX-003');
     const browser  = createBrowserMock();
     const context  = createContextMock();
     const helper   = new MultiContextHelper(browser);
@@ -122,6 +123,7 @@ test.describe('multi-context.utils › MultiContextHelper.newTab', () => {
   });
 
   test('navigates the new tab to the default inventory path', async () => {
+    await allure.allureId('UNIT-CTX-004');
     const browser = createBrowserMock();
     const context = createContextMock();
     const helper  = new MultiContextHelper(browser);
@@ -132,6 +134,7 @@ test.describe('multi-context.utils › MultiContextHelper.newTab', () => {
   });
 
   test('navigates to a custom path when provided', async () => {
+    await allure.allureId('UNIT-CTX-005');
     const browser = createBrowserMock();
     const context = createContextMock();
     const helper  = new MultiContextHelper(browser);
@@ -142,6 +145,7 @@ test.describe('multi-context.utils › MultiContextHelper.newTab', () => {
   });
 
   test('returns a Page object', async () => {
+    await allure.allureId('UNIT-CTX-006');
     const browser = createBrowserMock();
     const context = createContextMock();
     const helper  = new MultiContextHelper(browser);
@@ -151,10 +155,10 @@ test.describe('multi-context.utils › MultiContextHelper.newTab', () => {
 });
 
 // ── newWindow ─────────────────────────────────────────────────────────────────
-
 test.describe('multi-context.utils › MultiContextHelper.newWindow', () => {
 
   test('calls browser.newContext() to create a new context', async () => {
+    await allure.allureId('UNIT-CTX-007');
     const browser = createBrowserMock();
     const helper  = new MultiContextHelper(browser);
 
@@ -170,6 +174,7 @@ test.describe('multi-context.utils › MultiContextHelper.newWindow', () => {
   });
 
   test('passes storageState to the new context', async () => {
+    await allure.allureId('UNIT-CTX-008');
     const browser = createBrowserMock();
     const helper  = new MultiContextHelper(browser);
 
@@ -185,6 +190,7 @@ test.describe('multi-context.utils › MultiContextHelper.newWindow', () => {
   });
 
   test('uses the correct auth file for the given user', async () => {
+    await allure.allureId('UNIT-CTX-009');
     const browser = createBrowserMock();
     const helper  = new MultiContextHelper(browser);
 
@@ -200,10 +206,10 @@ test.describe('multi-context.utils › MultiContextHelper.newWindow', () => {
 });
 
 // ── newUnauthenticatedWindow ──────────────────────────────────────────────────
-
 test.describe('multi-context.utils › MultiContextHelper.newUnauthenticatedWindow', () => {
 
   test('creates a new browser context (unauthenticated)', async () => {
+    await allure.allureId('UNIT-CTX-010');
     const browser = createBrowserMock();
     const helper  = new MultiContextHelper(browser);
 
@@ -217,6 +223,7 @@ test.describe('multi-context.utils › MultiContextHelper.newUnauthenticatedWind
   });
 
   test('does NOT pass storageState to the new context', async () => {
+    await allure.allureId('UNIT-CTX-011');
     const browser = createBrowserMock();
     const helper  = new MultiContextHelper(browser);
 
@@ -232,10 +239,10 @@ test.describe('multi-context.utils › MultiContextHelper.newUnauthenticatedWind
 });
 
 // ── static loginAs ────────────────────────────────────────────────────────────
-
 test.describe('multi-context.utils › MultiContextHelper.loginAs (static)', () => {
 
   test('navigates to the Saucedemo root', async () => {
+    await allure.allureId('UNIT-CTX-012');
     const page = createPageMock({ url: 'https://www.saucedemo.com/inventory.html' });
 
     // Patch expect so toHaveURL doesn't fail against our mock
@@ -250,6 +257,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginAs (static)', () 
   });
 
   test('fills the username field', async () => {
+    await allure.allureId('UNIT-CTX-013');
     const page = createPageMock({ url: 'https://www.saucedemo.com/inventory.html' });
 
     try {
@@ -262,6 +270,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginAs (static)', () 
   });
 
   test('fills the password field', async () => {
+    await allure.allureId('UNIT-CTX-014');
     const page = createPageMock({ url: 'https://www.saucedemo.com/inventory.html' });
 
     try {
@@ -274,6 +283,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginAs (static)', () 
   });
 
   test('clicks the login button', async () => {
+    await allure.allureId('UNIT-CTX-015');
     const page = createPageMock({ url: 'https://www.saucedemo.com/inventory.html' });
 
     try {
@@ -287,10 +297,10 @@ test.describe('multi-context.utils › MultiContextHelper.loginAs (static)', () 
 });
 
 // ── static loginExpectRejected ────────────────────────────────────────────────
-
 test.describe('multi-context.utils › MultiContextHelper.loginExpectRejected (static)', () => {
 
   test('fills the username field', async () => {
+    await allure.allureId('UNIT-CTX-016');
     const page = createPageMock();
 
     try {
@@ -303,6 +313,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginExpectRejected (s
   });
 
   test('fills the password field', async () => {
+    await allure.allureId('UNIT-CTX-017');
     const page = createPageMock();
 
     try {
@@ -315,6 +326,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginExpectRejected (s
   });
 
   test('clicks the login button', async () => {
+    await allure.allureId('UNIT-CTX-018');
     const page = createPageMock();
 
     try {

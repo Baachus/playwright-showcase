@@ -4,7 +4,6 @@ import * as allure from 'allure-js-commons';
 /**
  * UI Tests – Docs Page
  */
-
  test.beforeEach(async()=>{
      await allure.epic('Playwright.dev');
      await allure.feature('Documents Page');
@@ -13,6 +12,7 @@ import * as allure from 'allure-js-commons';
 test.describe('Docs Page', () => {
   test.describe('Page Structure', { tag: ['@ui']}, () => {
     test('should load the intro page correctly', async ({ pd_docsPage }) => {
+      await allure.allureId('UI-DP-001');
         await allure.story('Intro Page');
         await allure.label('severity', 'critical');
 
@@ -22,6 +22,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should display the sidebar navigation', async ({ pd_docsPage }) => {
+      await allure.allureId('UI-DP-002');
         await allure.story('Sidebar Navigation');
         await allure.label('severity', 'critical');
 
@@ -31,6 +32,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should display the main content area', async ({ pd_docsPage }) => {
+      await allure.allureId('UI-DP-003');
         await allure.story('Main Content Area');
         await allure.label('severity', 'normal');
 
@@ -40,6 +42,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should contain code examples on intro page', async ({ pd_docsPage }) => {
+      await allure.allureId('UI-DP-004');
         await allure.story('Code Examples');
       await allure.label('severity', 'normal');
       
@@ -51,6 +54,7 @@ test.describe('Docs Page', () => {
 
   test.describe('Sidebar Navigation', { tag: ['@ui'] }, () => {
     test('should list navigation links in the sidebar', async ({ pd_docsPage }) => {
+      await allure.allureId('UI-DP-005');
       await allure.story('Navigation Links');
       await allure.label('severity', 'normal');
 
@@ -61,6 +65,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should navigate to the Installation page', async ({ pd_docsPage, page }) => {
+      await allure.allureId('UI-DP-006');
       await allure.story('Installation Navigation');
       await allure.label('severity', 'critical');
       
@@ -78,6 +83,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should navigate to Writing Tests page',async ({ pd_docsPage, page }) => {
+      await allure.allureId('UI-DP-007');
       await allure.story('Writing Test Navigation');
       await allure.label('severity', 'normal');
 
@@ -93,6 +99,7 @@ test.describe('Docs Page', () => {
 
   test.describe('Code Blocks', { tag: ['@ui'] }, () => {
     test('should have multiple code blocks on the intro page', async ({ pd_docsPage }) => {
+      await allure.allureId('UI-DP-008');
       await allure.story('Code Blocks');
       await allure.label('severity', 'minor');
 
@@ -103,6 +110,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should render code block content', async ({ pd_docsPage }) => {
+      await allure.allureId('UI-DP-009');
       await allure.story('Code Blocks Render');
       await allure.label('severity', 'minor');
 
@@ -121,6 +129,7 @@ test.describe('Docs Page', () => {
       ['Configuration', 'test-configuration'],
     ] as const) {
       test(`should load the ${label} page`, async ({ pd_docsPage }) => {
+        await allure.allureId('UI-DP-010');
         await allure.story('Direct Page Navigation');
         await allure.label('severity', 'normal');
         await allure.step(`Navigate to /docs/${section}`, async () => {

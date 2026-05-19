@@ -27,9 +27,9 @@ test.beforeEach(async () => {
 });
 
 // ── Canned JSON Responses ─────────────────────────────────────────────────────
-
 test.describe('JSON Response Mocking', { tag: ['@mocking'] }, () => {
   test('should return a mocked JSON payload for a matched route', async ({ page }) => {
+    await allure.allureId('MOCK-API-001');
     await allure.story('Canned Response');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -60,6 +60,7 @@ test.describe('JSON Response Mocking', { tag: ['@mocking'] }, () => {
   });
 
   test('should return a mocked 201 Created response', async ({ page }) => {
+    await allure.allureId('MOCK-API-002');
     await allure.story('Status Codes');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -87,6 +88,7 @@ test.describe('JSON Response Mocking', { tag: ['@mocking'] }, () => {
   });
 
   test('should serve different responses for different routes', async ({ page }) => {
+    await allure.allureId('MOCK-API-003');
     await allure.story('Multiple Routes');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -123,9 +125,9 @@ test.describe('JSON Response Mocking', { tag: ['@mocking'] }, () => {
 });
 
 // ── HTML Response Mocking ─────────────────────────────────────────────────────
-
 test.describe('HTML Response Mocking', { tag: ['@mocking'] }, () => {
   test('should render a fully mocked HTML page', async ({ page }) => {
+    await allure.allureId('MOCK-API-004');
     await allure.story('HTML Mock');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -161,9 +163,9 @@ test.describe('HTML Response Mocking', { tag: ['@mocking'] }, () => {
 });
 
 // ── HTTP Error Simulation ─────────────────────────────────────────────────────
-
 test.describe('HTTP Error Simulation', { tag: ['@mocking'] }, () => {
   test('should simulate a 404 Not Found response', async ({ page }) => {
+    await allure.allureId('MOCK-API-005');
     await allure.story('404 Error');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -195,6 +197,7 @@ test.describe('HTTP Error Simulation', { tag: ['@mocking'] }, () => {
   });
 
   test('should simulate a 500 Internal Server Error', async ({ page }) => {
+    await allure.allureId('MOCK-API-006');
     await allure.story('500 Error');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -224,6 +227,7 @@ test.describe('HTTP Error Simulation', { tag: ['@mocking'] }, () => {
   });
 
   test('should simulate a 503 Service Unavailable with retry-after header', async ({ page }) => {
+    await allure.allureId('MOCK-API-007');
     await allure.story('503 Error');
     await allure.label('severity', 'normal');
 
@@ -250,9 +254,9 @@ test.describe('HTTP Error Simulation', { tag: ['@mocking'] }, () => {
 });
 
 // ── Network-Level Failure Simulation ─────────────────────────────────────────
-
 test.describe('Network Failure Simulation', { tag: ['@mocking'] }, () => {
   test('should abort a request to simulate a network failure', async ({ page }) => {
+    await allure.allureId('MOCK-API-008');
     await allure.story('Network Abort');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -284,6 +288,7 @@ test.describe('Network Failure Simulation', { tag: ['@mocking'] }, () => {
   });
 
   test('should simulate connection refused', async ({ page }) => {
+    await allure.allureId('MOCK-API-009');
     await allure.story('Connection Refused');
     await allure.label('severity', 'normal');
 
@@ -305,9 +310,9 @@ test.describe('Network Failure Simulation', { tag: ['@mocking'] }, () => {
 });
 
 // ── Response Modification ─────────────────────────────────────────────────────
-
 test.describe('Response Modification', { tag: ['@mocking'] }, () => {
   test('should surgically modify a live API response', async ({ page }) => {
+    await allure.allureId('MOCK-API-010');
     await allure.story('Response Transform');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -352,9 +357,9 @@ test.describe('Response Modification', { tag: ['@mocking'] }, () => {
 });
 
 // ── Request Spying ────────────────────────────────────────────────────────────
-
 test.describe('Request Spying', { tag: ['@mocking'] }, () => {
   test('should capture outbound requests without altering them', async ({ page }) => {
+    await allure.allureId('MOCK-API-011');
     await allure.story('Request Spy');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -386,9 +391,9 @@ test.describe('Request Spying', { tag: ['@mocking'] }, () => {
 });
 
 // ── Transient / Nth-Call Mocking ──────────────────────────────────────────────
-
 test.describe('Conditional Mocking', { tag: ['@mocking'] }, () => {
   test('should fail the first call and succeed on retry', async ({ page }) => {
+    await allure.allureId('MOCK-API-012');
     await allure.story('Retry Simulation');
     await allure.label('severity', 'normal');
     await allure.description(

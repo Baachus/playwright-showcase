@@ -19,7 +19,6 @@ export class SD_VerificationPage extends BasePage {
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
-
   async goto(): Promise<void> {
     await this.page.goto('/checkout-step-two.html');
     await this.waitForPageLoad();
@@ -33,7 +32,6 @@ export class SD_VerificationPage extends BasePage {
 
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-
   async assertOnLoginPage(): Promise<void> {
     await expect(this.checkoutTitle).toBeVisible();
     await expect(this.page).toHaveURL('/checkout-step-two.html');

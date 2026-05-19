@@ -32,6 +32,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-context'] }, () => {
 
   test('both tabs should be on the inventory page under the same session', async ({ page, sd_tab2 }) => {
+    await allure.allureId('CTX-TAB-001');
     await allure.story('Session Sharing');
     await allure.label('severity', 'critical');
 
@@ -51,6 +52,7 @@ test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-conte
   });
 
   test('cart item added in Tab 1 is visible in Tab 2 after reload', async ({ page, sd_tab2 }) => {
+    await allure.allureId('CTX-TAB-002');
     await allure.story('Shared Cart State');
     await allure.label('severity', 'critical');
 
@@ -75,6 +77,7 @@ test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-conte
   });
 
   test('cart item removed in Tab 2 is gone in Tab 1 after reload', async ({ page, sd_tab2 }) => {
+    await allure.allureId('CTX-TAB-003');
     await allure.story('Cart Removal Shared Across Tabs');
     await allure.label('severity', 'normal');
 
@@ -103,6 +106,7 @@ test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-conte
   });
 
   test('navigation in Tab 2 does not affect the URL of Tab 1', async ({ page, sd_tab2 }) => {
+    await allure.allureId('CTX-TAB-004');
     await allure.story('Tab Navigation Independence');
     await allure.label('severity', 'normal');
 
@@ -123,6 +127,7 @@ test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-conte
   });
 
   test('multiple tabs can read the same inventory item count', async ({ page, sd_tab2 }) => {
+    await allure.allureId('CTX-TAB-005');
     await allure.story('Concurrent Inventory Read');
     await allure.label('severity', 'normal');
 
@@ -143,6 +148,7 @@ test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-conte
   });
 
   test('logout in Tab 1 should affect the session visible in Tab 2', async ({ page, sd_tab2 }) => {
+    await allure.allureId('CTX-TAB-006');
     await allure.story('Logout Propagation');
     await allure.label('severity', 'critical');
 

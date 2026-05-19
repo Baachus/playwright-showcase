@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
+// Resolved stored password
 const CREDENTIALS_FILE = path.resolve('.auth/saucedemo-credentials.json');
 const { username, password } = resolveCredentials();
 

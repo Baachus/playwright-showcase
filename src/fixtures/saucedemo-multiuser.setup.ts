@@ -7,7 +7,6 @@ const BASE_URL = 'https://www.saucedemo.com';
 
 /**
  * Users whose auth state we pre-save for multi-context tests.
- * locked_out_user is deliberately excluded -- tested via rejection scenario instead.
  */
 const USERS_TO_SETUP = [
   'standard_user',

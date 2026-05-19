@@ -15,6 +15,7 @@ test.describe('Search Component', () => {
 
   test.describe('Opening the Modal', { tag: ['@component', '@smoke'] }, () => {
     test('should open the search modal when the trigger button is clicked', async ({ pd_search }) => {
+      await allure.allureId('COMP-SR-001');
       await allure.story('Open via Button');
       await allure.label('severity', 'critical');
 
@@ -28,6 +29,7 @@ test.describe('Search Component', () => {
     });
 
     test('should open the search modal with the Ctrl+K keyboard shortcut', async ({ pd_search, page }) => {
+      await allure.allureId('COMP-SR-002');
       await allure.story('Open via Keyboard Shortcut');
       await allure.label('severity', 'normal');
 
@@ -47,6 +49,7 @@ test.describe('Search Component', () => {
 
   test.describe('Input & Query', { tag: ['@component'] }, () => {
     test('should accept typed text in the search input', async ({ pd_search }) => {
+      await allure.allureId('COMP-SR-003');
       await allure.story('Accept Input');
       await allure.label('severity', 'critical');
 
@@ -64,6 +67,7 @@ test.describe('Search Component', () => {
     });
 
     test('should show search results for a valid query', async ({ pd_search }) => {
+      await allure.allureId('COMP-SR-004');
       await allure.story('Search Results');
       await allure.label('severity', 'critical');
 
@@ -77,6 +81,7 @@ test.describe('Search Component', () => {
     });
 
     test('should return results for a common docs term', async ({ pd_search }) => {
+      await allure.allureId('COMP-SR-005');
       await allure.story('Common Term Results');
       await allure.label('severity', 'normal');
 
@@ -93,6 +98,7 @@ test.describe('Search Component', () => {
 
   test.describe('Closing the Modal', { tag: ['@component'] }, () => {
     test('should close the search modal when Escape is pressed', async ({ pd_search }) => {
+      await allure.allureId('COMP-SR-006');
       await allure.story('Close via Escape');
       await allure.label('severity', 'critical');
 
@@ -110,6 +116,7 @@ test.describe('Search Component', () => {
     });
 
     test('should preserve page state after closing the search modal', async ({ pd_search, page }) => {
+      await allure.allureId('COMP-SR-007');
       await allure.story('Page State After Close');
       await allure.label('severity', 'normal');
 

@@ -16,6 +16,7 @@ test.describe('Footer Component', () => {
 
   test.describe('Visibility & Structure', { tag: ['@component', '@smoke'] }, () => {
     test('should be present and visible after scrolling into view', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-001');
       await allure.story('Footer Visibility');
       await allure.label('severity', 'critical');
 
@@ -25,6 +26,7 @@ test.describe('Footer Component', () => {
     });
 
     test('should contain a meaningful number of links', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-002');
       await allure.story('Link Count');
       await allure.label('severity', 'normal');
 
@@ -36,6 +38,7 @@ test.describe('Footer Component', () => {
 
   test.describe('Copyright', { tag: ['@component'] }, () => {
     test('should display copyright information', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-003');
       await allure.story('Copyright Text');
       await allure.label('severity', 'normal');
 
@@ -46,6 +49,7 @@ test.describe('Footer Component', () => {
     });
 
     test('should include "Microsoft" or "Playwright" in the copyright notice', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-004');
       await allure.story('Copyright Attribution');
       await allure.label('severity', 'minor');
 
@@ -57,6 +61,7 @@ test.describe('Footer Component', () => {
 
   test.describe('Link Columns', { tag: ['@component'] }, () => {
     test('should render links in the Learn column', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-005');
       await allure.story('Learn Column Links');
       await allure.label('severity', 'normal');
 
@@ -66,6 +71,7 @@ test.describe('Footer Component', () => {
     });
 
     test('should render links in the Community column', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-006');
       await allure.story('Community Column Links');
       await allure.label('severity', 'normal');
 
@@ -77,6 +83,7 @@ test.describe('Footer Component', () => {
 
   test.describe('Key Links', { tag: ['@component'] }, () => {
     test('should have a link to the GitHub repository', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-007');
       await allure.story('GitHub Link in Footer');
       await allure.label('severity', 'minor');
 
@@ -90,6 +97,7 @@ test.describe('Footer Component', () => {
     });
 
     test('should have all link texts as non-empty strings', async ({ pd_footer }) => {
+      await allure.allureId('COMP-FT-008');
       await allure.story('Non-Empty Link Labels');
       await allure.label('severity', 'minor');
 
@@ -104,6 +112,7 @@ test.describe('Footer Component', () => {
 
   test.describe('Footer on Docs Pages', { tag: ['@component'] }, () => {
     test('should also be present on a docs page', async ({ page }) => {
+      await allure.allureId('COMP-FT-009');
       await allure.story('Footer on Docs');
       await allure.label('severity', 'normal');
 

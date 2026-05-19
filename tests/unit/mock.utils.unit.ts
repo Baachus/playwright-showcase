@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import type { Page, Route, Request } from '@playwright/test';
 import {
   mockJsonResponse,
@@ -20,7 +21,6 @@ import {
  */
 
 // ── Mock factory helpers ──────────────────────────────────────────────────────
-
 interface RouteCapture {
   status?: number;
   contentType?: string;
@@ -85,10 +85,10 @@ function createPageMock(): PageMock {
 }
 
 // ── mockJsonResponse ─────────────────────────────────────────────────────────
-
 test.describe('mock.utils › mockJsonResponse', () => {
 
   test('registers a route and fulfills with JSON content-type', async () => {
+    await allure.allureId('UNIT-MOCK-001');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await mockJsonResponse(page, /\/api\/test/, { id: 1 });
@@ -97,6 +97,7 @@ test.describe('mock.utils › mockJsonResponse', () => {
   });
 
   test('serializes the body to JSON string', async () => {
+    await allure.allureId('UNIT-MOCK-002');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     const body = { items: [1, 2, 3], total: 3 };
@@ -106,6 +107,7 @@ test.describe('mock.utils › mockJsonResponse', () => {
   });
 
   test('defaults to HTTP 200 status', async () => {
+    await allure.allureId('UNIT-MOCK-003');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await mockJsonResponse(page, /\/api\/test/, {});
@@ -114,6 +116,7 @@ test.describe('mock.utils › mockJsonResponse', () => {
   });
 
   test('uses a custom status code when provided', async () => {
+    await allure.allureId('UNIT-MOCK-004');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await mockJsonResponse(page, /\/api\/test/, {}, { status: 201 });
@@ -122,6 +125,7 @@ test.describe('mock.utils › mockJsonResponse', () => {
   });
 
   test('returns an unroute function that removes the handler', async () => {
+    await allure.allureId('UNIT-MOCK-005');
     const { page, invokeHandler } = createPageMock();
     const unroute = await mockJsonResponse(page, /\/api\/test/, {});
     await unroute();
@@ -130,10 +134,10 @@ test.describe('mock.utils › mockJsonResponse', () => {
 });
 
 // ── mockHtmlResponse ─────────────────────────────────────────────────────────
-
 test.describe('mock.utils › mockHtmlResponse', () => {
 
   test('fulfills with HTML content-type', async () => {
+    await allure.allureId('UNIT-MOCK-006');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await mockHtmlResponse(page, /\/maintenance/, '<h1>Down</h1>');
@@ -142,6 +146,7 @@ test.describe('mock.utils › mockHtmlResponse', () => {
   });
 
   test('returns the provided HTML as the response body', async () => {
+    await allure.allureId('UNIT-MOCK-007');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     const html = '<html><body>Hello</body></html>';
@@ -151,6 +156,7 @@ test.describe('mock.utils › mockHtmlResponse', () => {
   });
 
   test('defaults to HTTP 200 status', async () => {
+    await allure.allureId('UNIT-MOCK-008');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await mockHtmlResponse(page, /\/page/, '<p>ok</p>');
@@ -159,6 +165,7 @@ test.describe('mock.utils › mockHtmlResponse', () => {
   });
 
   test('uses a custom status code when provided', async () => {
+    await allure.allureId('UNIT-MOCK-009');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await mockHtmlResponse(page, /\/maintenance/, '<h1>503</h1>', { status: 503 });
@@ -167,6 +174,7 @@ test.describe('mock.utils › mockHtmlResponse', () => {
   });
 
   test('returns an unroute function', async () => {
+    await allure.allureId('UNIT-MOCK-010');
     const { page } = createPageMock();
     const unroute = await mockHtmlResponse(page, /\/page/, '<p>x</p>');
     expect(typeof unroute).toBe('function');
@@ -174,10 +182,10 @@ test.describe('mock.utils › mockHtmlResponse', () => {
 });
 
 // ── simulateHttpError ─────────────────────────────────────────────────────────
-
 test.describe('mock.utils › simulateHttpError', () => {
 
   test('fulfills with the given HTTP error status', async () => {
+    await allure.allureId('UNIT-MOCK-011');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await simulateHttpError(page, /\/api\/broken/, 503);
@@ -186,6 +194,7 @@ test.describe('mock.utils › simulateHttpError', () => {
   });
 
   test('fulfills with a 404 status', async () => {
+    await allure.allureId('UNIT-MOCK-012');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await simulateHttpError(page, /\/api\/missing/, 404);
@@ -194,6 +203,7 @@ test.describe('mock.utils › simulateHttpError', () => {
   });
 
   test('encodes the default error body as JSON', async () => {
+    await allure.allureId('UNIT-MOCK-013');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await simulateHttpError(page, /\/api\/err/, 500);
@@ -203,6 +213,7 @@ test.describe('mock.utils › simulateHttpError', () => {
   });
 
   test('includes a custom body when provided', async () => {
+    await allure.allureId('UNIT-MOCK-014');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     const customBody = { error: 'Service Unavailable', code: 503 };
@@ -213,10 +224,10 @@ test.describe('mock.utils › simulateHttpError', () => {
 });
 
 // ── simulateNetworkError ──────────────────────────────────────────────────────
-
 test.describe('mock.utils › simulateNetworkError', () => {
 
   test('aborts with "failed" by default', async () => {
+    await allure.allureId('UNIT-MOCK-015');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await simulateNetworkError(page, /\/api\/offline/);
@@ -225,6 +236,7 @@ test.describe('mock.utils › simulateNetworkError', () => {
   });
 
   test('aborts with the specified error code', async () => {
+    await allure.allureId('UNIT-MOCK-016');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await simulateNetworkError(page, /\/api\/offline/, 'internetdisconnected');
@@ -233,6 +245,7 @@ test.describe('mock.utils › simulateNetworkError', () => {
   });
 
   test('aborts with "timedout" error code', async () => {
+    await allure.allureId('UNIT-MOCK-017');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     await simulateNetworkError(page, /\/api\/slow/, 'timedout');
@@ -241,6 +254,7 @@ test.describe('mock.utils › simulateNetworkError', () => {
   });
 
   test('returns an unroute function', async () => {
+    await allure.allureId('UNIT-MOCK-018');
     const { page } = createPageMock();
     const unroute = await simulateNetworkError(page, /\/api\/test/);
     expect(typeof unroute).toBe('function');
@@ -248,10 +262,10 @@ test.describe('mock.utils › simulateNetworkError', () => {
 });
 
 // ── withOfflineMode ───────────────────────────────────────────────────────────
-
 test.describe('mock.utils › withOfflineMode', () => {
 
   test('sets the context offline before the action runs', async () => {
+    await allure.allureId('UNIT-MOCK-019');
     const { page } = createPageMock();
     const offlineDuring: boolean[] = [];
 
@@ -263,12 +277,14 @@ test.describe('mock.utils › withOfflineMode', () => {
   });
 
   test('restores the context to online after the action completes', async () => {
+    await allure.allureId('UNIT-MOCK-020');
     const { page } = createPageMock();
     await withOfflineMode(page, async () => { /* noop */ });
     expect((page as unknown as { _isOffline: () => boolean })._isOffline()).toBe(false);
   });
 
   test('restores online mode even when the action throws', async () => {
+    await allure.allureId('UNIT-MOCK-021');
     const { page } = createPageMock();
     try {
       await withOfflineMode(page, async () => {
@@ -282,10 +298,10 @@ test.describe('mock.utils › withOfflineMode', () => {
 });
 
 // ── addLatency ────────────────────────────────────────────────────────────────
-
 test.describe('mock.utils › addLatency', () => {
 
   test('calls route.continue() after the delay', async () => {
+    await allure.allureId('UNIT-MOCK-022');
     const { page, invokeHandler } = createPageMock();
     const route = createRouteMock();
     // Use delay=0 to keep tests fast
@@ -295,6 +311,7 @@ test.describe('mock.utils › addLatency', () => {
   });
 
   test('returns an unroute function', async () => {
+    await allure.allureId('UNIT-MOCK-023');
     const { page } = createPageMock();
     const unroute = await addLatency(page, /\/api\/slow/, { delay: 0 });
     expect(typeof unroute).toBe('function');
@@ -302,10 +319,10 @@ test.describe('mock.utils › addLatency', () => {
 });
 
 // ── mockNthCall ───────────────────────────────────────────────────────────────
-
 test.describe('mock.utils › mockNthCall', () => {
 
   test('invokes the mockHandler on the Nth (zero-indexed) call', async () => {
+    await allure.allureId('UNIT-MOCK-024');
     // We'll test by directly hooking into the page mock
     type Handler = (route: Route, request?: Request) => Promise<void>;
     let registeredHandler: Handler | null = null;
@@ -337,6 +354,7 @@ test.describe('mock.utils › mockNthCall', () => {
   });
 
   test('passes through via route.continue() when no fallbackHandler is provided', async () => {
+    await allure.allureId('UNIT-MOCK-025');
     type Handler = (route: Route) => Promise<void>;
     let registeredHandler: Handler | null = null;
 
@@ -354,6 +372,7 @@ test.describe('mock.utils › mockNthCall', () => {
   });
 
   test('returns an unroute function', async () => {
+    await allure.allureId('UNIT-MOCK-026');
     const page = {
       route:   async () => {},
       unroute: async () => {},
@@ -364,10 +383,10 @@ test.describe('mock.utils › mockNthCall', () => {
 });
 
 // ── spyOnRequests ─────────────────────────────────────────────────────────────
-
 test.describe('mock.utils › spyOnRequests', () => {
 
   test('returns an object with captured array and unroute function', async () => {
+    await allure.allureId('UNIT-MOCK-027');
     const { page } = createPageMock();
     const result = await spyOnRequests(page, /\/api\/track/);
     expect(Array.isArray(result.captured)).toBe(true);
@@ -375,6 +394,7 @@ test.describe('mock.utils › spyOnRequests', () => {
   });
 
   test('captured array starts empty', async () => {
+    await allure.allureId('UNIT-MOCK-028');
     const { page } = createPageMock();
     const { captured } = await spyOnRequests(page, /\/api\/track/);
     expect(captured).toHaveLength(0);

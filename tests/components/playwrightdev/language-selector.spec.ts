@@ -5,7 +5,7 @@ import * as allure from 'allure-js-commons';
  * Component Tests - Language Selector
  * ---------------------------------------------------------------------------
  * Covers the Node.js / Python / Java / .NET language-switcher dropdown in
- * the navbar. The dropdown is hoverable -- options are only visible after
+ * the navbar. The dropdown is hover-able -- options are only visible after
  * hovering the trigger, and all select* helpers handle this automatically.
  */
 test.beforeEach(async () => {
@@ -17,6 +17,7 @@ test.describe('Language Selector Component', () => {
 
   test.describe('Rendering', { tag: ['@component', '@smoke'] }, () => {
     test('should display the dropdown trigger in the navbar', async ({ pd_languageSelector }) => {
+      await allure.allureId('COMP-LS-001');
       await allure.story('Dropdown Trigger Visible');
       await allure.label('severity', 'critical');
 
@@ -26,6 +27,7 @@ test.describe('Language Selector Component', () => {
     });
 
     test('should reveal all four language options on hover', async ({ pd_languageSelector }) => {
+      await allure.allureId('COMP-LS-002');
       await allure.story('All Options on Hover');
       await allure.label('severity', 'critical');
 
@@ -35,6 +37,7 @@ test.describe('Language Selector Component', () => {
     });
 
     test('should return at least four option labels when opened', async ({ pd_languageSelector }) => {
+      await allure.allureId('COMP-LS-003');
       await allure.story('Option Label Count');
       await allure.label('severity', 'normal');
 
@@ -47,6 +50,7 @@ test.describe('Language Selector Component', () => {
 
   test.describe('Tab Navigation', { tag: ['@component'] }, () => {
     test('should navigate to the Python docs when Python is selected', async ({ pd_languageSelector, page }) => {
+      await allure.allureId('COMP-LS-004');
       await allure.story('Python Selection');
       await allure.label('severity', 'critical');
 
@@ -60,6 +64,7 @@ test.describe('Language Selector Component', () => {
     });
 
     test('should navigate to the Java docs when Java is selected', async ({ pd_languageSelector, page }) => {
+      await allure.allureId('COMP-LS-005');
       await allure.story('Java Selection');
       await allure.label('severity', 'normal');
 
@@ -73,6 +78,7 @@ test.describe('Language Selector Component', () => {
     });
 
     test('should navigate to the .NET docs when .NET is selected', async ({ pd_languageSelector, page }) => {
+      await allure.allureId('COMP-LS-006');
       await allure.story('.NET Selection');
       await allure.label('severity', 'normal');
 
@@ -88,6 +94,7 @@ test.describe('Language Selector Component', () => {
 
   test.describe('Language Persistence', { tag: ['@component'] }, () => {
     test('should report Node.js as the default language on the home page', async ({ pd_languageSelector }) => {
+      await allure.allureId('COMP-LS-007');
       await allure.story('Default Language');
       await allure.label('severity', 'normal');
 
@@ -98,6 +105,7 @@ test.describe('Language Selector Component', () => {
     });
 
     test('should remain on Python docs after navigating within that section', async ({ pd_languageSelector, page }) => {
+      await allure.allureId('COMP-LS-008');
       await allure.story('Language Persistence via Nav');
       await allure.label('severity', 'normal');
 

@@ -27,9 +27,9 @@ test.beforeEach(async () => {
 });
 
 // ── Latency Injection ─────────────────────────────────────────────────────────
-
 test.describe('Latency Injection', { tag: ['@mocking'] }, () => {
   test('should measure response time with artificial latency applied', async ({ page }) => {
+    await allure.allureId('MOCK-NET-001');
     await allure.story('Latency Measurement');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -63,6 +63,7 @@ test.describe('Latency Injection', { tag: ['@mocking'] }, () => {
   });
 
   test('should apply jittered latency within an expected range', async ({ page }) => {
+    await allure.allureId('MOCK-NET-002');
     await allure.story('Jittered Latency');
     await allure.label('severity', 'minor');
     await allure.description(
@@ -97,6 +98,7 @@ test.describe('Latency Injection', { tag: ['@mocking'] }, () => {
   });
 
   test('should not block page load when only API routes are delayed', async ({ page }) => {
+    await allure.allureId('MOCK-NET-003');
     await allure.story('Selective Latency');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -125,9 +127,9 @@ test.describe('Latency Injection', { tag: ['@mocking'] }, () => {
 });
 
 // ── Offline Simulation ────────────────────────────────────────────────────────
-
 test.describe('Offline Mode Simulation', { tag: ['@mocking'] }, () => {
   test('should handle offline mode gracefully on API calls', async ({ page }) => {
+    await allure.allureId('MOCK-NET-004');
     await allure.story('Offline API');
     await allure.label('severity', 'critical');
     await allure.description(
@@ -159,6 +161,7 @@ test.describe('Offline Mode Simulation', { tag: ['@mocking'] }, () => {
   });
 
   test('should restore network access after offline mode', async ({ page }) => {
+    await allure.allureId('MOCK-NET-005');
     await allure.story('Offline Recovery');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -186,9 +189,9 @@ test.describe('Offline Mode Simulation', { tag: ['@mocking'] }, () => {
 });
 
 // ── Mixed Condition Scenarios ─────────────────────────────────────────────────
-
 test.describe('Combined Network Scenarios', { tag: ['@mocking'] }, () => {
   test('should mock success after a slow first response', async ({ page }) => {
+    await allure.allureId('MOCK-NET-006');
     await allure.story('Slow Then Fast');
     await allure.label('severity', 'normal');
     await allure.description(
@@ -216,6 +219,7 @@ test.describe('Combined Network Scenarios', { tag: ['@mocking'] }, () => {
   });
 
   test('should abort image requests to simulate asset loading failure', async ({ page }) => {
+    await allure.allureId('MOCK-NET-007');
     await allure.story('Asset Failure');
     await allure.label('severity', 'minor');
     await allure.description(

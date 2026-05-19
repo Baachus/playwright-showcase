@@ -19,6 +19,7 @@ test.describe('Checkout Page', { tag: ['@ui'] }, () => {
     sd_infoPage,
     sd_verificationPage,
     sd_confirmationPage }) => {
+      await allure.allureId('UI-CK-001');
         await allure.story('Checkout With One Item');
         await allure.label('severity', 'critical');
         await allure.step('Add Item to Cart and Verify Badge', async()=>{

@@ -1,6 +1,6 @@
 import type { Page, WebSocketRoute } from '@playwright/test';
-import WSLib from 'ws';
-type NodeWebSocket = WSLib;
+import ws from 'ws';
+type NodeWebSocket = InstanceType<typeof ws>;
 import { createServer, type Server as HttpServer } from 'http';
 import type { AddressInfo } from 'net';
 
@@ -27,7 +27,6 @@ declare global {
 // ---------------------------------------------------------------------------
 // MockWebSocketServer
 // ---------------------------------------------------------------------------
-
 /**
  * MockWebSocketServer
  * ---------------------------------------------------------------------------
@@ -37,7 +36,7 @@ declare global {
  * Usage:
  *   const server = new MockWebSocketServer('wss://realtime.saucedemo.com/prices');
  *   await server.setup(page);
- *   // ... navigate, connect client ...
+ *   ... navigate, connect client ...
  *   server.push(JSON.stringify({ type: 'price-update', item: 'Backpack', price: 9.99 }));
  *   await server.waitForMessage();
  */
@@ -118,7 +117,6 @@ export class MockWebSocketServer {
   }
 
   // -- Server -> Client ------------------------------------------------------
-
   /** Push a message from the mock server to the connected client. */
   push(message: string | Buffer): void {
     if (!this.activeRoute) {
@@ -127,7 +125,7 @@ export class MockWebSocketServer {
     this.activeRoute.send(message);
   }
 
-  /** Push a JSON-serialisable object as a message. */
+  /** Push a JSON-serializable object as a message. */
   pushJSON(payload: unknown): void {
     this.push(JSON.stringify(payload));
   }
@@ -138,7 +136,6 @@ export class MockWebSocketServer {
   }
 
   // -- Queries ---------------------------------------------------------------
-
   /** True when a client is currently connected. */
   get isConnected(): boolean {
     return this.activeRoute !== null;
@@ -150,7 +147,6 @@ export class MockWebSocketServer {
   }
 
   // -- Waiters ---------------------------------------------------------------
-
   /**
    * Wait until the next message arrives from the client (or timeout).
    *
@@ -193,7 +189,6 @@ export class MockWebSocketServer {
 // ---------------------------------------------------------------------------
 // Client injection helpers
 // ---------------------------------------------------------------------------
-
 /**
  * Inject a controllable WebSocket client into the page via addInitScript.
  * The client is exposed as window.__wsClient and can be driven via page.evaluate().
@@ -359,7 +354,6 @@ export async function closeClientConnection(
 // ---------------------------------------------------------------------------
 // Local in-process echo server (for ws-realtime tests)
 // ---------------------------------------------------------------------------
-
 /**
  * Handle to a running local WebSocket echo server.
  */
@@ -390,7 +384,7 @@ export interface LocalEchoServer {
  *   - GET /            -> a minimal HTML host page (text/html)
  *   - HTTP Upgrade /   -> WebSocket handshake (handled by `ws`)
  *
- * Behaviour of the WS half mirrors echo.websocket.events:
+ * Behavior of the WS half mirrors echo.websocket.events:
  *   - On connect, the server immediately sends a welcome line that contains
  *     the literal "echo.websocket.events" so existing tests that filter that
  *     line out of received-frame lists keep working.
@@ -422,7 +416,7 @@ export async function startLocalEchoServer(): Promise<LocalEchoServer> {
       );
     });
 
-    const wss = new WSLib.Server({ server: httpServer });
+    const wss = new ws.WebSocketServer({ server: httpServer });
 
     httpServer.on('error', (err: Error) => reject(err));
     wss.on('error', (err: Error) => reject(err));

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import {
   assertNoA11yViolations,
   assertWcagLevel,
@@ -27,7 +28,6 @@ import {
  */
 
 // ── Shared HTML fixtures ──────────────────────────────────────────────────────
-
 /** Minimal, fully-accessible page — zero WCAG 2.1 AA violations expected. */
 const CLEAN_PAGE =
   'data:text/html,' +
@@ -73,25 +73,28 @@ const SCOPED_PAGE =
   );
 
 // ── assertNoA11yViolations ────────────────────────────────────────────────────
-
 test.describe('accessibility.utils › assertNoA11yViolations', () => {
 
   test('resolves on a clean, fully-accessible page', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-001');
     await page.goto(CLEAN_PAGE);
     await expect(assertNoA11yViolations(page)).resolves.toBeUndefined();
   });
 
   test('rejects on a page with accessibility violations', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-002');
     await page.goto(VIOLATION_PAGE);
     await expect(assertNoA11yViolations(page)).rejects.toThrow();
   });
 
   test('error message includes "violations found" with a count', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-003');
     await page.goto(VIOLATION_PAGE);
     await expect(assertNoA11yViolations(page)).rejects.toThrow(/violations found/i);
   });
 
   test('error message includes at least one known violation id', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-004');
     await page.goto(VIOLATION_PAGE);
     await expect(assertNoA11yViolations(page)).rejects.toThrow(
       /image-alt|html-has-lang|document-title/i,
@@ -99,16 +102,19 @@ test.describe('accessibility.utils › assertNoA11yViolations', () => {
   });
 
   test('error message includes an impact level in uppercase', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-005');
     await page.goto(VIOLATION_PAGE);
     await expect(assertNoA11yViolations(page)).rejects.toThrow(/CRITICAL|SERIOUS|MODERATE|MINOR/);
   });
 
   test('error message includes a dequeuniversity.com helpUrl', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-006');
     await page.goto(VIOLATION_PAGE);
     await expect(assertNoA11yViolations(page)).rejects.toThrow(/dequeuniversity\.com/);
   });
 
   test('resolves when scanning only a clean sub-region via include option', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-007');
     await page.goto(SCOPED_PAGE);
     // #main is clean — the broken <img> is in <aside>, outside the scan scope
     await expect(
@@ -117,6 +123,7 @@ test.describe('accessibility.utils › assertNoA11yViolations', () => {
   });
 
   test('rejects when scanning only the broken sub-region via include option', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-008');
     await page.goto(SCOPED_PAGE);
     await expect(
       assertNoA11yViolations(page, { include: ['aside'] }),
@@ -124,6 +131,7 @@ test.describe('accessibility.utils › assertNoA11yViolations', () => {
   });
 
   test('resolves after disabling the specific rules that would otherwise fail', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-009');
     await page.goto(VIOLATION_PAGE);
     await expect(
       assertNoA11yViolations(page, {
@@ -134,40 +142,44 @@ test.describe('accessibility.utils › assertNoA11yViolations', () => {
 });
 
 // ── assertWcagLevel ───────────────────────────────────────────────────────────
-
 test.describe('accessibility.utils › assertWcagLevel', () => {
 
   test('level A resolves on a clean page', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-010');
     await page.goto(CLEAN_PAGE);
     await expect(assertWcagLevel(page, 'A')).resolves.toBeUndefined();
   });
 
   test('level AA resolves on a clean page', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-011');
     await page.goto(CLEAN_PAGE);
     await expect(assertWcagLevel(page, 'AA')).resolves.toBeUndefined();
   });
 
   test('level AAA resolves on a clean page', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-012');
     await page.goto(CLEAN_PAGE);
     await expect(assertWcagLevel(page, 'AAA')).resolves.toBeUndefined();
   });
 
   test('level AA rejects on a page with AA violations', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-013');
     await page.goto(VIOLATION_PAGE);
     await expect(assertWcagLevel(page, 'AA')).rejects.toThrow();
   });
 
   test('level A rejects on a page with level-A violations', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-014');
     await page.goto(VIOLATION_PAGE);
     await expect(assertWcagLevel(page, 'A')).rejects.toThrow();
   });
 });
 
 // ── getViolationSummary ───────────────────────────────────────────────────────
-
 test.describe('accessibility.utils › getViolationSummary', () => {
 
   test('returns all-zero counts on a clean page', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-015');
     await page.goto(CLEAN_PAGE);
     const summary = await getViolationSummary(page);
     expect(summary.critical).toBe(0);
@@ -177,6 +189,7 @@ test.describe('accessibility.utils › getViolationSummary', () => {
   });
 
   test('returns non-zero counts on a page with violations', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-016');
     await page.goto(VIOLATION_PAGE);
     const summary = await getViolationSummary(page);
     const total = Object.values(summary).reduce((a, b) => a + b, 0);
@@ -184,12 +197,14 @@ test.describe('accessibility.utils › getViolationSummary', () => {
   });
 
   test('summary object has exactly the four standard impact keys', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-017');
     await page.goto(CLEAN_PAGE);
     const summary = await getViolationSummary(page);
     expect(Object.keys(summary).sort()).toEqual(['critical', 'minor', 'moderate', 'serious']);
   });
 
   test('all count values are non-negative integers', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-018');
     await page.goto(VIOLATION_PAGE);
     const summary = await getViolationSummary(page);
     for (const count of Object.values(summary)) {
@@ -199,6 +214,7 @@ test.describe('accessibility.utils › getViolationSummary', () => {
   });
 
   test('VIOLATION_PAGE triggers at least one critical or serious violation', async ({ page }) => {
+    await allure.allureId('UNIT-A11Y-019');
     await page.goto(VIOLATION_PAGE);
     const summary = await getViolationSummary(page);
     expect(summary.critical + summary.serious).toBeGreaterThan(0);
