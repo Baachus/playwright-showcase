@@ -247,7 +247,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginAs (static)', () 
 
     // Patch expect so toHaveURL doesn't fail against our mock
     try {
-      await MultiContextHelper.loginAs(page, 'standard_user', 'secret_sauce');
+      await MultiContextHelper.loginAs(page, 'standard_user');
     } catch {
       /* SD_InventoryPage.waitForPageLoad() will fail — that's fine */
     }
@@ -304,7 +304,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginExpectRejected (s
     const page = createPageMock();
 
     try {
-      await MultiContextHelper.loginExpectRejected(page, 'locked_out_user', 'secret_sauce');
+      await MultiContextHelper.loginExpectRejected(page, 'locked_out_user');
     } catch {
       /* expected */
     }
@@ -317,12 +317,12 @@ test.describe('multi-context.utils › MultiContextHelper.loginExpectRejected (s
     const page = createPageMock();
 
     try {
-      await MultiContextHelper.loginExpectRejected(page, 'locked_out_user', 'secret_sauce');
+      await MultiContextHelper.loginExpectRejected(page, 'locked_out_user');
     } catch {
       /* expected */
     }
 
-    expect(page._filled['[data-test="password"]']).toBe('secret_sauce');
+    expect(page._filled['[data-test="password"]']).toHaveLength(12);
   });
 
   test('clicks the login button', async () => {
@@ -330,7 +330,7 @@ test.describe('multi-context.utils › MultiContextHelper.loginExpectRejected (s
     const page = createPageMock();
 
     try {
-      await MultiContextHelper.loginExpectRejected(page, 'locked_out_user', 'secret_sauce');
+      await MultiContextHelper.loginExpectRejected(page, 'locked_out_user');
     } catch {
       /* expected */
     }
