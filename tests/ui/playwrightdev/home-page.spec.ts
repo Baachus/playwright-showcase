@@ -13,6 +13,7 @@ test.describe('Home Page', () => {
 
   test.describe('Page Load & Core Elements', { tag: ['@ui', '@smoke']}, () => {
     test('should display the hero section with CTA', async ({ pd_homePage }) => {
+      await allure.allureId('UI-HP-001');
       await allure.story('Hero Section with CTA');
       await allure.label('severity', 'critical');
 
@@ -22,6 +23,7 @@ test.describe('Home Page', () => {
     });
 
     test('should have correct page title', async ({ pd_homePage }) => {
+      await allure.allureId('UI-HP-002');
       await allure.story('Page Title');
       await allure.label('severity', 'normal');
 
@@ -31,6 +33,7 @@ test.describe('Home Page', () => {
     });
 
     test('should display the navigation bar', async ({ pd_homePage }) => {
+      await allure.allureId('UI-HP-003');
       await allure.story('Navigation Bar');
       await allure.label('severity', 'normal');
 
@@ -40,6 +43,7 @@ test.describe('Home Page', () => {
     });
 
     test('should display the GitHub link', async ({ pd_homePage }) => {
+      await allure.allureId('UI-HP-004');
       await allure.story('Github Link');
       await allure.label('severity', 'minor');
 
@@ -51,6 +55,7 @@ test.describe('Home Page', () => {
 
   test.describe('Navigation', { tag: ['@ui']}, () => {
     test('should navigate to Docs on "Get Started" click', async ({ pd_homePage, page }) => {
+      await allure.allureId('UI-HP-005');
       await allure.story('Get Started');
       await allure.label('severity', 'critical');
 
@@ -66,6 +71,7 @@ test.describe('Home Page', () => {
 
   test.describe('Search', { tag: ['@ui'] }, () => {
     test('should open search modal and accept input', async ({ pd_homePage }) => {
+      await allure.allureId('UI-HP-006');
       await allure.story('Search Modal');
       await allure.label('severity', 'critical');
     
@@ -79,6 +85,7 @@ test.describe('Home Page', () => {
     });
 
     test('should open search with keyboard shortcut', async ({ pd_homePage, page }) => {
+      await allure.allureId('UI-HP-007');
       await allure.story('Search Modal with Keyboard');
       await allure.label('severity', 'normal');
 
@@ -95,6 +102,7 @@ test.describe('Home Page', () => {
 
   test.describe('Responsive Layout', { tag: ['@ui'] }, () => {
     test('should render correctly on mobile viewport', async ({ page }) => {
+      await allure.allureId('UI-HP-008');
       await allure.story('Render Mobile Viewport');
       await allure.label('severity', 'normal');
     
@@ -112,6 +120,7 @@ test.describe('Home Page', () => {
     });
 
     test('should render correctly on tablet viewport', async ({ page }) => {
+      await allure.allureId('UI-HP-009');
       await allure.story('Render Tablet Viewport');
       await allure.label('severity', 'normal');
 

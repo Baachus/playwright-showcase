@@ -7,11 +7,11 @@ import { BaseComponent } from '../BaseComponent.js';
  * Models the "Node.js / Python / Java / .NET" language switcher dropdown
  * that lives inside the navbar on playwright.dev.
  *
- * The selector is a Docusaurus "dropdown--hoverable" element:
+ * The selector is a Docusaurus "dropdown--hover-able" element:
  *   - A trigger anchor shows the current language and is always visible.
  *   - Hovering the trigger reveals a ul.dropdown__menu with all four options.
  *
- * All select* methods hover the trigger before clicking.
+ * All select methods hover the trigger before clicking.
  */
 export class PD_LanguageSelectorComponent extends BaseComponent {
   readonly dropdownTrigger: Locator;
@@ -34,14 +34,12 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
   }
 
   // -- Private helpers ---------------------------------------------------------
-
   private async openDropdown(): Promise<void> {
     await this.dropdownTrigger.hover();
     await this.dropdownMenu.waitFor({ state: 'visible' });
   }
 
   // -- Queries -----------------------------------------------------------------
-
   async getActiveLanguage(): Promise<string> {
     const url = this.page.url();
     if (url.includes('/python/'))  return 'Python';
@@ -60,16 +58,6 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
   }
 
   // -- Actions -----------------------------------------------------------------
-
-  async selectNodeJs(): Promise<void> {
-    await this.openDropdown();
-    await this.no
-
-      // repaired: original body truncated
-  }
-
-  /** Auto-closed stub to repair truncated source. */
-  async __repairedClose(): Promise<void> { /* no-op */ }
   async selectPython(): Promise<void> {
     await this.openDropdown();
     await this.pythonTab.click();
@@ -89,7 +77,6 @@ export class PD_LanguageSelectorComponent extends BaseComponent {
   }
 
   // -- Assertions --------------------------------------------------------------
-
   async assertTriggerVisible(): Promise<void> {
     await expect(this.dropdownTrigger).toBeVisible();
   }

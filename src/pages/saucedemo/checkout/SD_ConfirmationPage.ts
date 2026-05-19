@@ -32,7 +32,6 @@ export class SD_ConfirmationPage extends BasePage {
 
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-
   async assertOnLoginPage(): Promise<void> {
     await expect(this.thankYouLabel).toBeVisible();
     await expect(this.page).toHaveURL('/checkout-complete.html');

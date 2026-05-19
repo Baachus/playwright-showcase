@@ -39,7 +39,6 @@ export class SD_InventoryPage extends BasePage {
   private static readonly PATH = '/inventory.html';
 
   // ── Locators ────────────────────────────────────────────────────────────────
-
   /** The primary container that confirms we are on the inventory page. */
   readonly inventoryContainer: Locator;
 
@@ -83,7 +82,6 @@ export class SD_InventoryPage extends BasePage {
   }
 
   // ── BasePage implementation ──────────────────────────────────────────────────
-
   async goto(): Promise<void> {
     await this.page.goto(`https://www.saucedemo.com${SD_InventoryPage.PATH}`);
     await this.waitForPageLoad();
@@ -94,7 +92,6 @@ export class SD_InventoryPage extends BasePage {
   }
 
   // ── Item helpers ─────────────────────────────────────────────────────────────
-
   /**
    * Return the number of inventory cards currently displayed.
    */
@@ -146,7 +143,6 @@ export class SD_InventoryPage extends BasePage {
   }
 
   // ── Cart helpers ─────────────────────────────────────────────────────────────
-
   /**
    * Click the "Add to cart" button for a named item.
    */
@@ -196,7 +192,6 @@ export class SD_InventoryPage extends BasePage {
 }
 
   // ── Sort helpers ─────────────────────────────────────────────────────────────
-
   /**
    * Select a sort order from the dropdown.
    *
@@ -208,7 +203,6 @@ export class SD_InventoryPage extends BasePage {
   }
 
   // ── Item detail navigation ───────────────────────────────────────────────────
-
   /**
    * Click an item's name link to navigate to its detail page.
    */
@@ -219,7 +213,6 @@ export class SD_InventoryPage extends BasePage {
   }
 
   // ── Menu helpers ─────────────────────────────────────────────────────────────
-
   /**
    * Open the side-nav burger menu.
    */
@@ -238,7 +231,6 @@ export class SD_InventoryPage extends BasePage {
   }
 
   // ── Assertions ───────────────────────────────────────────────────────────────
-
   /**
    * Assert the page title label reads "Products".
    */

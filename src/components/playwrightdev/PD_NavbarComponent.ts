@@ -7,7 +7,7 @@ import { BaseComponent } from '../BaseComponent.js';
  * Encapsulates the top navigation bar on every page of playwright.dev.
  *
  * Language Switcher note:
- *   The language selector is a Docusaurus "dropdown--hoverable" element.
+ *   The language selector is a Docusaurus "dropdown--hover-able" element.
  *   The individual language links are hidden inside a <ul class="dropdown__menu">
  *   that only becomes visible when the trigger anchor is hovered.
  *   All switchLanguage() / assertLanguageLinksVisible() calls hover the
@@ -47,14 +47,12 @@ export class PD_NavbarComponent extends BaseComponent {
   }
 
   // -- Private helpers ---------------------------------------------------------
-
   private async openLanguageDropdown(): Promise<void> {
     await this.languageDropdownTrigger.hover();
     await this.languageDropdownMenu.waitFor({ state: 'visible' });
   }
 
   // -- Queries -----------------------------------------------------------------
-
   async getBrandHref(): Promise<string | null> {
     return this.brandLogo.getAttribute('href');
   }
@@ -68,7 +66,6 @@ export class PD_NavbarComponent extends BaseComponent {
   }
 
   // -- Actions -----------------------------------------------------------------
-
   async clickBrand(): Promise<void> {
     await this.brandLogo.click();
   }
@@ -79,9 +76,7 @@ export class PD_NavbarComponent extends BaseComponent {
 
   /**
    * Switch to a language by hovering the dropdown trigger first to reveal
-   * the menu, then cli
-   * the dropdown menu; auto-closed stub to repair truncated source. */
-  async __repairedClose(): Promise<void> { /* no-op */ }
+   * the menu, then click the dropdown menu. */
   async switchLanguage(lang: 'Node.js' | 'Python' | 'Java' | '.NET'): Promise<void> {
     await this.openLanguageDropdown();
     const map: Record<string, Locator> = {
@@ -95,7 +90,6 @@ export class PD_NavbarComponent extends BaseComponent {
   }
 
   // -- Assertions --------------------------------------------------------------
-
   async assertFullyRendered(): Promise<void> {
     await expect(this.root).toBeVisible();
     await expect(this.brandLogo).toBeVisible();

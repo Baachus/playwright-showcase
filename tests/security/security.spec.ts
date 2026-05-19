@@ -22,7 +22,7 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
      await allure.feature('Security Headers Required');
   });
 
-  // Note: Fails due to x-content-type-options not present
+  // BUG: Fails due to x-content-type-options not present
   test.skip('required security headers should all be present',
     async ({ request }) => {
       await allure.story('OWASP Header Audit');
@@ -49,6 +49,7 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
 
   test('HSTS should be present and valid',
     async ({ request }) => {
+      await allure.allureId('SEC-001');
       await allure.story('HSTS');
       await allure.label('severity', 'critical');
 
@@ -64,6 +65,7 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
 
   test('HSTS max-age should be at least 1 year',
     async ({ request }) => {
+      await allure.allureId('SEC-002');
       await allure.story('HSTS');
       await allure.label('severity', 'normal');
 
@@ -79,7 +81,7 @@ test.describe('Security – HTTP Headers (Required)', { tag: ['@security'] }, ()
       });
     });
 
-  // Note: Fails due to x-content-type-options not present
+  // BUG: Fails due to x-content-type-options not present
   test.skip('X-Content-Type-Options should be nosniff',
     async ({ request }) => {
       await allure.story('Content Type Sniffing');
@@ -109,6 +111,7 @@ test.describe('Security – HTTP Headers (Recommended Audit)', { tag: ['@securit
   for (const header of recommendedHeaders) {
     test(`audit: ${header} presence`,
       async ({ request }, testInfo) => {
+        await allure.allureId('SEC-003');
       await allure.story('Recommended Header Audit');
       await allure.label('severity', 'minor');
 
@@ -135,6 +138,7 @@ test.describe('Security – Sensitive Header Exposure', { tag: ['@security'] }, 
 
   test('should not expose X-Powered-By header',
     async ({ request }) => {
+      await allure.allureId('SEC-004');
       await allure.story('Information Disclosure');
       await allure.label('severity', 'normal');
 
@@ -147,6 +151,7 @@ test.describe('Security – Sensitive Header Exposure', { tag: ['@security'] }, 
 
   test('should not expose detailed Server version',
     async ({ request }) => {
+      await allure.allureId('SEC-005');
       await allure.story('Information Disclosure');
       await allure.label('severity', 'normal');
 
@@ -162,6 +167,7 @@ test.describe('Security – Sensitive Header Exposure', { tag: ['@security'] }, 
   for (const header of ['x-aspnet-version', 'x-aspnetmvc-version'] as const) {
     test(`should not expose ${header}`,
       async ({ request }) => {
+        await allure.allureId('SEC-006');
         await allure.story('Information Disclosure');
         await allure.label('severity', 'normal');
 
@@ -182,6 +188,7 @@ test.describe('Security – HTTPS & Transport', { tag: ['@security'] }, () => {
 
   test('home page final response URL should use HTTPS',
     async ({ request }) => {
+      await allure.allureId('SEC-007');
       await allure.story('HTTPS Enforcement');
       await allure.label('severity', 'critical');
 
@@ -196,6 +203,7 @@ test.describe('Security – HTTPS & Transport', { tag: ['@security'] }, () => {
   test('docs page should be served over HTTPS',
     { annotation: [{ type: 'story', description: 'HTTPS Enforcement' }, { type: 'severity', description: 'critical' }] },
     async ({ request }) => {
+      await allure.allureId('SEC-008');
       await allure.story('HTTPS Enforcement');
       await allure.label('severity', 'critical');
 
@@ -216,6 +224,7 @@ test.describe('Security – Content Integrity', { tag: ['@security'] }, () => {
 
   test('home page body should not contain XSS injection markers',
     async ({ request }) => {
+      await allure.allureId('SEC-009');
       await allure.story('XSS Prevention');
       await allure.label('severity', 'critical');
 
@@ -231,6 +240,7 @@ test.describe('Security – Content Integrity', { tag: ['@security'] }, () => {
 
   test('response should not expose directory listing',
     async ({ request }) => {
+      await allure.allureId('SEC-010');
       await allure.story('Directory Traversal');
       await allure.label('severity', 'critical');
 
@@ -252,6 +262,7 @@ test.describe('Security – Cookie Attributes', { tag: ['@security'] }, () => {
 
   test('site cookies should have the Secure attribute',
     async ({ page, context }) => {
+      await allure.allureId('SEC-011');
       await allure.story('Cookie Flags');
       await allure.label('severity', 'critical');
 
@@ -271,6 +282,7 @@ test.describe('Security – Cookie Attributes', { tag: ['@security'] }, () => {
 
   test('site cookies should have the HttpOnly attribute',
     async ({ page, context }) => {
+      await allure.allureId('SEC-012');
       await allure.story('Cookie Flags');
       await allure.label('severity', 'critical');
 

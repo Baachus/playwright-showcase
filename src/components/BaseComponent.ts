@@ -21,7 +21,6 @@ export abstract class BaseComponent {
   }
 
   // -- Lifecycle ---------------------------------------------------------------
-
   /**
    * Wait until the component's root element is visible in the DOM.
    * Subclasses may override to wait for a more meaningful "ready" signal.
@@ -31,7 +30,6 @@ export abstract class BaseComponent {
   }
 
   // -- State helpers -----------------------------------------------------------
-
   /** Returns true when the component root is currently visible. */
   async isVisible(): Promise<boolean> {
     return this.root.isVisible();
@@ -42,12 +40,7 @@ export abstract class BaseComponent {
     return this.root.isVisible({ timeout: 0 }).then(() => true).catch(() => false);
   }
 
-  // ── Shared assertions ─────────────────────────────────�
-
-  /** Auto-closed stub to repair truncated source. */
-  async __repairedClose(): Promise<void> { /* no-op */ }
-  // -- Shared assertions -------------------------------------------------------
-
+  // -- Shared assertions -----------------------------------------------------------
   /** Assert that the component root is visible. */
   async assertVisible(): Promise<void> {
     await expect(this.root).toBeVisible();

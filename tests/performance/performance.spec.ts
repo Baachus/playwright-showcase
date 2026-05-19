@@ -58,7 +58,6 @@ async function attachLighthouseToAllure(result: LighthouseResult): Promise<void>
 }
 
 // ── Home Page Desktop ────────────────────────────────────────────────────────
-
 test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
@@ -77,6 +76,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('Performance score should meet threshold',
     async () => {
+      await allure.allureId('PERF-001');
       await allure.story('Desktop Scores');
       await allure.label('severity', 'critical');
       
@@ -91,6 +91,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('Accessibility score should meet threshold',
     async () => {
+      await allure.allureId('PERF-002');
       await allure.story('Desktop Scores');
       await allure.label('severity', 'critical');
 
@@ -101,6 +102,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('Best Practices score should meet threshold',
     async () => {
+      await allure.allureId('PERF-003');
       await allure.story('Desktop Scores');
       await allure.label('severity', 'critical');
 
@@ -111,6 +113,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('SEO score should meet threshold',
     async () => {
+      await allure.allureId('PERF-004');
       await allure.story('Desktop Scores');
       await allure.label('severity', 'normal');
 
@@ -121,6 +124,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('FCP should be within budget',
     async () => {
+      await allure.allureId('PERF-005');
       await allure.story('Web Vitals');
       await allure.label('severity', 'normal');
 
@@ -131,6 +135,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('LCP should be within budget',
     async () => {
+      await allure.allureId('PERF-006');
       await allure.story('Web Vitals');
       await allure.label('severity', 'critical');
 
@@ -141,6 +146,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('TBT should be within budget',
     async () => {
+      await allure.allureId('PERF-007');
       await allure.story('Web Vitals');
       await allure.label('severity', 'normal');
 
@@ -151,6 +157,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('CLS should be within budget',
     async () => {
+      await allure.allureId('PERF-008');
       await allure.story('Web Vitals');
       await allure.label('severity', 'critical');
 
@@ -161,6 +168,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('TTFB should be within budget',
     async () => {
+      await allure.allureId('PERF-009');
       await allure.story('Web Vitals');
       await allure.label('severity', 'normal');
 
@@ -171,6 +179,7 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 
   test('HTML report should have been saved to disk',
     async () => {
+      await allure.allureId('PERF-010');
       await allure.story('Report Generation');
       await allure.label('severity', 'minor');
 
@@ -183,7 +192,6 @@ test.describe('Lighthouse – Home Page (Desktop)', { tag: ['@performance'] }, (
 });
 
 // ── Home Page Mobile ─────────────────────────────────────────────────────────
-
 test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
@@ -202,6 +210,7 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
 
   test('Performance score should meet mobile threshold',
     async () => {
+      await allure.allureId('PERF-011');
       await allure.story('Mobile Scores');
       await allure.label('severity', 'critical');
 
@@ -217,6 +226,7 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
   test('Accessibility score should meet threshold on mobile',
     { annotation: [{ type: 'story', description: 'Mobile Scores' }, { type: 'severity', description: 'critical' }] },
     async () => {
+      await allure.allureId('PERF-012');
       await allure.story('Mobile Scores');
       await allure.label('severity', 'critical');
 
@@ -228,6 +238,7 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
   test('SEO score should meet threshold on mobile',
     { annotation: [{ type: 'story', description: 'Mobile Scores' }, { type: 'severity', description: 'normal' }] },
     async () => {
+      await allure.allureId('PERF-013');
       await allure.story('Mobile Scores');
       await allure.label('severity', 'normal');
 
@@ -238,7 +249,6 @@ test.describe('Lighthouse – Home Page (Mobile)', { tag: ['@performance'] }, ()
 });
 
 // ── Docs Page ────────────────────────────────────────────────────────────────
-
 test.describe('Lighthouse – Docs Page (Desktop)', { tag: ['@performance'] }, () => {
   let result: LighthouseResult;
 
@@ -257,6 +267,7 @@ test.describe('Lighthouse – Docs Page (Desktop)', { tag: ['@performance'] }, (
 
   test('all category scores should meet thresholds',
   async () => {
+    await allure.allureId('PERF-014');
     await allure.story('Desktop Scores');
     await allure.label('severity', 'critical');
 
@@ -271,6 +282,7 @@ test.describe('Lighthouse – Docs Page (Desktop)', { tag: ['@performance'] }, (
 
   test('LCP should be within budget',
   async () => {
+    await allure.allureId('PERF-015');
     await allure.story('Web Vitals');
     await allure.label('severity', 'critical');
 
@@ -281,6 +293,7 @@ test.describe('Lighthouse – Docs Page (Desktop)', { tag: ['@performance'] }, (
 
   test('CLS should be within budget',
   async () => {
+    await allure.allureId('PERF-016');
     await allure.story('Web Vitals');
     await allure.label('severity', 'normal');
 

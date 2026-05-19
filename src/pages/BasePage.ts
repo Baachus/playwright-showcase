@@ -15,7 +15,6 @@ export abstract class BasePage {
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
-
   /** Navigate to the page's canonical URL. Must be implemented by subclasses. */
   abstract goto(): Promise<void>;
 
@@ -23,7 +22,6 @@ export abstract class BasePage {
   abstract waitForPageLoad(): Promise<void>;
 
   // ── Shared Utilities ────────────────────────────────────────────────────────
-
   /**
    * Get the current page <title>.
    */

@@ -29,13 +29,11 @@ export class PD_FooterComponent extends BaseComponent {
   }
 
   // -- Lifecycle ---------------------------------------------------------------
-
   async scrollIntoView(): Promise<void> {
     await this.root.scrollIntoViewIfNeeded();
   }
 
   // -- Queries -----------------------------------------------------------------
-
   async getCopyrightText(): Promise<string> {
     await this.scrollIntoView();
     return (await this.copyright.textContent()) ?? '';
@@ -51,7 +49,6 @@ export class PD_FooterComponent extends BaseComponent {
   }
 
   // -- Assertions --------------------------------------------------------------
-
   async assertVisible(): Promise<void> {
     await this.scrollIntoView();
     await expect(this.root).toBeVisible();
@@ -73,8 +70,6 @@ export class PD_FooterComponent extends BaseComponent {
     await expect(this.root.getByRole('link', { name: label })).toBeVisible();
   }
 
-  /** Auto-closed stub to repair truncated source. */
-  async __repairedClose(): Promise<void> { /* no-op */ }
   async assertLearnLinksPresent(): Promise<void> {
     await this.scrollIntoView();
     const count = await this.learnColumnLinks.count();

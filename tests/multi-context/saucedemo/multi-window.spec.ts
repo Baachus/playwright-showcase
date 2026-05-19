@@ -25,6 +25,7 @@ test.beforeEach(async () => {
 test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@multi-context'] }, () => {
 
   test('two independent windows are both authenticated simultaneously', async ({ sd_standard_ctx, sd_problem_ctx }) => {
+    await allure.allureId('CTX-WIN-001');
     await allure.story('Simultaneous Authentication');
     await allure.label('severity', 'critical');
 
@@ -42,6 +43,7 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
   });
 
   test('cart changes in Window 1 do not affect Window 2', async ({ sd_standard_ctx, sd_problem_ctx }) => {
+    await allure.allureId('CTX-WIN-002');
     await allure.story('Cart Isolation Across Windows');
     await allure.label('severity', 'critical');
 
@@ -69,6 +71,7 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
   });
 
   test('standard_user and problem_user see the same product names', async ({ sd_standard_ctx, sd_problem_ctx }) => {
+    await allure.allureId('CTX-WIN-003');
     await allure.story('Consistent Inventory Across Users');
     await allure.label('severity', 'normal');
 
@@ -86,6 +89,7 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
   });
 
   test('logout in Window 1 does not affect Window 2 session', async ({ sd_standard_ctx, sd_problem_ctx }) => {
+    await allure.allureId('CTX-WIN-004');
     await allure.story('Logout Isolation Between Windows');
     await allure.label('severity', 'critical');
 
@@ -102,6 +106,7 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
   });
 
   test('three independent windows operate concurrently without interference', async ({ sd_standard_ctx, sd_problem_ctx, sd_glitch_ctx }) => {
+    await allure.allureId('CTX-WIN-005');
     await allure.story('Three-Window Concurrency');
     await allure.label('severity', 'normal');
 
@@ -124,6 +129,7 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
   });
 
   test('unauthenticated window is redirected when accessing inventory', async ({ sd_unauth_ctx }) => {
+    await allure.allureId('CTX-WIN-006');
     await allure.story('Unauthenticated Access Redirect');
     await allure.label('severity', 'normal');
 

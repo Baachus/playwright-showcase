@@ -17,6 +17,7 @@ test.describe('Code Block Component', () => {
 
   test.describe('Rendering & Presence', { tag: ['@component', '@smoke'] }, () => {
     test('should display at least one code block on the intro docs page', async ({ pd_codeBlock, page }) => {
+      await allure.allureId('COMP-CB-001');
       await allure.story('Code Block Presence');
       await allure.label('severity', 'critical');
 
@@ -30,6 +31,7 @@ test.describe('Code Block Component', () => {
     });
 
     test('should contain non-empty code text', async ({ pd_codeBlock }) => {
+      await allure.allureId('COMP-CB-002');
       await allure.story('Non-Empty Code');
       await allure.label('severity', 'normal');
 
@@ -42,6 +44,7 @@ test.describe('Code Block Component', () => {
 
   test.describe('Language Detection', { tag: ['@component'] }, () => {
     test('should detect a language class on the first code block', async ({ pd_codeBlock }) => {
+      await allure.allureId('COMP-CB-003');
       await allure.story('Language Class Detection');
       await allure.label('severity', 'normal');
 
@@ -53,6 +56,7 @@ test.describe('Code Block Component', () => {
     });
 
     test('should find a TypeScript or JavaScript code block on the writing tests page', async ({ page }) => {
+      await allure.allureId('COMP-CB-004');
       await allure.story('TypeScript Code Block');
       await allure.label('severity', 'normal');
 
@@ -72,6 +76,7 @@ test.describe('Code Block Component', () => {
 
   test.describe('Copy Button', { tag: ['@component'] }, () => {
     test('should reveal the copy button on hover', async ({ pd_codeBlock }) => {
+      await allure.allureId('COMP-CB-005');
       await allure.story('Copy Button on Hover');
       await allure.label('severity', 'normal');
 
@@ -81,6 +86,7 @@ test.describe('Code Block Component', () => {
     });
 
     test('should be clickable without throwing an error', async ({ pd_codeBlock }) => {
+      await allure.allureId('COMP-CB-006');
       await allure.story('Copy Button Clickable');
       await allure.label('severity', 'minor');
 
@@ -93,6 +99,7 @@ test.describe('Code Block Component', () => {
 
   test.describe('Multi-block Pages', { tag: ['@component'] }, () => {
     test('should find multiple code blocks on a feature-rich docs page', async ({ page }) => {
+      await allure.allureId('COMP-CB-007');
       await allure.story('Multiple Code Blocks');
       await allure.label('severity', 'normal');
 
@@ -108,6 +115,7 @@ test.describe('Code Block Component', () => {
     });
 
     test('each code block should have a <pre> element', async ({ page }) => {
+      await allure.allureId('COMP-CB-008');
       await allure.story('All Blocks Have Pre');
       await allure.label('severity', 'normal');
 

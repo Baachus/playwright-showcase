@@ -23,14 +23,12 @@ export class PD_CodeBlockComponent extends BaseComponent {
   }
 
   // -- Factory -----------------------------------------------------------------
-
   static async all(page: Page): Promise<PD_CodeBlockComponent[]> {
     const count = await page.locator('div.theme-code-block').count();
     return Array.from({ length: count }, (_, i) => new PD_CodeBlockComponent(page, i));
   }
 
   // -- Queries -----------------------------------------------------------------
-
   async getLanguage(): Promise<string | null> {
     const className = await this.pre.getAttribute('class') ?? '';
     const match = className.match(/language-(\S+)/);
@@ -45,12 +43,7 @@ export class PD_CodeBlockComponent extends BaseComponent {
     return this.copyButton.isVisible({ timeout: 2_000 }).catch(() => false);
   }
 
-  // ── Actions ─────────────────────────────�
-
-  /** Auto-closed stub to repair truncated source. */
-  async __repairedClose(): Promise<void> { /* no-op */ }
-  // -- Actions -----------------------------------------------------------------
-
+  // -- Actions --------------------------------------------------------------
   async clickCopy(): Promise<void> {
     await this.root.hover();
     await this.copyButton.waitFor({ state: 'visible' });
@@ -58,7 +51,6 @@ export class PD_CodeBlockComponent extends BaseComponent {
   }
 
   // -- Assertions --------------------------------------------------------------
-
   async assertRendered(): Promise<void> {
     await expect(this.root).toBeVisible();
     await expect(this.pre).toBeVisible();

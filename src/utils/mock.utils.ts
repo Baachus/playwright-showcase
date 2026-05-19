@@ -19,7 +19,7 @@ import { Page, Route, Request } from '@playwright/test';
  *   import { mockJsonResponse, simulateNetworkError, addLatency } from '@utils/mock.utils.js';
  *
  *   const unroute = await mockJsonResponse(page, /\/api\/users/, { id: 1, name: 'Alice' });
- *   // … test code …
+ *    … test code …
  *   await unroute();
  */
 
@@ -72,7 +72,6 @@ export interface CapturedRequest {
 }
 
 // ── Response Mocking ─────────────────────────────────────────────────────────
-
 /**
  * Intercept requests matching `urlPattern` and return a mocked JSON response.
  *
@@ -136,7 +135,6 @@ export async function mockHtmlResponse(
 }
 
 // ── Error Simulation ─────────────────────────────────────────────────────────
-
 /**
  * Intercept requests matching `urlPattern` and respond with an HTTP error code.
  * Useful for testing how the UI handles 4xx/5xx responses.
@@ -209,7 +207,6 @@ export async function simulateNetworkError(
 }
 
 // ── Latency Injection ─────────────────────────────────────────────────────────
-
 /**
  * Intercept requests matching `urlPattern`, delay them by `options.delay` ms,
  * then pass them through to the real server unchanged. Useful for testing
@@ -236,7 +233,6 @@ export async function addLatency(
 }
 
 // ── Request Capture / Spying ──────────────────────────────────────────────────
-
 /**
  * Register a route handler that lets requests through to the real server
  * but records each matching request in the returned `captured` array.
@@ -276,7 +272,6 @@ export async function spyOnRequests(
 }
 
 // ── Offline Mode ──────────────────────────────────────────────────────────────
-
 /**
  * Set the browser context to offline mode, execute `action`, then restore
  * connectivity. Uses Playwright's `context.setOffline()`.
@@ -296,7 +291,6 @@ export async function withOfflineMode(page: Page, action: () => Promise<void>): 
 }
 
 // ── Response Modification ─────────────────────────────────────────────────────
-
 /** Options for modifyJsonResponse. */
 export interface ModifyJsonOptions {
   /**
@@ -329,13 +323,13 @@ export interface ModifyJsonOptions {
  * @param options   - Optional `fallbackBody` for non-JSON server responses.
  *
  * @example
- *   // Against a real JSON endpoint:
+ *   Against a real JSON endpoint:
  *   await modifyJsonResponse(page, /\/api\/config/, (body) => ({
  *     ...body,
  *     featureFlags: { newCheckout: true },
  *   }));
  *
- *   // When the endpoint returns HTML in the test environment:
+ *   When the endpoint returns HTML in the test environment:
  *   await modifyJsonResponse(
  *     page,
  *     /\/api\/config/,
@@ -376,7 +370,6 @@ export async function modifyJsonResponse(
 }
 
 // ── Conditional Mocking ───────────────────────────────────────────────────────
-
 /**
  * Mock only the Nth call to a URL (zero-indexed). All other requests are handled
  * by `fallbackHandler` if provided, or passed through to the real server otherwise.
@@ -392,7 +385,7 @@ export async function modifyJsonResponse(
  * shadow this handler and intercept all calls before this one runs.
  *
  * @example
- *   // Simulate a transient failure on the first attempt, then succeed:
+ *   Simulate a transient failure on the first attempt, then succeed:
  *   await mockNthCall(
  *     page,
  *     /\/api\/submit/,

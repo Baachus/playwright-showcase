@@ -2,23 +2,31 @@
     "cSpell.words": [
         "accessdenied",
         "addressunreachable",
+        "aspnet",
+        "aspnetmvc",
         "blockedbyclient",
         "connectionaborted",
         "connectionclosed",
         "connectionfailed",
         "connectionrefused",
         "connectionreset",
+        "dequeuniversity",
         "domcontentloaded",
         "framereceived",
         "framesent",
         "HSTS",
         "internetdisconnected",
+        "Kbps",
+        "multiuser",
         "namenotresolved",
         "networkidle",
         "nosniff",
         "Onesie",
         "playwrightdev",
+        "sadface",
+        "SAMEORIGIN",
         "timedout",
-        "TTFB"
+        "TTFB",
+        "xcto"
     ]
 }

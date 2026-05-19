@@ -5,7 +5,6 @@ import * as allure from 'allure-js-commons';
 /**
  * UI Tests – Inventory Page
  */
-
 const TOTAL_ITEMS = 6; // Saucedemo always shows 6 products
 
 test.beforeEach(async()=>{
@@ -16,6 +15,7 @@ test.beforeEach(async()=>{
 test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   // ── Page load & structure ──────────────────────────────────────────────────
   test('should display the inventory page with the "Products" title', async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-001');
     await allure.story('Products Title');
     await allure.label('severity', 'normal');
     
@@ -25,6 +25,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   test(`should display exactly ${TOTAL_ITEMS} inventory items`, async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-002');
     await allure.story('Products Count');
     await allure.label('severity', 'normal');
     
@@ -35,6 +36,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   test('should display a name, description, and price for every item', async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-003');
     await allure.story('Product Details');
     await allure.label('severity', 'normal');
     
@@ -50,8 +52,8 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   // ── Sorting ────────────────────────────────────────────────────────────────
-
   test('should sort items by name A → Z', async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-004');
     await allure.story('Sorting A-Z');
     await allure.label('severity', 'normal');
     
@@ -62,6 +64,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   test('should sort items by name Z → A', async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-005');
     await allure.story('Sorting Z-A');
     await allure.label('severity', 'normal');
 
@@ -72,6 +75,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   test('should sort items by price low → high', async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-006');
     await allure.story('Sorting low-high');
     await allure.label('severity', 'normal');
     
@@ -82,6 +86,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   test('should sort items by price high → low', async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-007');
     await allure.story('Sorting high-low');
     await allure.label('severity', 'normal');
     
@@ -92,8 +97,8 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   // ── Cart interactions ──────────────────────────────────────────────────────
-
   test('should add a single item to the cart and update the badge', async ({ sd_inventoryPage }) => {
+    await allure.allureId('UI-INV-008');
     await allure.story('Single Item Cart');
     await allure.label('severity', 'normal');
 
@@ -108,6 +113,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
 
   test('should add multiple items and reflect the correct cart count', async ({ sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-009');
     await allure.story('Multiple Item Cart');
     await allure.label('severity', 'normal');
 
@@ -126,6 +132,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
 
   test('should remove an item from the cart and decrement the badge', async ({ sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-010');
     await allure.story('Remove Item From Cart');
     await allure.label('severity', 'normal');
     const [firstItem] = await sd_inventoryPage.getAllItems();
@@ -142,9 +149,9 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   });
 
   // ── Navigation ─────────────────────────────────────────────────────────────
-
   test('should navigate to the item detail page on name click', async ({ page, sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-011');
     await allure.story('Name Navigation');
     await allure.label('severity', 'normal');
 
@@ -158,6 +165,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
 
   test('should navigate to the cart page when the cart icon is clicked', async ({ page, sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-012');
     await allure.story('Cart Navigation');
     await allure.label('severity', 'normal');
 
@@ -169,6 +177,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
 
   test('should log the user out via the burger menu', async ({ page, sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-013');
     await allure.story('Log Out');
     await allure.label('severity', 'normal');
     const BASE_URL    = 'https://www.saucedemo.com';
@@ -182,6 +191,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
   // ── Social Media Links ─────────────────────────────────────────────────────────────
   test('should navigate to facebook on icon click', async ({ page, sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-014');
     await allure.story('Facebook Icon');
     await allure.label('severity', 'minor');
 
@@ -195,6 +205,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
 
   test('should navigate to twitter on icon click', async ({ page, sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-015');
     await allure.story('Twitter Icon');
     await allure.label('severity', 'minor');
 
@@ -208,6 +219,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
 
   test('should navigate to indeed on icon click', async ({ page, sd_inventoryPage }) => 
   {
+    await allure.allureId('UI-INV-016');
     await allure.story('Indeed Icon');
     await allure.label('severity', 'minor');
 

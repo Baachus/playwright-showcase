@@ -14,6 +14,7 @@ test.beforeEach(async()=>{
 test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   // ── Valid Login ──────────────────────────────────────────────────
   test('is logged in via saved auth state', { tag: ['@smoke'] }, async ({ page }) => {
+    await allure.allureId('UI-LG-001');
     await allure.story('Valid User Login');
     await allure.label('severity', 'critical');
     await page.goto('/inventory.html');
@@ -22,6 +23,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   });
 
   test('shows user can login with error user', async ({ browser }) => {
+    await allure.allureId('UI-LG-002');
     await allure.story('Error User Login');
     await allure.label('severity', 'minor');
     const context = await browser.newContext();
@@ -41,6 +43,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   });
 
   test('shows user can login for visual user', async ({ browser }) => {
+    await allure.allureId('UI-LG-003');
     await allure.story('Visual User Login');
     await allure.label('severity', 'minor');
     const context = await browser.newContext();
@@ -60,6 +63,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   });
 
   test('show user can login with performance glitch user', async ({ browser }) => {
+    await allure.allureId('UI-LG-004');
     await allure.story('Performance Glitch Login');
     await allure.label('severity', 'minor');
       const context = await browser.newContext();
@@ -79,6 +83,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   });
 
   test('shows user can login for problem user', async ({ browser }) => {
+    await allure.allureId('UI-LG-005');
     await allure.story('Problem User Login');
     await allure.label('severity', 'minor');
     const context = await browser.newContext();
@@ -99,6 +104,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
 
   // ── Invalid Login ──────────────────────────────────────────────────
   test('shows error for invalid credentials', async ({ browser }) => {
+    await allure.allureId('UI-LG-006');
     await allure.story('Invalid User');
     await allure.label('severity', 'critical');
     const context = await browser.newContext();
@@ -117,6 +123,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   });
 
   test('clears error when dismissed', async ({ browser }) => {
+    await allure.allureId('UI-LG-007');
     await allure.story('Dismiss Error');
     await allure.label('severity', 'critical');
     const context = await browser.newContext();
@@ -140,6 +147,7 @@ test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
   });
 
   test('shows error for locked out user', async ({ browser }) => {
+    await allure.allureId('UI-LG-008');
     await allure.story('Locked Out User');
     await allure.label('severity', 'critical');
 

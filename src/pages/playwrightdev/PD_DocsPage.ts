@@ -39,7 +39,6 @@ export class PD_DocsPage extends BasePage {
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
-
   async goto(): Promise<void> {
     await this.page.goto('/docs/intro');
     await this.waitForPageLoad();
@@ -55,7 +54,6 @@ export class PD_DocsPage extends BasePage {
   }
 
   // ── Viewport Helpers ────────────────────────────────────────────────────────
-
   /**
    * Returns true when the current viewport is narrow enough that the sidebar
    * is collapsed behind a toggle button (i.e. a mobile-sized browser).
@@ -80,7 +78,6 @@ export class PD_DocsPage extends BasePage {
   }
 
   // ── Sidebar Navigation ──────────────────────────────────────────────────────
-
   /**
    * Expand a sidebar category by its label.
    */
@@ -120,7 +117,6 @@ export class PD_DocsPage extends BasePage {
   }
 
   // ── TOC Navigation ──────────────────────────────────────────────────────────
-
   /**
    * Click a table-of-contents anchor link.
    */
@@ -129,7 +125,6 @@ export class PD_DocsPage extends BasePage {
   }
 
   // ── Code Blocks ─────────────────────────────────────────────────────────────
-
   /**
    * Get the number of code blocks on the current page.
    */
@@ -145,7 +140,6 @@ export class PD_DocsPage extends BasePage {
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-
   async assertOnDocsPage(): Promise<void> {
     await expect(this.mainContent).toBeVisible();
     await expect(this.page).toHaveURL(/\/docs\//);

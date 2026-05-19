@@ -26,8 +26,7 @@ export class MultiContextHelper {
     this.browser = browser;
   }
 
-  // ------------------------------------------------------------------ Tabs --
-
+  // --Tabs------------------------------------------------------------------
   /**
    * Open a second tab inside an existing context and navigate it to the
    * Saucedemo inventory page (it inherits the session already set on the context).
@@ -42,8 +41,7 @@ export class MultiContextHelper {
     return tab;
   }
 
-  // --------------------------------------------------------------- Windows --
-
+  // --Windows--------------------------------------------------------------
   /**
    * Create a brand-new BrowserContext pre-loaded with the saved auth state for
    * the given user, then open the inventory page in that context.
@@ -81,8 +79,7 @@ export class MultiContextHelper {
     return { context, page, loginPage };
   }
 
-  // ------------------------------------------------------------- Login utils --
-
+  // --Login utils-------------------------------------------------------------
   /**
    * Log a user in from scratch on the given page (no storageState).
    * Returns an SD_InventoryPage ready to use.

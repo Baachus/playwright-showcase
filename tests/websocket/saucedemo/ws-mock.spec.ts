@@ -40,10 +40,11 @@ test.beforeEach(async () => {
 
 test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@ws-mock'] }, () => {
 
-  // ---------------------------------------------------------------- connection
+  // --connection-------------------------------------------------------------- 
   test.describe('Connection Lifecycle', { tag: ['@smoke'] }, () => {
 
     test('should establish a mock WS connection when the page loads', async ({ page }) => {
+      await allure.allureId('WS-MOCK-001');
       await allure.story('Connection Established');
       await allure.label('severity', 'critical');
 
@@ -75,6 +76,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should close the connection cleanly when the server sends a close frame', async ({ page }) => {
+      await allure.allureId('WS-MOCK-002');
       await allure.story('Server-Initiated Close');
       await allure.label('severity', 'critical');
 
@@ -104,6 +106,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should close the connection cleanly when the client closes', async ({ page }) => {
+      await allure.allureId('WS-MOCK-003');
       await allure.story('Client-Initiated Close');
       await allure.label('severity', 'normal');
 
@@ -126,10 +129,11 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
   });
 
-  // ---------------------------------------------------------------- send / receive
+  // --send / receive-------------------------------------------------------------- 
   test.describe('Message Exchange', () => {
 
     test('should capture a plain-text message sent from the client', async ({ page }) => {
+      await allure.allureId('WS-MOCK-004');
       await allure.story('Client -> Server Text Message');
       await allure.label('severity', 'critical');
 
@@ -152,6 +156,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should deliver a server-pushed message to the client', async ({ page }) => {
+      await allure.allureId('WS-MOCK-005');
       await allure.story('Server -> Client Push');
       await allure.label('severity', 'critical');
 
@@ -173,6 +178,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should handle multiple sequential messages in order', async ({ page }) => {
+      await allure.allureId('WS-MOCK-006');
       await allure.story('Sequential Message Ordering');
       await allure.label('severity', 'normal');
 
@@ -196,6 +202,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should echo client messages back as an echo server would', async ({ page }) => {
+      await allure.allureId('WS-MOCK-007');
       await allure.story('Echo Server Pattern');
       await allure.label('severity', 'normal');
 
@@ -220,6 +227,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should handle JSON message payloads', async ({ page }) => {
+      await allure.allureId('WS-MOCK-008');
       await allure.story('JSON Message Exchange');
       await allure.label('severity', 'normal');
 
@@ -244,10 +252,11 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
   });
 
-  // ---------------------------------------------------------------- server-push / DOM updates
+  // --server-push / DOM updates-------------------------------------------------------------- 
   test.describe('Server-Push & DOM Reactions', { tag: ['@smoke'] }, () => {
 
     test('should update a product price in the DOM when the server pushes a price-update', async ({ page }) => {
+      await allure.allureId('WS-MOCK-009');
       await allure.story('Realtime Price Update');
       await allure.label('severity', 'critical');
 
@@ -282,6 +291,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should update prices for multiple items in a single batch', async ({ page }) => {
+      await allure.allureId('WS-MOCK-010');
       await allure.story('Batch Price Update');
       await allure.label('severity', 'normal');
 
@@ -315,6 +325,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should reflect a server-pushed cart badge update in the navbar', async ({ page }) => {
+      await allure.allureId('WS-MOCK-011');
       await allure.story('Realtime Cart Badge Update');
       await allure.label('severity', 'normal');
 
@@ -341,10 +352,11 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
   });
 
-  // ---------------------------------------------------------------- interception
+  // --interception-------------------------------------------------------------- 
   test.describe('Message Interception & Validation', () => {
 
     test('should allow the mock server to filter and selectively respond', async ({ page }) => {
+      await allure.allureId('WS-MOCK-012');
       await allure.story('Selective Server Response');
       await allure.label('severity', 'normal');
 
@@ -369,6 +381,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
 
     test('should record the full conversation log (client and server messages)', async ({ page }) => {
+      await allure.allureId('WS-MOCK-013');
       await allure.story('Conversation Log');
       await allure.label('severity', 'normal');
 

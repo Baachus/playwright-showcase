@@ -13,11 +13,10 @@ export class SD_CartPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.checkoutBtn       = page.locator('[data-test="checkout"]');
+    this.checkoutBtn  = page.locator('[data-test="checkout"]');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
-
   async goto(): Promise<void> {
     await this.page.goto('/cart.html');
     await this.waitForPageLoad();
@@ -31,7 +30,6 @@ export class SD_CartPage extends BasePage {
 
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-
   async assertOnCartPage(): Promise<void> {
     await expect(this.checkoutBtn).toBeVisible();
     await expect(this.page).toHaveURL('/cart.html');

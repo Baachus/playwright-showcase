@@ -34,12 +34,14 @@ import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.u
  *  - Easy to add new pages/components without touching existing tests
  */
 
-// ---- Multi-context fixture types ----
-// sd_tab2: a second Page in the SAME BrowserContext (shared session/cookies)
-// sd_standard_ctx: an independent BrowserContext logged in as standard_user
-// sd_problem_ctx: an independent BrowserContext logged in as problem_user
-// sd_glitch_ctx: an independent BrowserContext logged in as performance_glitch_user
-// sd_unauth_ctx: a fresh unauthenticated BrowserContext at the login page
+/** 
+ * ---- Multi-context fixture types ----
+ * sd_tab2: a second Page in the SAME BrowserContext (shared session/cookies)
+ * sd_standard_ctx: an independent BrowserContext logged in as standard_user
+ * sd_problem_ctx: an independent BrowserContext logged in as problem_user
+ * sd_glitch_ctx: an independent BrowserContext logged in as performance_glitch_user
+ * sd_unauth_ctx: a fresh unauthenticated BrowserContext at the login page 
+*/
 type MultiContextFixtures = {
   sd_multiContextHelper: MultiContextHelper;
   sd_tab2: Page;
@@ -77,7 +79,6 @@ type PageFixtures = {
 
 export const test = base.extend<PageFixtures>({
   // ---- Playwright.dev - Pages ----
-
   /** HomePage fixture -- navigates to home and waits for load before yielding. */
   pd_homePage: async ({ page }, use) => {
     const pd_homePage = new PD_HomePage(page);
@@ -93,7 +94,6 @@ export const test = base.extend<PageFixtures>({
   },
 
   // ---- Playwright.dev - Components ----
-
   /**
    * Navbar component -- navigates to the home page so the navbar is rendered,
    * then yields a PD_NavbarComponent scoped to nav.navbar.
@@ -152,7 +152,6 @@ export const test = base.extend<PageFixtures>({
   },
 
   // ---- Saucedemo - Standard pages ----
-
   sd_inventoryPage: async ({ page }, use) => {
     const sd_inventoryPage = new SD_InventoryPage(page);
     await sd_inventoryPage.goto();
@@ -188,6 +187,7 @@ export const test = base.extend<PageFixtures>({
     await sd_verificationPage.goto();
     await use(sd_verificationPage);
   },
+
   /**
    * echoServer -- per-test in-process WebSocket echo server bound to
    * ws://127.0.0.1:<random>.  Replaces the unreliable public
@@ -203,7 +203,6 @@ export const test = base.extend<PageFixtures>({
   },
 
   // ---- Saucedemo - Multi-context fixtures ----
-
   /**
    * MultiContextHelper -- wraps the browser object and exposes helpers for
    * creating extra tabs (same session) and windows (independent sessions).

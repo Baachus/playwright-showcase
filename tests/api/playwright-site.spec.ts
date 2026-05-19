@@ -14,6 +14,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
   test.describe('Status Codes', () => {
     test('GET / should return 200',
       async ({ request }) => {
+        await allure.allureId('API-001');
         await allure.story('Status Codes');
         await allure.label('severity', 'critical');
 
@@ -27,6 +28,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('GET /docs/intro should return 200',
       async ({ request }) => {
+        await allure.allureId('API-002');
         await allure.story('Status Codes');
         await allure.label('severity', 'critical');
 
@@ -40,6 +42,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('GET of a non-existent path should return 404',
       async ({ request }) => {
+        await allure.allureId('API-003');
         await allure.story('Status Codes');
         await allure.label('severity', 'normal');
 
@@ -55,6 +58,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
   test.describe('Response Headers', () => {
     test('should return text/html content-type for the home page',
       async ({ request }) => {
+        await allure.allureId('API-004');
         await allure.story('Response Headers');
         await allure.label('severity', 'normal');
 
@@ -72,6 +76,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('should include a cache-control header',
       async ({ request }) => {
+        await allure.allureId('API-005');
         await allure.story('Response Headers');
         await allure.label('severity', 'normal');
 
@@ -87,6 +92,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('should not expose server version information',
       async ({ request }) => {
+        await allure.allureId('API-006');
         await allure.story('Response Headers');
         await allure.label('severity', 'normal');
 
@@ -104,6 +110,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
   test.describe('Response Time SLAs', () => {
     test('home page should respond within 3 seconds',
       async ({ request }) => {
+        await allure.allureId('API-007');
         await allure.story('Response Time');
         await allure.label('severity', 'critical');
 
@@ -120,6 +127,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('docs page should respond within 3 seconds',
       async ({ request }) => {
+        await allure.allureId('API-008');
         await allure.story('Response Time');
         await allure.label('severity', 'critical');
 
@@ -138,6 +146,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
   test.describe('Content Validation', () => {
     test('home page body should contain Playwright branding',
       async ({ request }) => {
+        await allure.allureId('API-009');
         await allure.story('Content Validation');
         await allure.label('severity', 'normal');
 
@@ -151,6 +160,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('response body should not be empty',
       async ({ request }) => {
+        await allure.allureId('API-010');
         await allure.story('Content Validation');
         await allure.label('severity', 'normal');
 
@@ -166,6 +176,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
   test.describe('HTTPS & Redirects', () => {
     test('site should be served over HTTPS',
       async ({ request }) => {
+        await allure.allureId('API-011');
         await allure.story('HTTPS');
         await allure.label('severity', 'critical');
 
