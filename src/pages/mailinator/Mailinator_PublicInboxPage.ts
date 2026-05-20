@@ -60,8 +60,12 @@ export class Mailinator_PublicInboxPage extends BasePage {
   async waitForPageLoad(): Promise<void> {
     // The inbox loads progressively.  Wait for either the table to be
     // present or the "empty inbox" placeholder -- whichever appears.
-    await this.page
-      .locator('#inbox_pane, table, text=/your public inbox/i')
+    // NB: mixing the `text=` engine inside a comma-separated CSS selector is
+    // invalid; combine locators with `.or()` instead.
+    const inboxPane = this.page.locator('#inbox_pane, table').first();
+    const emptyPlaceholder = this.page.getByText(/your public inbox/i).first();
+    await inboxPane
+      .or(emptyPlaceholder)
       .first()
       .waitFor({ state: 'visible', timeout: 15_000 });
   }

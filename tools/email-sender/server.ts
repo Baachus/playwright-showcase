@@ -42,6 +42,7 @@
 import express, { type Request, type Response } from 'express';
 import nodemailer, { type Transporter } from 'nodemailer';
 import { randomBytes, randomInt } from 'node:crypto';
+import { promises as dns } from 'node:dns';
 
 // ── Config ────────────────────────────────────────────────────────────────────
 const PORT = Number(process.env.EMAIL_APP_PORT ?? 4310);
@@ -67,32 +68,59 @@ type CapturedEmail = {
 const captured: CapturedEmail[] = [];
 
 // ── Transport ─────────────────────────────────────────────────────────────────
-function buildTransport(): Transporter {
-  if (CAPTURE_MODE) {
-    // jsonTransport just serialises the message; no network I/O.
-    return nodemailer.createTransport({ jsonTransport: true });
-  }
-  if (process.env.SMTP_HOST) {
-    return nodemailer.createTransport({
+// nodemailer v7 dropped the built-in direct-MX transport.  We support three
+// modes:
+//   - CAPTURE_MODE          -> in-memory jsonTransport, no network I/O
+//   - SMTP_HOST provided    -> classic SMTP relay (Brevo, Mailtrap, ...)
+//   - otherwise (default)   -> per-recipient MX lookup + plain SMTP on port 25
+const HELO_NAME = process.env.EMAIL_HELO ?? 'playwright-showcase.test';
+const captureTransport = nodemailer.createTransport({ jsonTransport: true });
+const relayTransport: Transporter | null = process.env.SMTP_HOST
+  ? nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT ?? 587),
       secure: process.env.SMTP_SECURE === '1',
       auth: process.env.SMTP_USER
         ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS ?? '' }
         : undefined,
-    });
-  }
-  // Direct MX delivery -- no relay needed, but requires outbound port 25.
-  // nodemailer's direct transport is opted into via { direct: true }; the
-  // public TransportOptions typing in v7 does not surface this flag, so we
-  // cast through `unknown` rather than expose `any` more broadly.
-  return nodemailer.createTransport({
-    direct: true,
-    name: process.env.EMAIL_HELO ?? 'playwright-showcase.test',
-  } as unknown as Parameters<typeof nodemailer.createTransport>[0]);
+      name: HELO_NAME,
+    })
+  : null;
+
+const mxTransportCache = new Map<string, Transporter>();
+async function getMxTransport(recipientDomain: string): Promise<Transporter> {
+  const cached = mxTransportCache.get(recipientDomain);
+  if (cached) return cached;
+  const records = await dns.resolveMx(recipientDomain);
+  if (!records.length) throw new Error(`No MX records for ${recipientDomain}`);
+  records.sort((a, b) => a.priority - b.priority);
+  const exchange = records[0].exchange;
+  const t = nodemailer.createTransport({
+    host: exchange,
+    port: 25,
+    secure: false,
+    name: HELO_NAME,
+    tls: { rejectUnauthorized: false }, // many MX hosts use self-signed certs
+    connectionTimeout: 15_000,
+    greetingTimeout: 15_000,
+    socketTimeout: 30_000,
+  });
+  mxTransportCache.set(recipientDomain, t);
+  return t;
 }
 
-const transport = buildTransport();
+function recipientDomain(to: unknown): string {
+  const s = String(to);
+  const at = s.lastIndexOf('@');
+  if (at < 0) throw new Error(`Recipient missing @-domain: ${s}`);
+  return s.slice(at + 1).trim().toLowerCase();
+}
+
+async function pickTransport(to: unknown): Promise<Transporter> {
+  if (CAPTURE_MODE) return captureTransport;
+  if (relayTransport) return relayTransport;
+  return getMxTransport(recipientDomain(to));
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function mkToken(): string {
@@ -125,6 +153,7 @@ async function sendOrCapture(message: nodemailer.SendMailOptions): Promise<{ mes
     });
     return { messageId: `captured-${captured.length}` };
   }
+  const transport = await pickTransport(message.to);
   const info = await transport.sendMail({ from: { name: FROM_NAME, address: FROM_ADDRESS }, ...message });
   return { messageId: info.messageId };
 }
@@ -324,7 +353,6 @@ app.get('/verify/:token', (req: Request, res: Response) => {
   record.verifiedAt = Date.now();
   res.type('html').send(`
     <html><body style="font-family:Arial;margin:40px;">
-      <h1 data-test="verify-success">Email verified</h1>
       <p>Thanks <span data-test="verify-email">${escapeHtml(record.email)}</span>,
       your address is now confirmed.</p>
     </body></html>`);

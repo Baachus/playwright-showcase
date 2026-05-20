@@ -40,11 +40,15 @@ export default defineConfig({
           env: {
             EMAIL_APP_PORT: String(EMAIL_APP_PORT),
             EMAIL_APP_BASE_URL,
-            // Default to capture mode when CI is set OR when no SMTP relay
-            // is configured -- this keeps the suite green even where port 25
-            // is blocked.  Set EMAIL_CAPTURE=0 to attempt real delivery (via
-            // direct MX or SMTP relay).
-            EMAIL_CAPTURE: process.env.EMAIL_CAPTURE ?? (process.env.SMTP_HOST ? '0' : '1'),
+            // Default to real delivery.  The specs read from the live
+            // Mailinator public-inbox UI, so capture mode would leave the
+            // inbox empty and time out every wait-for-message poll.  When no
+            // SMTP relay is configured we fall through to nodemailer's direct
+            // MX transport (requires outbound port 25); set SMTP_HOST/... to
+            // route through a relay if port 25 is blocked.  Opt into capture
+            // mode explicitly with EMAIL_CAPTURE=1 -- it's only useful for
+            // unit-style runs that read from /captured rather than Mailinator.
+            EMAIL_CAPTURE: process.env.EMAIL_CAPTURE ?? '0',
             ...(process.env.SMTP_HOST    ? { SMTP_HOST: process.env.SMTP_HOST }    : {}),
             ...(process.env.SMTP_PORT    ? { SMTP_PORT: process.env.SMTP_PORT }    : {}),
             ...(process.env.SMTP_USER    ? { SMTP_USER: process.env.SMTP_USER }    : {}),
@@ -184,8 +188,13 @@ export default defineConfig({
       // baseURL points at the local email-sender app so emailApp.goto() and
       // /verify/:token links work directly via page.goto(...).  Tests still
       // navigate to https://www.mailinator.com/... explicitly when reading
-      // the inbox.
-      use: { ...devices['Desktop Chrome'], baseURL: EMAIL_APP_BASE_URL },
+      // the inbox.  The email-sender app marks elements with data-test=...,
+      // so set the matching testIdAttribute for getByTestId(...).
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: EMAIL_APP_BASE_URL,
+        testIdAttribute: 'data-test',
+      },
     },
   ],
 });
