@@ -20,6 +20,10 @@ import { MultiContextHelper } from '../utils/multi-context.utils.js';
 import { getSaucedemoAuthFile } from '../utils/authentication.utils.js';
 // WebSocket utilities
 import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.utils.js';
+// Email - Pages
+import { LocalEmailAppPage } from '../pages/email/LocalEmailAppPage.js';
+import { Mailinator_PublicInboxPage } from '../pages/mailinator/Mailinator_PublicInboxPage.js';
+import { mintInboxName, inboxToAddress } from '../utils/mailinator.utils.js';
 
 /**
  * Custom Fixtures
@@ -75,6 +79,16 @@ type PageFixtures = {
 
   // WebSocket -- shared local echo server
   echoServer: LocalEchoServer;
+
+  // Email -- local sender app + Mailinator public inbox
+  /** A unique Mailinator public-inbox name minted per test (no collisions). */
+  emailInbox: string;
+  /** Full mailbox address for `emailInbox` (e.g. <inbox>@mailinator.com). */
+  emailAddress: string;
+  /** Page Object for the local email-sender helper service. */
+  emailApp: LocalEmailAppPage;
+  /** Page Object for the Mailinator public inbox UI, scoped to `emailInbox`. */
+  mailinatorInbox: Mailinator_PublicInboxPage;
 } & MultiContextFixtures;
 
 export const test = base.extend<PageFixtures>({
@@ -200,6 +214,43 @@ export const test = base.extend<PageFixtures>({
     const server = await startLocalEchoServer();
     await use(server);
     await server.close();
+  },
+
+  // ---- Email -- local sender + Mailinator ----
+  /**
+   * emailInbox -- a fresh public-inbox name minted per test.  Mailinator's
+   * public inboxes are world-readable, so we never reuse a fixed name -- a
+   * unique one per test prevents any chance of collision.
+   */
+  emailInbox: async ({}, use) => {
+    await use(mintInboxName('pwshowcase'));
+  },
+
+  /** Full `<inbox>@mailinator.com` address derived from `emailInbox`. */
+  emailAddress: async ({ emailInbox }, use) => {
+    await use(inboxToAddress(emailInbox));
+  },
+
+  /**
+   * emailApp -- LocalEmailAppPage bound to the running helper service.
+   * The service URL comes from the EMAIL_APP_BASE_URL env var (set by the
+   * `webServer` block in playwright.config.ts), defaulting to localhost:4310.
+   * The fixture resets the server's in-memory state before each test.
+   */
+  emailApp: async ({ page }, use) => {
+    const baseURL = process.env.EMAIL_APP_BASE_URL ?? 'http://localhost:4310';
+    const app = new LocalEmailAppPage(page, baseURL);
+    await app.reset();
+    await use(app);
+  },
+
+  /**
+   * mailinatorInbox -- Mailinator_PublicInboxPage scoped to this test's
+   * unique inbox.  Does NOT navigate by default -- the test triggers a
+   * send first and then calls .goto() to start polling.
+   */
+  mailinatorInbox: async ({ page, emailInbox }, use) => {
+    await use(new Mailinator_PublicInboxPage(page, emailInbox));
   },
 
   // ---- Saucedemo - Multi-context fixtures ----

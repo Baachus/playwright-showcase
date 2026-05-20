@@ -35,13 +35,18 @@
     "test:websocket": "playwright test tests/websocket --project=WebSocket-Mock --project=WebSocket-Realtime",
     "test:ws-mock": "playwright test tests/websocket --project=WebSocket-Mock",
     "test:ws-realtime": "playwright test tests/websocket --project=WebSocket-Realtime",
-    "test:ws-mock:smoke": "playwright test tests/websocket --project=WebSocket-Mock --grep @smoke"
+    "test:ws-mock:smoke": "playwright test tests/websocket --project=WebSocket-Mock --grep @smoke",
+    "test:email": "playwright test tests/email --project=Email",
+    "test:email:smoke": "playwright test tests/email --project=Email --grep @smoke",
+    "email:server": "tsx tools/email-sender/server.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@faker-js/faker": "^10.4.0",
     "@playwright/test": "^1.59.1",
+    "@types/express": "^5.0.0",
     "@types/node": "^25.6.2",
+    "@types/nodemailer": "^7.0.0",
     "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.59.2",
     "@typescript-eslint/parser": "^8.59.2",
@@ -53,8 +58,11 @@
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-playwright": "^2.10.2",
+    "express": "^5.0.0",
     "lighthouse": "^13.3.0",
+    "nodemailer": "^7.0.0",
     "prettier": "^3.8.3",
+    "tsx": "^4.19.0",
     "typescript": "^6.0.3",
     "ws": "^8.18.1"
   },

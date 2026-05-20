@@ -17,6 +17,7 @@ A production-grade **Playwright + TypeScript** testing showcase covering a wide 
   - [Run in Headed / Debug Mode](#run-in-headed--debug-mode)
   - [Run by Tag](#run-by-tag)
   - [Run Specific Test Scenarios](#run-specific-test-scenarios)
+- [Email Verification Tests](#email-verification-tests)
 - [Allure Reports](#allure-reports)
   - [Generate and Open a Report](#generate-and-open-a-report)
   - [Single-File Report](#single-file-report)
@@ -190,6 +191,8 @@ This runs every project in `playwright.config.ts` in parallel, including setup p
 | WebSocket (all) | `npm run test:websocket` |
 | WebSocket mock only | `npm run test:ws-mock` |
 | WebSocket realtime only | `npm run test:ws-realtime` |
+| Email verification | `npm run test:email` |
+| Email verification (smoke only) | `npm run test:email:smoke` |
 
 ---
 
@@ -278,6 +281,76 @@ npx playwright test tests/performance --project=Performance
 ```bash
 npx playwright test tests/ui/saucedemo/checkout.spec.ts --project="Saucedemo Chromium"
 ```
+
+#### Email Verification
+
+```bash
+# All four scenarios: content, verification-link, OTP, attachment
+npm run test:email
+
+# Smoke subset only
+npm run test:email:smoke
+```
+
+---
+
+## Email Verification Tests
+
+The `Email` project exercises a full inbox-based verification flow:
+
+1. A small local helper service (`tools/email-sender/`) sends real emails via
+   Express + nodemailer.  It is **not** the system under test in the strict
+   sense -- `the-internet.herokuapp.com` (the project's main demo target)
+   doesn't actually send mail and Mailinator's read API is paid-only.  The
+   helper acts as a controllable stand-in for an upstream service so the
+   verification *flow* can be exercised end-to-end.
+2. The helper sends to a fresh, unique Mailinator public inbox per test
+   (minted via `mintInboxName()` so runs never collide).
+3. Playwright drives Mailinator's free public-inbox web UI to read the
+   message, extract the verification link / OTP code, and follow through.
+
+### Scenarios
+
+| Spec | What it covers |
+| --- | --- |
+| `email-content.spec.ts` | Email arrives in Mailinator with expected subject + body |
+| `email-verification-link.spec.ts` | Extract link from email and complete the verify flow |
+| `email-otp.spec.ts` | Parse the 6-digit one-time code from the email |
+| `email-attachment.spec.ts` | Attachment is surfaced and HTML body renders correctly |
+
+### Delivery modes
+
+The helper supports three transports, picked up via env vars:
+
+| Mode | When to use | How |
+| --- | --- | --- |
+| **Capture** (default) | Quick local runs, CI without outbound port 25 | `EMAIL_CAPTURE=1` (set automatically when no `SMTP_HOST` is provided) -- emails are kept in memory, accessible via `GET /captured`. |
+| **Direct MX** | Local dev where port 25 is open | `EMAIL_CAPTURE=0` with no `SMTP_HOST` -- nodemailer looks up the recipient's MX records and delivers directly to Mailinator's mail servers. |
+| **SMTP relay** | CI / restricted networks | Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (Brevo / SendGrid / Mailtrap, etc.). |
+
+### Running with real Mailinator delivery
+
+```bash
+# Direct MX (port 25 must be open outbound)
+EMAIL_CAPTURE=0 npm run test:email
+
+# Through an SMTP relay
+EMAIL_CAPTURE=0 \
+  SMTP_HOST=smtp-relay.example.com SMTP_PORT=587 \
+  SMTP_USER=apikey SMTP_PASS=*** \
+  npm run test:email
+```
+
+### Local interactive helper
+
+You can also start the helper independently and drive it from a browser:
+
+```bash
+npm run email:server
+# then open http://localhost:4310/
+```
+
+See `tools/email-sender/README.md` for the full endpoint list.
 
 ---
 
