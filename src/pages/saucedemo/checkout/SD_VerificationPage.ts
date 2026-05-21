@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../../BasePage.js';
+import { InventoryItem, SD_InventoryItemComponent } from '../../../components/saucedemo/SD_InventoryItemComponent.js';
 
 /**
  * SD_VerificationPage
@@ -53,8 +54,26 @@ export class SD_VerificationPage extends BasePage {
   }
 
   // ── Actions ─────────────────────────────────────────────────────────────────
-  async getInventoryInformation(count: number): Promise<Locator> {
-    return await this.inventoryItem.nth(count);
+  /**
+   * Return the raw Locator for an item card at the given index.
+   */
+  async getInventoryInformation(index: number): Promise<Locator> {
+    return this.inventoryItem.nth(index);
+  }
+
+  /**
+   * Return an {@link SD_InventoryItemComponent} for the card at position `index`.
+   */
+  getItemComponent(index: number): SD_InventoryItemComponent {
+    return new SD_InventoryItemComponent(this.page, this.inventoryItem.nth(index), index);
+  }
+
+  /**
+   * Snapshot all readable fields for the card at position `index` into a
+   * plain {@link InventoryItem} record (including priceText and quantity).
+   */
+  async getSpecificItemDetails(index: number): Promise<InventoryItem> {
+    return this.getItemComponent(index).getData();
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────

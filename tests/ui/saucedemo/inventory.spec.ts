@@ -12,7 +12,7 @@ test.beforeEach(async()=>{
     await allure.feature('Inventory');
 });
 
-test.describe('Inventory Page', { tag: ['@ui'] }, () => {
+test.describe('Inventory Page', { tag: ['@ui', '@inventory'] }, () => {
   // ── Page load & structure ──────────────────────────────────────────────────
   test('should display the inventory page with the "Products" title', async ({ sd_inventoryPage }) => {
     await allure.allureId('UI-INV-001');
@@ -213,7 +213,7 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
       const page2Promise = page.waitForEvent('popup');
       sd_inventoryPage.clickSocialIcon('twitter');
       const page2 = await page2Promise;
-      await expect(page2.getByText('Sauce Labs helps').first()).toBeVisible();
+      await expect(page2.getByText('Sauce Labs helps').first()).toBeVisible({timeout: 30_000}); // x.com goes extremely slow sometimes
     });
   });
 
@@ -231,4 +231,3 @@ test.describe('Inventory Page', { tag: ['@ui'] }, () => {
     });
   });
 });
-

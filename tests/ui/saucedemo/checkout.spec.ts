@@ -12,7 +12,7 @@ test.beforeEach(async()=>{
     await allure.feature('Checkout');
 });
 
-test.describe('Checkout Page', { tag: ['@ui'] }, () => {
+test.describe('Checkout Page', { tag: ['@ui', '@checkout'] }, () => {
   test('should add a single item to the cart and checkout', { tag: ['@smoke'] }, 
     async ({ 
     sd_inventoryPage,
@@ -23,6 +23,7 @@ test.describe('Checkout Page', { tag: ['@ui'] }, () => {
     await allure.allureId('UI-CK-001');
     await allure.story('Checkout With One Item');
     await allure.label('severity', 'critical');
+
     await allure.step('Add Item to Cart and Verify Badge', async()=>{
         await sd_inventoryPage.goto();
         const [firstItem] = await sd_inventoryPage.getAllItems();
@@ -170,7 +171,7 @@ test.describe('Checkout Page', { tag: ['@ui'] }, () => {
     });
   });
   
-  test('should no items to the cart and checkout', { tag: [] }, 
+  test('should show no items added and checkout', { tag: [] }, 
     async ({ 
     sd_inventoryPage,
     sd_cartPage,
@@ -210,6 +211,43 @@ test.describe('Checkout Page', { tag: ['@ui'] }, () => {
         await expect(await sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
         await sd_confirmationPage.backHomeBtn.click();
         await sd_inventoryPage.assertOnInventoryPage();
+    });
+  });
+  
+  test('should return to inventory when cancel clicked', { tag: [] }, 
+    async ({ 
+    sd_inventoryPage,
+    sd_cartPage,
+    sd_infoPage,
+    sd_verificationPage }) => {
+    await allure.allureId('UI-CK-005');
+    await allure.story('Cancel On Confirmation Page');
+    await allure.label('severity', 'trivial');
+
+    await allure.step('Add Item to Cart', async()=>{
+        await sd_inventoryPage.goto();
+        const [firstItem] = await sd_inventoryPage.getAllItems();
+        await sd_inventoryPage.addItemToCart(firstItem.name);
+    });
+
+    await allure.step('Click the Cart and Navigate to the Cart Information Page', async()=>{
+        await sd_inventoryPage.cartBadge.click();
+    });
+
+    await allure.step('Fill in Shipping Information', async()=>{
+        await sd_cartPage.checkoutBtn.click();
+        await sd_infoPage.firstName.fill(faker.person.firstName());
+        await sd_infoPage.lastName.fill(faker.person.lastName());
+        await sd_infoPage.zipCode.fill(faker.location.zipCode());
+        await sd_infoPage.checkoutBtn.click();
+    });
+    
+    await allure.step('Cancel Confirmation and Verify on Inventory Page with Cart Still Filled', async()=>{
+        await sd_verificationPage.cancelBtn.click();
+        await sd_inventoryPage.assertOnInventoryPage();
+        
+        const count = await sd_inventoryPage.getCartCount();
+        expect(count).toBe(1);
     });
   });
 });
