@@ -11,7 +11,7 @@ test.beforeEach(async()=>{
     await allure.feature('Authentication');
 });
 
-test.describe('Saucedemo – Authentication', { tag: ['@ui'] }, () => {
+test.describe('Saucedemo – Authentication', { tag: ['@ui', '@login'] }, () => {
   // ── Valid Login ──────────────────────────────────────────────────
   test('is logged in via saved auth state', { tag: ['@smoke'] }, async ({ page }) => {
     await allure.allureId('UI-LG-001');

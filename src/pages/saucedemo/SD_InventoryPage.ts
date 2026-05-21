@@ -1,17 +1,8 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
+import { InventoryItem, SD_InventoryItemComponent } from '../../components/saucedemo/SD_InventoryItemComponent.js';
 
-/**
- * InventoryItem
- * ─────────────────────────────────────────────────────────────────────────────
- * Lightweight data shape returned by inventory helpers.
- */
-export interface InventoryItem {
-  name: string;
-  description: string;
-  price: number;
-  index: number;
-}
+export type { InventoryItem };
 
 /**
  * SortOption
@@ -100,19 +91,21 @@ export class SD_InventoryPage extends BasePage {
   }
 
   /**
-   * Collect name, description, price, and positional index for every item.
+   * Return an {@link SD_InventoryItemComponent} for the card at position `index`.
+   */
+  getItemComponent(index: number): SD_InventoryItemComponent {
+    return new SD_InventoryItemComponent(this.page, this.inventoryItems.nth(index), index);
+  }
+
+  /**
+   * Collect name, description, price, priceText, and positional index for every item.
    */
   async getAllItems(): Promise<InventoryItem[]> {
     const count = await this.getItemCount();
     const items: InventoryItem[] = [];
 
     for (let i = 0; i < count; i++) {
-      const card        = this.inventoryItems.nth(i);
-      const name        = await card.locator('.inventory_item_name').innerText();
-      const description = await card.locator('.inventory_item_desc').innerText();
-      const priceText   = await card.locator('.inventory_item_price').innerText();
-      const price       = parseFloat(priceText.replace('$', ''));
-      items.push({ name, description, price, index: i });
+      items.push(await this.getItemComponent(i).getData());
     }
 
     return items;
