@@ -8,6 +8,8 @@ import { PD_SearchComponent } from '../components/playwrightdev/PD_SearchCompone
 import { PD_CodeBlockComponent } from '../components/playwrightdev/PD_CodeBlockComponent.js';
 import { PD_LanguageSelectorComponent } from '../components/playwrightdev/PD_LanguageSelectorComponent.js';
 import { PD_FooterComponent } from '../components/playwrightdev/PD_FooterComponent.js';
+// The Internet - Pages
+import { TI_ABTestPage } from '../pages/the-internet/TI_ABTestPage.js';
 // Saucedemo - Pages
 import { SD_LoginPage } from '../pages/saucedemo/SD_LoginPage.js';
 import { SD_InventoryPage } from '../pages/saucedemo/SD_InventoryPage.js';
@@ -53,6 +55,9 @@ type MultiContextFixtures = {
 
 // Define the shape of our custom fixtures
 type PageFixtures = {
+  // The Internet - Pages
+  ti_abTestPage: TI_ABTestPage;
+
   // Playwright.dev - Pages
   pd_homePage: PD_HomePage;
   pd_docsPage: PD_DocsPage;
@@ -78,6 +83,14 @@ type PageFixtures = {
 } & MultiContextFixtures;
 
 export const test = base.extend<PageFixtures>({
+  // ---- The Internet - Pages ----
+  /** ABTestPage fixture -- navigates to /abtest and waits for the heading before yielding. */
+  ti_abTestPage: async ({ page }, use) => {
+    const ti_abTestPage = new TI_ABTestPage(page);
+    await ti_abTestPage.goto();
+    await use(ti_abTestPage);
+  },
+
   // ---- Playwright.dev - Pages ----
   /** HomePage fixture -- navigates to home and waits for load before yielding. */
   pd_homePage: async ({ page }, use) => {
