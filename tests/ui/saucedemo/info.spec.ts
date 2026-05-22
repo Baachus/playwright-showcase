@@ -8,7 +8,7 @@ import { faker } from '@faker-js/faker';
  */
 test.beforeEach(async()=>{
     await allure.epic('Saucedemo');
-    await allure.feature('Checkout');
+    await allure.feature('Shipping Information');
 });
 
 test.describe('Shipping Information Page', { tag: ['@ui', '@shippingInfo'] }, () => {
