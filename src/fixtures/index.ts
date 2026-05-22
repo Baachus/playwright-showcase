@@ -10,6 +10,7 @@ import { PD_LanguageSelectorComponent } from '../components/playwrightdev/PD_Lan
 import { PD_FooterComponent } from '../components/playwrightdev/PD_FooterComponent.js';
 // The Internet - Pages
 import { TI_ABTestPage } from '../pages/the-internet/TI_ABTestPage.js';
+import { TI_AddRemovePage } from '@pages/the-internet/TI_AddRemovePage.js';
 // Saucedemo - Pages
 import { SD_LoginPage } from '../pages/saucedemo/SD_LoginPage.js';
 import { SD_InventoryPage } from '../pages/saucedemo/SD_InventoryPage.js';
@@ -57,6 +58,7 @@ type MultiContextFixtures = {
 type PageFixtures = {
   // The Internet - Pages
   ti_abTestPage: TI_ABTestPage;
+  ti_addRemovePage: TI_AddRemovePage;
 
   // Playwright.dev - Pages
   pd_homePage: PD_HomePage;
@@ -90,6 +92,14 @@ export const test = base.extend<PageFixtures>({
     await ti_abTestPage.goto();
     await use(ti_abTestPage);
   },
+  
+  /** ABTestPage fixture -- navigates to /abtest and waits for the heading before yielding. */
+  ti_addRemovePage: async ({ page }, use) => {
+    const ti_addRemovePage = new TI_AddRemovePage(page);
+    await ti_addRemovePage.goto();
+    await use(ti_addRemovePage);
+  },
+  
 
   // ---- Playwright.dev - Pages ----
   /** HomePage fixture -- navigates to home and waits for load before yielding. */
