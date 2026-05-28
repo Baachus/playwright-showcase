@@ -2,28 +2,32 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 
 /**
- * TI_AddRemovePage
+ * TI_DigestAuthPage
  * ─────────────────────────────────────────────────────────────────────────────
- * Represents the Add Remove Elements Test page on the-internet.herokuapp.com (/add_remove_elements).
+ * Represents the Digest Authentication page on the-internet.herokuapp.com (/digest_auth).
+ *
+ * NOTE: Digest Auth is a browser-level challenge. Playwright does not natively
+ * support Digest Auth via setExtraHTTPHeaders (that only works for Basic Auth).
+ * The recommended approach is to use a CDP session or rely on the browser's
+ * built-in credential handling via page.authenticate().
  */
-export class TI_AddRemovePage extends BasePage {
+export class TI_DigestAuthPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly title: Locator;
-  readonly addElement:   Locator;
-  readonly deleteElement:   Locator;
+  readonly successText: Locator;
 
   constructor(page: Page) {
     super(page);
-
-    this.title = page.getByRole('heading', { name: 'Add/Remove Elements' });
-    this.addElement = page.getByRole('button', { name: 'Add Element' });
-    this.deleteElement = page.getByRole('button', { name: 'Delete' });
+    this.title = page.getByRole('heading', { name: 'Digest Auth' });
+    this.successText = page.getByText('Congratulations! You must have the proper credentials.');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
+  /**
+   * Navigate without credentials — will result in a 401 page.
+   */
   async goto(): Promise<void> {
-    await this.page.goto('/add_remove_elements/');
-    await this.waitForPageLoad();
+    await this.page.goto('/digest_auth');
   }
 
   async waitForPageLoad(): Promise<void> {
@@ -31,15 +35,22 @@ export class TI_AddRemovePage extends BasePage {
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────
-  async getNthDeleteButton(count: number): Promise<Locator> {
-    return this.deleteElement.nth(count);
+  /**
+   * Navigate with valid credentials embedded in the URL.
+   * This works for Digest Auth on the-internet (the server accepts URL-embedded creds).
+   */
+  async validLogin(username = 'admin', password = 'admin'): Promise<void> {
+    const url = `https://${username}:${password}@the-internet.herokuapp.com/digest_auth`;
+    await this.page.goto(url);
+    await this.waitForPageLoad();
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-  /**
-   * Assert the page loaded on the correct URL.
-   */
-  async assertOnAddRemoveElementPage(): Promise<void> {
-    await expect(this.page).toHaveURL(/\/add_remove_element/);
+  async assertOnPage(): Promise<void> {
+    await expect(this.page).toHaveURL(/\/digest_auth/);
+  }
+
+  async assertLoginSuccess(): Promise<void> {
+    await expect(this.successText).toBeVisible();
   }
 }

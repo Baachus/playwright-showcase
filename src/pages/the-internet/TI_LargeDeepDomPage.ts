@@ -2,44 +2,60 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 
 /**
- * TI_AddRemovePage
+ * TI_LargeDeepDomPage
  * ─────────────────────────────────────────────────────────────────────────────
- * Represents the Add Remove Elements Test page on the-internet.herokuapp.com (/add_remove_elements).
+ * Represents the Large & Deep DOM page on the-internet.herokuapp.com (/large).
  */
-export class TI_AddRemovePage extends BasePage {
+export class TI_LargeDeepDomPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly title: Locator;
-  readonly addElement:   Locator;
-  readonly deleteElement:   Locator;
+  readonly largeTable: Locator;
+  readonly tableRows: Locator;
+  readonly siblings: Locator;
 
   constructor(page: Page) {
     super(page);
-
-    this.title = page.getByRole('heading', { name: 'Add/Remove Elements' });
-    this.addElement = page.getByRole('button', { name: 'Add Element' });
-    this.deleteElement = page.getByRole('button', { name: 'Delete' });
+    this.title = page.getByRole('heading', { name: 'Large & Deep DOM' });
+    this.largeTable = page.locator('#large-table');
+    this.tableRows = page.locator('#large-table tbody tr');
+    this.siblings = page.locator('#siblings');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
   async goto(): Promise<void> {
-    await this.page.goto('/add_remove_elements/');
+    await this.page.goto('/large');
     await this.waitForPageLoad();
   }
 
   async waitForPageLoad(): Promise<void> {
     await this.title.waitFor({ state: 'visible' });
+    await this.largeTable.waitFor({ state: 'visible' });
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────
-  async getNthDeleteButton(count: number): Promise<Locator> {
-    return this.deleteElement.nth(count);
+  async getRowCount(): Promise<number> {
+    return this.tableRows.count();
+  }
+
+  async getCellText(row: number, col: number): Promise<string> {
+    return this.tableRows.nth(row).locator('td').nth(col).innerText();
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-  /**
-   * Assert the page loaded on the correct URL.
-   */
-  async assertOnAddRemoveElementPage(): Promise<void> {
-    await expect(this.page).toHaveURL(/\/add_remove_element/);
+  async assertOnPage(): Promise<void> {
+    await expect(this.page).toHaveURL(/\/large/);
+  }
+
+  async assertTableVisible(): Promise<void> {
+    await expect(this.largeTable).toBeVisible();
+  }
+
+  async assertSiblingsVisible(): Promise<void> {
+    await expect(this.siblings).toBeAttached();
+  }
+
+  async assertTableHasManyRows(): Promise<void> {
+    const count = await this.getRowCount();
+    expect(count).toBeGreaterThan(10);
   }
 }

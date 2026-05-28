@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { test, expect } from '../../../src/fixtures/index.js';
 import { TI_AddRemovePage } from '../../../src/pages/the-internet/TI_AddRemovePage.js';
 import * as allure from 'allure-js-commons';
@@ -30,6 +31,28 @@ test.describe('The Internet – Add Remove Element Testing', { tag: ['@ui', '@th
     await allure.step('Add an Element and Verify Its Visible', async () => {
       await ti_addRemovePage.addElement.click();
       await expect(ti_addRemovePage.deleteElement).toBeVisible();
+    });
+  });
+
+  test('should add multiple delete buttons and remove them all', async({ ti_addRemovePage })=>{
+    await allure.allureId('TI-AR-002');
+    await allure.story('Remove Random Delete Elements');
+    await allure.label('severity', 'normal');
+
+    const numberOfDeletes = faker.number.int({max: 20});
+
+    await allure.step(`Add ${numberOfDeletes} Elements`, async()=>{
+      for(let i = 0; i < numberOfDeletes; i++) {
+        await ti_addRemovePage.addElement.click();
+      }
+      await expect(await ti_addRemovePage.deleteElement).toHaveCount(numberOfDeletes);
+    });
+
+    await allure.step('Remove all Delete Buttons', async()=>{
+      for(let i = 0; i < numberOfDeletes; i++) {
+        await (await ti_addRemovePage.getNthDeleteButton(0)).click();
+      }
+      await expect(await ti_addRemovePage.deleteElement).toBeHidden();
     });
   });
 });

@@ -2,27 +2,26 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 
 /**
- * TI_AddRemovePage
+ * TI_ForgotPasswordPage
  * ─────────────────────────────────────────────────────────────────────────────
- * Represents the Add Remove Elements Test page on the-internet.herokuapp.com (/add_remove_elements).
+ * Represents the Forgot Password page on the-internet.herokuapp.com (/forgot_password).
  */
-export class TI_AddRemovePage extends BasePage {
+export class TI_ForgotPasswordPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly title: Locator;
-  readonly addElement:   Locator;
-  readonly deleteElement:   Locator;
+  readonly emailInput: Locator;
+  readonly submitButton: Locator;
 
   constructor(page: Page) {
     super(page);
-
-    this.title = page.getByRole('heading', { name: 'Add/Remove Elements' });
-    this.addElement = page.getByRole('button', { name: 'Add Element' });
-    this.deleteElement = page.getByRole('button', { name: 'Delete' });
+    this.title = page.getByRole('heading', { name: 'Forgot Password' });
+    this.emailInput = page.locator('#email');
+    this.submitButton = page.locator('#form_submit');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
   async goto(): Promise<void> {
-    await this.page.goto('/add_remove_elements/');
+    await this.page.goto('/forgot_password');
     await this.waitForPageLoad();
   }
 
@@ -30,16 +29,32 @@ export class TI_AddRemovePage extends BasePage {
     await this.title.waitFor({ state: 'visible' });
   }
 
+  // ── Actions ─────────────────────────────────────────────────────────────────
+  async enterEmail(email: string): Promise<void> {
+    await this.emailInput.fill(email);
+  }
+
+  async submit(): Promise<void> {
+    await this.submitButton.click();
+  }
+
+  async requestPasswordReset(email: string): Promise<void> {
+    await this.enterEmail(email);
+    await this.submit();
+  }
+
   // ── Queries ─────────────────────────────────────────────────────────────────
-  async getNthDeleteButton(count: number): Promise<Locator> {
-    return this.deleteElement.nth(count);
+  async getEmailValue(): Promise<string> {
+    return this.emailInput.inputValue();
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-  /**
-   * Assert the page loaded on the correct URL.
-   */
-  async assertOnAddRemoveElementPage(): Promise<void> {
-    await expect(this.page).toHaveURL(/\/add_remove_element/);
+  async assertOnPage(): Promise<void> {
+    await expect(this.page).toHaveURL(/\/forgot_password/);
+  }
+
+  async assertFormVisible(): Promise<void> {
+    await expect(this.emailInput).toBeVisible();
+    await expect(this.submitButton).toBeVisible();
   }
 }

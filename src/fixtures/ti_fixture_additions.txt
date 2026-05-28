@@ -1,0 +1,385 @@
+// ============================================================
+// TI FIXTURE ADDITIONS — paste these into src/fixtures/index.ts
+// ============================================================
+
+// ── 1. IMPORT LINES ─────────────────────────────────────────
+// Add these after the existing TI imports (after TI_BrokenImagesPage line):
+
+import { TI_ChallengingDomPage } from '@pages/the-internet/TI_ChallengingDomPage.js';
+import { TI_CheckboxesPage } from '@pages/the-internet/TI_CheckboxesPage.js';
+import { TI_ContextMenuPage } from '@pages/the-internet/TI_ContextMenuPage.js';
+import { TI_DigestAuthPage } from '@pages/the-internet/TI_DigestAuthPage.js';
+import { TI_DisappearingElementsPage } from '@pages/the-internet/TI_DisappearingElementsPage.js';
+import { TI_DragAndDropPage } from '@pages/the-internet/TI_DragAndDropPage.js';
+import { TI_DropdownPage } from '@pages/the-internet/TI_DropdownPage.js';
+import { TI_DynamicContentPage } from '@pages/the-internet/TI_DynamicContentPage.js';
+import { TI_DynamicControlsPage } from '@pages/the-internet/TI_DynamicControlsPage.js';
+import { TI_DynamicLoadingPage } from '@pages/the-internet/TI_DynamicLoadingPage.js';
+import { TI_EntryAdPage } from '@pages/the-internet/TI_EntryAdPage.js';
+import { TI_ExitIntentPage } from '@pages/the-internet/TI_ExitIntentPage.js';
+import { TI_FileDownloadPage } from '@pages/the-internet/TI_FileDownloadPage.js';
+import { TI_FileUploadPage } from '@pages/the-internet/TI_FileUploadPage.js';
+import { TI_FloatingMenuPage } from '@pages/the-internet/TI_FloatingMenuPage.js';
+import { TI_ForgotPasswordPage } from '@pages/the-internet/TI_ForgotPasswordPage.js';
+import { TI_FormAuthenticationPage } from '@pages/the-internet/TI_FormAuthenticationPage.js';
+import { TI_IFramePage } from '@pages/the-internet/TI_IFramePage.js';
+import { TI_GeolocationPage } from '@pages/the-internet/TI_GeolocationPage.js';
+import { TI_HorizontalSliderPage } from '@pages/the-internet/TI_HorizontalSliderPage.js';
+import { TI_HoversPage } from '@pages/the-internet/TI_HoversPage.js';
+import { TI_InfiniteScrollPage } from '@pages/the-internet/TI_InfiniteScrollPage.js';
+import { TI_InputsPage } from '@pages/the-internet/TI_InputsPage.js';
+import { TI_JQueryUIMenuPage } from '@pages/the-internet/TI_JQueryUIMenuPage.js';
+import { TI_JavaScriptAlertsPage } from '@pages/the-internet/TI_JavaScriptAlertsPage.js';
+import { TI_JavaScriptErrorPage } from '@pages/the-internet/TI_JavaScriptErrorPage.js';
+import { TI_KeyPressesPage } from '@pages/the-internet/TI_KeyPressesPage.js';
+import { TI_LargeDeepDomPage } from '@pages/the-internet/TI_LargeDeepDomPage.js';
+import { TI_MultipleWindowsPage } from '@pages/the-internet/TI_MultipleWindowsPage.js';
+import { TI_NestedFramesPage } from '@pages/the-internet/TI_NestedFramesPage.js';
+import { TI_NotificationMessagesPage } from '@pages/the-internet/TI_NotificationMessagesPage.js';
+import { TI_RedirectLinkPage } from '@pages/the-internet/TI_RedirectLinkPage.js';
+import { TI_SecureFileDownloadPage } from '@pages/the-internet/TI_SecureFileDownloadPage.js';
+import { TI_ShadowDomPage } from '@pages/the-internet/TI_ShadowDomPage.js';
+import { TI_ShiftingContentPage } from '@pages/the-internet/TI_ShiftingContentPage.js';
+import { TI_SlowResourcesPage } from '@pages/the-internet/TI_SlowResourcesPage.js';
+import { TI_SortableDataTablesPage } from '@pages/the-internet/TI_SortableDataTablesPage.js';
+import { TI_StatusCodesPage } from '@pages/the-internet/TI_StatusCodesPage.js';
+import { TI_TyposPage } from '@pages/the-internet/TI_TyposPage.js';
+import { TI_WYSIWYGEditorPage } from '@pages/the-internet/TI_WYSIWYGEditorPage.js';
+
+
+// ── 2. PageFixtures TYPE ADDITIONS ──────────────────────────
+// Add these inside the PageFixtures type, after ti_brokenImagePage:
+
+  ti_challengingDomPage: TI_ChallengingDomPage;
+  ti_checkboxesPage: TI_CheckboxesPage;
+  ti_contextMenuPage: TI_ContextMenuPage;
+  ti_digestAuthPage: TI_DigestAuthPage;
+  ti_disappearingElementsPage: TI_DisappearingElementsPage;
+  ti_dragAndDropPage: TI_DragAndDropPage;
+  ti_dropdownPage: TI_DropdownPage;
+  ti_dynamicContentPage: TI_DynamicContentPage;
+  ti_dynamicControlsPage: TI_DynamicControlsPage;
+  ti_dynamicLoadingPage: TI_DynamicLoadingPage;
+  ti_entryAdPage: TI_EntryAdPage;
+  ti_exitIntentPage: TI_ExitIntentPage;
+  ti_fileDownloadPage: TI_FileDownloadPage;
+  ti_fileUploadPage: TI_FileUploadPage;
+  ti_floatingMenuPage: TI_FloatingMenuPage;
+  ti_forgotPasswordPage: TI_ForgotPasswordPage;
+  ti_formAuthenticationPage: TI_FormAuthenticationPage;
+  ti_iFramePage: TI_IFramePage;
+  ti_geolocationPage: TI_GeolocationPage;
+  ti_horizontalSliderPage: TI_HorizontalSliderPage;
+  ti_hoversPage: TI_HoversPage;
+  ti_infiniteScrollPage: TI_InfiniteScrollPage;
+  ti_inputsPage: TI_InputsPage;
+  ti_jQueryUIMenuPage: TI_JQueryUIMenuPage;
+  ti_javaScriptAlertsPage: TI_JavaScriptAlertsPage;
+  ti_javaScriptErrorPage: TI_JavaScriptErrorPage;
+  ti_keyPressesPage: TI_KeyPressesPage;
+  ti_largeDeepDomPage: TI_LargeDeepDomPage;
+  ti_multipleWindowsPage: TI_MultipleWindowsPage;
+  ti_nestedFramesPage: TI_NestedFramesPage;
+  ti_notificationMessagesPage: TI_NotificationMessagesPage;
+  ti_redirectLinkPage: TI_RedirectLinkPage;
+  ti_secureFileDownloadPage: TI_SecureFileDownloadPage;
+  ti_shadowDomPage: TI_ShadowDomPage;
+  ti_shiftingContentPage: TI_ShiftingContentPage;
+  ti_slowResourcesPage: TI_SlowResourcesPage;
+  ti_sortableDataTablesPage: TI_SortableDataTablesPage;
+  ti_statusCodesPage: TI_StatusCodesPage;
+  ti_typosPage: TI_TyposPage;
+  ti_wysiwygEditorPage: TI_WYSIWYGEditorPage;
+
+
+// ── 3. FIXTURE IMPLEMENTATION BLOCKS ────────────────────────
+// Add these inside the export const test = base.extend<PageFixtures>({...})
+// after the existing ti_brokenImagePage fixture block:
+
+  /** ChallengingDomPage fixture -- navigates to /challenging_dom before yielding. */
+  ti_challengingDomPage: async ({ page }, use) => {
+    const ti_challengingDomPage = new TI_ChallengingDomPage(page);
+    await ti_challengingDomPage.goto();
+    await use(ti_challengingDomPage);
+  },
+
+  /** CheckboxesPage fixture -- navigates to /checkboxes before yielding. */
+  ti_checkboxesPage: async ({ page }, use) => {
+    const ti_checkboxesPage = new TI_CheckboxesPage(page);
+    await ti_checkboxesPage.goto();
+    await use(ti_checkboxesPage);
+  },
+
+  /** ContextMenuPage fixture -- navigates to /context_menu before yielding. */
+  ti_contextMenuPage: async ({ page }, use) => {
+    const ti_contextMenuPage = new TI_ContextMenuPage(page);
+    await ti_contextMenuPage.goto();
+    await use(ti_contextMenuPage);
+  },
+
+  /**
+   * DigestAuthPage fixture -- does NOT auto-navigate.
+   * Digest Auth requires credentials; tests call validLogin() to drive the flow.
+   */
+  ti_digestAuthPage: async ({ page }, use) => {
+    const ti_digestAuthPage = new TI_DigestAuthPage(page);
+    await use(ti_digestAuthPage);
+  },
+
+  /** DisappearingElementsPage fixture -- navigates to /disappearing_elements before yielding. */
+  ti_disappearingElementsPage: async ({ page }, use) => {
+    const ti_disappearingElementsPage = new TI_DisappearingElementsPage(page);
+    await ti_disappearingElementsPage.goto();
+    await use(ti_disappearingElementsPage);
+  },
+
+  /** DragAndDropPage fixture -- navigates to /drag_and_drop before yielding. */
+  ti_dragAndDropPage: async ({ page }, use) => {
+    const ti_dragAndDropPage = new TI_DragAndDropPage(page);
+    await ti_dragAndDropPage.goto();
+    await use(ti_dragAndDropPage);
+  },
+
+  /** DropdownPage fixture -- navigates to /dropdown before yielding. */
+  ti_dropdownPage: async ({ page }, use) => {
+    const ti_dropdownPage = new TI_DropdownPage(page);
+    await ti_dropdownPage.goto();
+    await use(ti_dropdownPage);
+  },
+
+  /** DynamicContentPage fixture -- navigates to /dynamic_content before yielding. */
+  ti_dynamicContentPage: async ({ page }, use) => {
+    const ti_dynamicContentPage = new TI_DynamicContentPage(page);
+    await ti_dynamicContentPage.goto();
+    await use(ti_dynamicContentPage);
+  },
+
+  /** DynamicControlsPage fixture -- navigates to /dynamic_controls before yielding. */
+  ti_dynamicControlsPage: async ({ page }, use) => {
+    const ti_dynamicControlsPage = new TI_DynamicControlsPage(page);
+    await ti_dynamicControlsPage.goto();
+    await use(ti_dynamicControlsPage);
+  },
+
+  /**
+   * DynamicLoadingPage fixture -- navigates to the /dynamic_loading index before yielding.
+   * Tests that need example 1 or 2 should call gotoExample1() / gotoExample2().
+   */
+  ti_dynamicLoadingPage: async ({ page }, use) => {
+    const ti_dynamicLoadingPage = new TI_DynamicLoadingPage(page);
+    await ti_dynamicLoadingPage.goto();
+    await use(ti_dynamicLoadingPage);
+  },
+
+  /** EntryAdPage fixture -- navigates to /entry_ad before yielding. */
+  ti_entryAdPage: async ({ page }, use) => {
+    const ti_entryAdPage = new TI_EntryAdPage(page);
+    await ti_entryAdPage.goto();
+    await use(ti_entryAdPage);
+  },
+
+  /** ExitIntentPage fixture -- navigates to /exit_intent before yielding. */
+  ti_exitIntentPage: async ({ page }, use) => {
+    const ti_exitIntentPage = new TI_ExitIntentPage(page);
+    await ti_exitIntentPage.goto();
+    await use(ti_exitIntentPage);
+  },
+
+  /** FileDownloadPage fixture -- navigates to /download before yielding. */
+  ti_fileDownloadPage: async ({ page }, use) => {
+    const ti_fileDownloadPage = new TI_FileDownloadPage(page);
+    await ti_fileDownloadPage.goto();
+    await use(ti_fileDownloadPage);
+  },
+
+  /** FileUploadPage fixture -- navigates to /upload before yielding. */
+  ti_fileUploadPage: async ({ page }, use) => {
+    const ti_fileUploadPage = new TI_FileUploadPage(page);
+    await ti_fileUploadPage.goto();
+    await use(ti_fileUploadPage);
+  },
+
+  /** FloatingMenuPage fixture -- navigates to /floating_menu before yielding. */
+  ti_floatingMenuPage: async ({ page }, use) => {
+    const ti_floatingMenuPage = new TI_FloatingMenuPage(page);
+    await ti_floatingMenuPage.goto();
+    await use(ti_floatingMenuPage);
+  },
+
+  /** ForgotPasswordPage fixture -- navigates to /forgot_password before yielding. */
+  ti_forgotPasswordPage: async ({ page }, use) => {
+    const ti_forgotPasswordPage = new TI_ForgotPasswordPage(page);
+    await ti_forgotPasswordPage.goto();
+    await use(ti_forgotPasswordPage);
+  },
+
+  /** FormAuthenticationPage fixture -- navigates to /login before yielding. */
+  ti_formAuthenticationPage: async ({ page }, use) => {
+    const ti_formAuthenticationPage = new TI_FormAuthenticationPage(page);
+    await ti_formAuthenticationPage.goto();
+    await use(ti_formAuthenticationPage);
+  },
+
+  /** IFramePage fixture -- navigates to /iframe before yielding. */
+  ti_iFramePage: async ({ page }, use) => {
+    const ti_iFramePage = new TI_IFramePage(page);
+    await ti_iFramePage.goto();
+    await use(ti_iFramePage);
+  },
+
+  /** GeolocationPage fixture -- navigates to /geolocation before yielding. */
+  ti_geolocationPage: async ({ page }, use) => {
+    const ti_geolocationPage = new TI_GeolocationPage(page);
+    await ti_geolocationPage.goto();
+    await use(ti_geolocationPage);
+  },
+
+  /** HorizontalSliderPage fixture -- navigates to /horizontal_slider before yielding. */
+  ti_horizontalSliderPage: async ({ page }, use) => {
+    const ti_horizontalSliderPage = new TI_HorizontalSliderPage(page);
+    await ti_horizontalSliderPage.goto();
+    await use(ti_horizontalSliderPage);
+  },
+
+  /** HoversPage fixture -- navigates to /hovers before yielding. */
+  ti_hoversPage: async ({ page }, use) => {
+    const ti_hoversPage = new TI_HoversPage(page);
+    await ti_hoversPage.goto();
+    await use(ti_hoversPage);
+  },
+
+  /** InfiniteScrollPage fixture -- navigates to /infinite_scroll before yielding. */
+  ti_infiniteScrollPage: async ({ page }, use) => {
+    const ti_infiniteScrollPage = new TI_InfiniteScrollPage(page);
+    await ti_infiniteScrollPage.goto();
+    await use(ti_infiniteScrollPage);
+  },
+
+  /** InputsPage fixture -- navigates to /inputs before yielding. */
+  ti_inputsPage: async ({ page }, use) => {
+    const ti_inputsPage = new TI_InputsPage(page);
+    await ti_inputsPage.goto();
+    await use(ti_inputsPage);
+  },
+
+  /** JQueryUIMenuPage fixture -- navigates to /jqueryui/menu before yielding. */
+  ti_jQueryUIMenuPage: async ({ page }, use) => {
+    const ti_jQueryUIMenuPage = new TI_JQueryUIMenuPage(page);
+    await ti_jQueryUIMenuPage.goto();
+    await use(ti_jQueryUIMenuPage);
+  },
+
+  /** JavaScriptAlertsPage fixture -- navigates to /javascript_alerts before yielding. */
+  ti_javaScriptAlertsPage: async ({ page }, use) => {
+    const ti_javaScriptAlertsPage = new TI_JavaScriptAlertsPage(page);
+    await ti_javaScriptAlertsPage.goto();
+    await use(ti_javaScriptAlertsPage);
+  },
+
+  /** JavaScriptErrorPage fixture -- navigates to /javascript_error before yielding. */
+  ti_javaScriptErrorPage: async ({ page }, use) => {
+    const ti_javaScriptErrorPage = new TI_JavaScriptErrorPage(page);
+    await ti_javaScriptErrorPage.goto();
+    await use(ti_javaScriptErrorPage);
+  },
+
+  /** KeyPressesPage fixture -- navigates to /key_presses before yielding. */
+  ti_keyPressesPage: async ({ page }, use) => {
+    const ti_keyPressesPage = new TI_KeyPressesPage(page);
+    await ti_keyPressesPage.goto();
+    await use(ti_keyPressesPage);
+  },
+
+  /** LargeDeepDomPage fixture -- navigates to /large before yielding. */
+  ti_largeDeepDomPage: async ({ page }, use) => {
+    const ti_largeDeepDomPage = new TI_LargeDeepDomPage(page);
+    await ti_largeDeepDomPage.goto();
+    await use(ti_largeDeepDomPage);
+  },
+
+  /** MultipleWindowsPage fixture -- navigates to /windows before yielding. */
+  ti_multipleWindowsPage: async ({ page }, use) => {
+    const ti_multipleWindowsPage = new TI_MultipleWindowsPage(page);
+    await ti_multipleWindowsPage.goto();
+    await use(ti_multipleWindowsPage);
+  },
+
+  /** NestedFramesPage fixture -- navigates to /nested_frames before yielding. */
+  ti_nestedFramesPage: async ({ page }, use) => {
+    const ti_nestedFramesPage = new TI_NestedFramesPage(page);
+    await ti_nestedFramesPage.goto();
+    await use(ti_nestedFramesPage);
+  },
+
+  /** NotificationMessagesPage fixture -- navigates to /notification_message_rendered before yielding. */
+  ti_notificationMessagesPage: async ({ page }, use) => {
+    const ti_notificationMessagesPage = new TI_NotificationMessagesPage(page);
+    await ti_notificationMessagesPage.goto();
+    await use(ti_notificationMessagesPage);
+  },
+
+  /** RedirectLinkPage fixture -- navigates to /redirector before yielding. */
+  ti_redirectLinkPage: async ({ page }, use) => {
+    const ti_redirectLinkPage = new TI_RedirectLinkPage(page);
+    await ti_redirectLinkPage.goto();
+    await use(ti_redirectLinkPage);
+  },
+
+  /**
+   * SecureFileDownloadPage fixture -- does NOT auto-navigate.
+   * Secure download requires credentials; tests call gotoWithAuth() to drive the flow.
+   */
+  ti_secureFileDownloadPage: async ({ page }, use) => {
+    const ti_secureFileDownloadPage = new TI_SecureFileDownloadPage(page);
+    await use(ti_secureFileDownloadPage);
+  },
+
+  /** ShadowDomPage fixture -- navigates to /shadowdom before yielding. */
+  ti_shadowDomPage: async ({ page }, use) => {
+    const ti_shadowDomPage = new TI_ShadowDomPage(page);
+    await ti_shadowDomPage.goto();
+    await use(ti_shadowDomPage);
+  },
+
+  /** ShiftingContentPage fixture -- navigates to /shifting_content before yielding. */
+  ti_shiftingContentPage: async ({ page }, use) => {
+    const ti_shiftingContentPage = new TI_ShiftingContentPage(page);
+    await ti_shiftingContentPage.goto();
+    await use(ti_shiftingContentPage);
+  },
+
+  /** SlowResourcesPage fixture -- navigates to /slow before yielding. */
+  ti_slowResourcesPage: async ({ page }, use) => {
+    const ti_slowResourcesPage = new TI_SlowResourcesPage(page);
+    await ti_slowResourcesPage.goto();
+    await use(ti_slowResourcesPage);
+  },
+
+  /** SortableDataTablesPage fixture -- navigates to /tables before yielding. */
+  ti_sortableDataTablesPage: async ({ page }, use) => {
+    const ti_sortableDataTablesPage = new TI_SortableDataTablesPage(page);
+    await ti_sortableDataTablesPage.goto();
+    await use(ti_sortableDataTablesPage);
+  },
+
+  /** StatusCodesPage fixture -- navigates to /status_codes before yielding. */
+  ti_statusCodesPage: async ({ page }, use) => {
+    const ti_statusCodesPage = new TI_StatusCodesPage(page);
+    await ti_statusCodesPage.goto();
+    await use(ti_statusCodesPage);
+  },
+
+  /** TyposPage fixture -- navigates to /typos before yielding. */
+  ti_typosPage: async ({ page }, use) => {
+    const ti_typosPage = new TI_TyposPage(page);
+    await ti_typosPage.goto();
+    await use(ti_typosPage);
+  },
+
+  /** WYSIWYGEditorPage fixture -- navigates to /editor before yielding. */
+  ti_wysiwygEditorPage: async ({ page }, use) => {
+    const ti_wysiwygEditorPage = new TI_WYSIWYGEditorPage(page);
+    await ti_wysiwygEditorPage.goto();
+    await use(ti_wysiwygEditorPage);
+  },
+

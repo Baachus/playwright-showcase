@@ -2,27 +2,26 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 
 /**
- * TI_AddRemovePage
+ * TI_BrokenImagesPage
  * ─────────────────────────────────────────────────────────────────────────────
- * Represents the Add Remove Elements Test page on the-internet.herokuapp.com (/add_remove_elements).
+ * Represents the Broken Images page on the-internet.herokuapp.com (/broken_images).
  */
-export class TI_AddRemovePage extends BasePage {
+export class TI_BrokenImagesPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly title: Locator;
-  readonly addElement:   Locator;
-  readonly deleteElement:   Locator;
+  readonly image: Locator;
 
   constructor(page: Page) {
     super(page);
-
-    this.title = page.getByRole('heading', { name: 'Add/Remove Elements' });
-    this.addElement = page.getByRole('button', { name: 'Add Element' });
-    this.deleteElement = page.getByRole('button', { name: 'Delete' });
+    this.title = page.getByRole('heading', { name: 'Broken Images' });
+    // Scope to .example to avoid picking up the "Fork on GitHub" banner image
+    // which may or may not be present depending on the browser / viewport.
+    this.image = page.locator('.example img');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
   async goto(): Promise<void> {
-    await this.page.goto('/add_remove_elements/');
+    await this.page.goto('/broken_images');
     await this.waitForPageLoad();
   }
 
@@ -31,15 +30,12 @@ export class TI_AddRemovePage extends BasePage {
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────
-  async getNthDeleteButton(count: number): Promise<Locator> {
-    return this.deleteElement.nth(count);
+  async getNthImage(count: number): Promise<Locator> {
+    return this.image.nth(count);
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
-  /**
-   * Assert the page loaded on the correct URL.
-   */
-  async assertOnAddRemoveElementPage(): Promise<void> {
-    await expect(this.page).toHaveURL(/\/add_remove_element/);
+  async assertOnBrokenImagesPage(): Promise<void> {
+    await expect(this.page).toHaveURL(/\/broken_images/);
   }
 }
