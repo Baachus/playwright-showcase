@@ -40,7 +40,8 @@ export class TI_ExitIntentPage extends BasePage {
   async triggerExitIntent(): Promise<void> {
     // Move the mouse into the page first, then dispatch the mouseleave event
     // on the document — this is more reliable cross-browser than mouse.move(y=0)
-    await this.page.mouse.move(400, 300);
+    await this.title.click();
+    await this.page.mouse.move(10, 10);
     await this.page.evaluate(() => {
       document.dispatchEvent(
         new MouseEvent('mouseleave', { bubbles: false, cancelable: true })

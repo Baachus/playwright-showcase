@@ -22,7 +22,7 @@ export class TI_WYSIWYGEditorPage extends BasePage {
 
   // ── Navigation ──────────────────────────────────────────────────────────────
   async goto(): Promise<void> {
-    await this.page.goto('/editor');
+    await this.page.goto('/tinymce');
     await this.waitForPageLoad();
   }
 
@@ -61,7 +61,7 @@ export class TI_WYSIWYGEditorPage extends BasePage {
 
   // ── Assertions ──────────────────────────────────────────────────────────────
   async assertOnPage(): Promise<void> {
-    await expect(this.page).toHaveURL(/\/editor/);
+    await expect(this.page).toHaveURL(/\/tinymce/);
   }
 
   async assertEditorVisible(): Promise<void> {

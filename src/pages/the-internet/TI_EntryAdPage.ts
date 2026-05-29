@@ -46,11 +46,6 @@ export class TI_EntryAdPage extends BasePage {
     await this.modal.waitFor({ state: 'hidden' });
   }
 
-  async reopenModal(): Promise<void> {
-    await this.reopenLink.click();
-    await this.modal.waitFor({ state: 'visible' });
-  }
-
   // ── Queries ─────────────────────────────────────────────────────────────────
   async getModalTitleText(): Promise<string> {
     return this.modalTitle.innerText();

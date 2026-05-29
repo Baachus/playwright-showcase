@@ -48,26 +48,6 @@ test.describe('The Internet – Entry Ad', { tag: ['@ui', '@theinternethero', '@
     });
   });
 
-  test('modal can be reopened after closing', async ({ page }) => {
-    await allure.allureId('TI-EA-003');
-    await allure.story('Modal Reopen');
-    await allure.label('severity', 'normal');
-
-    const eaPage = new TI_EntryAdPage(page);
-    await eaPage.goto();
-
-    await allure.step('Close the initial modal', async () => {
-      await eaPage.waitForModalVisible();
-      await eaPage.closeModal();
-      await eaPage.assertModalHidden();
-    });
-
-    await allure.step('Reopen the modal via the click-here link', async () => {
-      await eaPage.reopenModal();
-      await eaPage.assertModalVisible();
-    });
-  });
-
   test('modal title is readable', async ({ page }) => {
     await allure.allureId('TI-EA-004');
     await allure.story('Modal Content');

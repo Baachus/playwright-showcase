@@ -48,7 +48,7 @@ export class TI_TyposPage extends BasePage {
    */
   async hasTypo(): Promise<boolean> {
     const text = await this.getSecondParagraphText();
-    return text.includes(';');
+    return text.includes(',');
   }
 
   /**

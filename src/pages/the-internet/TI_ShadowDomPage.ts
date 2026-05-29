@@ -15,7 +15,7 @@ export class TI_ShadowDomPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.title = page.getByRole('heading', { name: 'Shadow DOM' });
+    this.title = page.getByRole('heading', { name: 'Simple template' });
     this.guidGenerator = page.locator('guid-generator');
   }
 

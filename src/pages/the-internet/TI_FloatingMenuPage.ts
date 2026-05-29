@@ -21,7 +21,7 @@ export class TI_FloatingMenuPage extends BasePage {
     super(page);
     this.title = page.getByRole('heading', { name: 'Floating Menu' });
     this.menu = page.locator('#menu');
-    this.menuItems = page.locator('ul#menu li');
+    this.menuItems = page.locator('#menu li');
     this.homeLink = page.locator('#menu').getByRole('link', { name: 'Home' });
     this.newsLink = page.locator('#menu').getByRole('link', { name: 'News' });
     this.contactLink = page.locator('#menu').getByRole('link', { name: 'Contact' });
