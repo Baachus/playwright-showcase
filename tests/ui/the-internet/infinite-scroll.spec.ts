@@ -39,7 +39,7 @@ test.describe('The Internet – Infinite Scroll', { tag: ['@ui', '@theinternethe
       expect(initialCount).toBeGreaterThan(0);
 
       await allure.step('Scroll down once to trigger load', async () => {
-        await isPage.scrollDownTimes(1);
+        await isPage.scrollToBottom();
       });
 
       await allure.step('Assert more paragraphs have been appended', async () => {
@@ -61,7 +61,7 @@ test.describe('The Internet – Infinite Scroll', { tag: ['@ui', '@theinternethe
       counts.push(await isPage.getParagraphCount());
 
       for (let i = 0; i < 2; i++) {
-        await isPage.scrollDownTimes(1);
+        await isPage.scrollToBottom();
         counts.push(await isPage.getParagraphCount());
       }
 

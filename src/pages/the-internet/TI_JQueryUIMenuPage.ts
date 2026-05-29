@@ -49,6 +49,7 @@ export class TI_JQueryUIMenuPage extends BasePage {
 
   // ── Actions ─────────────────────────────────────────────────────────────────
   async hoverDownloads(): Promise<void> {
+    await this.enabledItem.hover();
     await this.downloadsItem.hover();
     await this.pdfLink.waitFor({ state: 'visible' });
   }

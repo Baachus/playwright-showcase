@@ -9,7 +9,7 @@ test.beforeEach(async () => {
 
 test.describe('The Internet – Shadow DOM', { tag: ['@ui', '@theinternethero', '@shadow-dom'] }, () => {
 
-  test('page loads with the guid-generator custom element', { tag: ['@smoke'] }, async ({ page }) => {
+  test('page loads with the templates on shadow dom', { tag: ['@smoke'] }, async ({ page }) => {
     await allure.allureId('TI-SD-001');
     await allure.story('Page Load');
     await allure.label('severity', 'critical');
@@ -21,12 +21,12 @@ test.describe('The Internet – Shadow DOM', { tag: ['@ui', '@theinternethero', 
       await sdPage.assertOnPage();
     });
 
-    await allure.step('Assert guid-generator element is visible', async () => {
-      await sdPage.assertGuidGeneratorVisible();
+    await allure.step('Assert template element is visible', async () => {
+      await sdPage.assertTemplateVisible();
     });
   });
 
-  test('guid-generator element has a Shadow Root', { tag: ['@smoke'] }, async ({ page }) => {
+  test('shadow root exists on the page', { tag: ['@smoke'] }, async ({ page }) => {
     await allure.allureId('TI-SD-002');
     await allure.story('Shadow DOM');
     await allure.label('severity', 'critical');
@@ -39,7 +39,7 @@ test.describe('The Internet – Shadow DOM', { tag: ['@ui', '@theinternethero', 
     });
   });
 
-  test('guid inputs inside shadow DOM have values', async ({ page }) => {
+  test('templates on shadow DOM have values', async ({ page }) => {
     await allure.allureId('TI-SD-003');
     await allure.story('Shadow DOM Content');
     await allure.label('severity', 'normal');
@@ -48,11 +48,11 @@ test.describe('The Internet – Shadow DOM', { tag: ['@ui', '@theinternethero', 
     await sdPage.goto();
 
     await allure.step('Read GUID input values from shadow DOM', async () => {
-      const values = await sdPage.getGuidInputValues();
+      const values = await sdPage.getTemplateInputValues();
       expect(values.length).toBeGreaterThan(0);
-      for (const v of values) {
-        // GUIDs should be non-empty strings
-        expect(typeof v).toBe('string');
+      for (const item of values) {
+        expect(typeof item).toBe('object');
+        expect(item).toHaveText('My default text');
       }
     });
   });

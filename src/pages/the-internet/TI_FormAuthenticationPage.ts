@@ -25,7 +25,7 @@ export class TI_FormAuthenticationPage extends BasePage {
     this.loginButton = page.locator('button[type="submit"]');
     this.flashMessage = page.locator('#flash');
     this.logoutButton = page.getByRole('link', { name: 'Logout' });
-    this.secureAreaHeading = page.getByRole('heading', { name: 'Secure Area' });
+    this.secureAreaHeading = page.getByRole('heading', { name: 'Secure Area' , exact: true});
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────

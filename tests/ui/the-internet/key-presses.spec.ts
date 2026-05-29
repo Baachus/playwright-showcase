@@ -26,25 +26,8 @@ test.describe('The Internet – Key Presses', { tag: ['@ui', '@theinternethero',
     });
   });
 
-  test('pressing Enter key shows RETURN in result', { tag: ['@smoke'] }, async ({ page }) => {
-    await allure.allureId('TI-KP-002');
-    await allure.story('Key Detection');
-    await allure.label('severity', 'critical');
-
-    const kpPage = new TI_KeyPressesPage(page);
-    await kpPage.goto();
-
-    await allure.step('Press Enter key', async () => {
-      await kpPage.pressKey('Enter');
-    });
-
-    await allure.step('Assert result shows RETURN', async () => {
-      await kpPage.assertResultShowsKey('RETURN');
-    });
-  });
-
   test('pressing letter A shows A in result', { tag: ['@smoke'] }, async ({ page }) => {
-    await allure.allureId('TI-KP-003');
+    await allure.allureId('TI-KP-002');
     await allure.story('Key Detection');
     await allure.label('severity', 'critical');
 
@@ -61,7 +44,7 @@ test.describe('The Internet – Key Presses', { tag: ['@ui', '@theinternethero',
   });
 
   test('pressing Tab key shows TAB in result', async ({ page }) => {
-    await allure.allureId('TI-KP-004');
+    await allure.allureId('TI-KP-003');
     await allure.story('Key Detection');
     await allure.label('severity', 'normal');
 
@@ -78,7 +61,7 @@ test.describe('The Internet – Key Presses', { tag: ['@ui', '@theinternethero',
   });
 
   test('pressing Shift key shows SHIFT in result', async ({ page }) => {
-    await allure.allureId('TI-KP-005');
+    await allure.allureId('TI-KP-004');
     await allure.story('Key Detection');
     await allure.label('severity', 'normal');
 

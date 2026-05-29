@@ -11,12 +11,14 @@ import { BasePage } from '../BasePage.js';
 export class TI_ShadowDomPage extends BasePage {
   // ── Locators ────────────────────────────────────────────────────────────────
   readonly title: Locator;
-  readonly guidGenerator: Locator;
+  readonly template: Locator;
+  readonly shadowTemplate: Locator;
 
   constructor(page: Page) {
     super(page);
     this.title = page.getByRole('heading', { name: 'Simple template' });
-    this.guidGenerator = page.locator('guid-generator');
+    this.template = page.locator('my-paragraph');
+    this.shadowTemplate = page.getByText('My default text');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
@@ -27,12 +29,12 @@ export class TI_ShadowDomPage extends BasePage {
 
   async waitForPageLoad(): Promise<void> {
     await this.title.waitFor({ state: 'visible' });
-    await this.guidGenerator.waitFor({ state: 'visible' });
+    await this.template.first().waitFor({ state: 'visible' });
     // Wait for the custom element to be defined and its shadow root attached.
     // This is important in webkit where custom element upgrades can be slower.
     await this.page.waitForFunction(
       () => {
-        const host = document.querySelector('guid-generator');
+        const host = document.querySelector('my-paragraph');
         return host != null && host.shadowRoot != null;
       },
       { timeout: 10000 }
@@ -40,25 +42,8 @@ export class TI_ShadowDomPage extends BasePage {
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────
-  /**
-   * Get the value of the first sl-input inside the shadow DOM via JavaScript.
-   */
-  async getFirstGuidValue(): Promise<string> {
-    return this.page.evaluate(() => {
-      const host = document.querySelector('guid-generator');
-      if (!host?.shadowRoot) return '';
-      const input = host.shadowRoot.querySelector('sl-input') as HTMLInputElement | null;
-      return input?.value ?? '';
-    });
-  }
-
-  async getGuidInputValues(): Promise<string[]> {
-    return this.page.evaluate(() => {
-      const host = document.querySelector('guid-generator');
-      if (!host?.shadowRoot) return [];
-      const inputs = host.shadowRoot.querySelectorAll('sl-input') as NodeListOf<HTMLInputElement>;
-      return Array.from(inputs).map(i => i.value);
-    });
+  async getTemplateInputValues(): Promise<Locator[]> {
+    return this.shadowTemplate.all();
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
@@ -66,15 +51,11 @@ export class TI_ShadowDomPage extends BasePage {
     await expect(this.page).toHaveURL(/\/shadowdom/);
   }
 
-  async assertGuidGeneratorVisible(): Promise<void> {
-    await expect(this.guidGenerator).toBeVisible();
+  async assertTemplateVisible(): Promise<void> {
+    await expect(this.template.first()).toBeVisible();
   }
 
   async assertShadowRootPresent(): Promise<void> {
-    const hasShadowRoot = await this.page.evaluate(() => {
-      const host = document.querySelector('guid-generator');
-      return !!host?.shadowRoot;
-    });
-    expect(hasShadowRoot).toBe(true);
+    expect(this.shadowTemplate.first()).toBeAttached();
   }
 }

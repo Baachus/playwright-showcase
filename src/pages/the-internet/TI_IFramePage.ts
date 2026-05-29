@@ -12,12 +12,14 @@ export class TI_IFramePage extends BasePage {
   readonly title: Locator;
   readonly iframeLocator: FrameLocator;
   readonly editorBody: Locator;
+  readonly closeButton: Locator;
 
   constructor(page: Page) {
     super(page);
     this.title = page.getByRole('heading', { name: 'An iFrame containing the TinyMCE WYSIWYG Editor' });
     this.iframeLocator = page.frameLocator('#mce_0_ifr');
     this.editorBody = this.iframeLocator.locator('#tinymce');
+    this.closeButton = this.iframeLocator.getByRole('button', { name: 'Close' });
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────

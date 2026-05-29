@@ -70,7 +70,7 @@ test.describe('The Internet – Form Authentication', { tag: ['@ui', '@theintern
     });
   });
 
-  test.skip('user can log out after logging in', async ({ page }) => {
+  test('user can log out after logging in', async ({ page }) => {
     await allure.allureId('TI-FA-004');
     await allure.story('Logout');
     await allure.label('severity', 'normal');

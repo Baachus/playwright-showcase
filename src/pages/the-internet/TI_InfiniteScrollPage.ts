@@ -20,9 +20,7 @@ export class TI_InfiniteScrollPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.title = page.getByRole('heading', { name: 'Infinite Scroll' });
-    // Select all paragraphs — both the initial ones (.jscroll-inner) and
-    // the dynamically added ones (.jscroll-added).
-    this.paragraphs = page.locator('.jscroll-inner p, .jscroll-added p');
+    this.paragraphs = page.locator('div[class="jscroll-added"]');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────
@@ -33,34 +31,14 @@ export class TI_InfiniteScrollPage extends BasePage {
 
   async waitForPageLoad(): Promise<void> {
     await this.title.waitFor({ state: 'visible' });
-    // Wait for jscroll to initialize and render initial paragraphs
-    await this.page.locator('.jscroll-inner p').first().waitFor({ state: 'visible' });
+    await this.paragraphs.first().waitFor({ state: 'visible' });
   }
 
   // ── Actions ─────────────────────────────────────────────────────────────────
   async scrollToBottom(): Promise<void> {
-    await this.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const count = await this.getParagraphCount();
+    await this.paragraphs.nth(count-1).scrollIntoViewIfNeeded();
     await this.page.waitForTimeout(1000);
-  }
-
-  /**
-   * Scroll down multiple times and wait for new content to load each time.
-   */
-  async scrollDownTimes(times: number): Promise<void> {
-    for (let i = 0; i < times; i++) {
-      const countBefore = await this.paragraphs.count();
-      await this.scrollToBottom();
-      // Wait for total paragraph count to increase
-      await this.page.waitForFunction(
-        (prevCount: number) => {
-          const inner = document.querySelectorAll('.jscroll-inner p').length;
-          const added = document.querySelectorAll('.jscroll-added p').length;
-          return (inner + added) > prevCount;
-        },
-        countBefore,
-        { timeout: 5000 }
-      );
-    }
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────

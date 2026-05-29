@@ -40,7 +40,8 @@ test.describe('The Internet – iFrame', { tag: ['@ui', '@theinternethero', '@if
     });
   });
 
-  test('text can be typed into the editor', { tag: ['@smoke'] }, async ({ page }) => {
+  //BUG: Currently this is not working due to TinyMCE not having more editor loads available on the application.
+  test.skip('text can be typed into the editor', { tag: ['@smoke'] }, async ({ page }) => {
     await allure.allureId('TI-FR-003');
     await allure.story('Editor Interaction');
     await allure.label('severity', 'critical');

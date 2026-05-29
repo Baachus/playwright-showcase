@@ -40,7 +40,8 @@ test.describe('The Internet – WYSIWYG Editor', { tag: ['@ui', '@theinternether
     });
   });
 
-  test('text can be typed into the editor', { tag: ['@smoke'] }, async ({ page }) => {
+  //BUG: Currently application ran out of editor loads for TinyMCE
+  test.skip('text can be typed into the editor', { tag: ['@smoke'] }, async ({ page }) => {
     await allure.allureId('TI-WY-003');
     await allure.story('Editor Interaction');
     await allure.label('severity', 'critical');
@@ -57,7 +58,8 @@ test.describe('The Internet – WYSIWYG Editor', { tag: ['@ui', '@theinternether
     });
   });
 
-  test('text can be appended to existing content', async ({ page }) => {
+  //BUG: Currently application ran out of editor loads for TinyMCE
+  test.skip('text can be appended to existing content', async ({ page }) => {
     await allure.allureId('TI-WY-004');
     await allure.story('Editor Interaction');
     await allure.label('severity', 'normal');
@@ -74,7 +76,8 @@ test.describe('The Internet – WYSIWYG Editor', { tag: ['@ui', '@theinternether
     });
   });
 
-  test('editor can be fully cleared', async ({ page }) => {
+  //BUG: Currently application ran out of editor loads for TinyMCE
+  test.skip('editor can be fully cleared', async ({ page }) => {
     await allure.allureId('TI-WY-005');
     await allure.story('Editor Interaction');
     await allure.label('severity', 'minor');

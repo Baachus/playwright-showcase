@@ -26,10 +26,14 @@ test.describe('The Internet – JavaScript Error', { tag: ['@ui', '@theinterneth
     });
   });
 
-  test('page emits a JavaScript error on load', { tag: ['@smoke'] }, async ({ page }) => {
+  test('page emits a JavaScript error on load', { tag: ['@smoke'] }, async ({ page }, testInfo) => {
     await allure.allureId('TI-JE-002');
     await allure.story('JavaScript Error');
     await allure.label('severity', 'critical');
+    testInfo.skip(
+      testInfo.project.name === 'The Internet Firefox',
+      'Javascript Error not appearing in application for Firefox'
+    );
 
     const errors: string[] = [];
     page.on('pageerror', (err) => errors.push(err.message));
