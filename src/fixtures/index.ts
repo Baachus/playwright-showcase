@@ -8,6 +8,51 @@ import { PD_SearchComponent } from '../components/playwrightdev/PD_SearchCompone
 import { PD_CodeBlockComponent } from '../components/playwrightdev/PD_CodeBlockComponent.js';
 import { PD_LanguageSelectorComponent } from '../components/playwrightdev/PD_LanguageSelectorComponent.js';
 import { PD_FooterComponent } from '../components/playwrightdev/PD_FooterComponent.js';
+// The Internet - Pages
+import { TI_ABTestPage } from '../pages/the-internet/TI_ABTestPage.js';
+import { TI_AddRemovePage } from '@pages/the-internet/TI_AddRemovePage.js';
+import { TI_BasicAuthPage } from '@pages/the-internet/TI_BasicAuthPage.js';
+import { TI_BrokenImagesPage } from '@pages/the-internet/TI_BrokenImagesPage.js';
+import { TI_ChallengingDomPage } from '@pages/the-internet/TI_ChallengingDomPage.js';
+import { TI_CheckboxesPage } from '@pages/the-internet/TI_CheckboxesPage.js';
+import { TI_ContextMenuPage } from '@pages/the-internet/TI_ContextMenuPage.js';
+import { TI_DigestAuthPage } from '@pages/the-internet/TI_DigestAuthPage.js';
+import { TI_DisappearingElementsPage } from '@pages/the-internet/TI_DisappearingElementsPage.js';
+import { TI_DragAndDropPage } from '@pages/the-internet/TI_DragAndDropPage.js';
+import { TI_DropdownPage } from '@pages/the-internet/TI_DropdownPage.js';
+import { TI_DynamicContentPage } from '@pages/the-internet/TI_DynamicContentPage.js';
+import { TI_DynamicControlsPage } from '@pages/the-internet/TI_DynamicControlsPage.js';
+import { TI_DynamicLoadingPage } from '@pages/the-internet/TI_DynamicLoadingPage.js';
+import { TI_EntryAdPage } from '@pages/the-internet/TI_EntryAdPage.js';
+import { TI_ExitIntentPage } from '@pages/the-internet/TI_ExitIntentPage.js';
+import { TI_FileDownloadPage } from '@pages/the-internet/TI_FileDownloadPage.js';
+import { TI_FileUploadPage } from '@pages/the-internet/TI_FileUploadPage.js';
+import { TI_FloatingMenuPage } from '@pages/the-internet/TI_FloatingMenuPage.js';
+import { TI_ForgotPasswordPage } from '@pages/the-internet/TI_ForgotPasswordPage.js';
+import { TI_FormAuthenticationPage } from '@pages/the-internet/TI_FormAuthenticationPage.js';
+import { TI_GeolocationPage } from '@pages/the-internet/TI_GeolocationPage.js';
+import { TI_HorizontalSliderPage } from '@pages/the-internet/TI_HorizontalSliderPage.js';
+import { TI_HoversPage } from '@pages/the-internet/TI_HoversPage.js';
+import { TI_IFramePage } from '@pages/the-internet/TI_IFramePage.js';
+import { TI_InfiniteScrollPage } from '@pages/the-internet/TI_InfiniteScrollPage.js';
+import { TI_InputsPage } from '@pages/the-internet/TI_InputsPage.js';
+import { TI_JavaScriptAlertsPage } from '@pages/the-internet/TI_JavaScriptAlertsPage.js';
+import { TI_JavaScriptErrorPage } from '@pages/the-internet/TI_JavaScriptErrorPage.js';
+import { TI_JQueryUIMenuPage } from '@pages/the-internet/TI_JQueryUIMenuPage.js';
+import { TI_KeyPressesPage } from '@pages/the-internet/TI_KeyPressesPage.js';
+import { TI_LargeDeepDomPage } from '@pages/the-internet/TI_LargeDeepDomPage.js';
+import { TI_MultipleWindowsPage } from '@pages/the-internet/TI_MultipleWindowsPage.js';
+import { TI_NestedFramesPage } from '@pages/the-internet/TI_NestedFramesPage.js';
+import { TI_NotificationMessagesPage } from '@pages/the-internet/TI_NotificationMessagesPage.js';
+import { TI_RedirectLinkPage } from '@pages/the-internet/TI_RedirectLinkPage.js';
+import { TI_SecureFileDownloadPage } from '@pages/the-internet/TI_SecureFileDownloadPage.js';
+import { TI_ShadowDomPage } from '@pages/the-internet/TI_ShadowDomPage.js';
+import { TI_ShiftingContentPage } from '@pages/the-internet/TI_ShiftingContentPage.js';
+import { TI_SlowResourcesPage } from '@pages/the-internet/TI_SlowResourcesPage.js';
+import { TI_SortableDataTablesPage } from '@pages/the-internet/TI_SortableDataTablesPage.js';
+import { TI_StatusCodesPage } from '@pages/the-internet/TI_StatusCodesPage.js';
+import { TI_TyposPage } from '@pages/the-internet/TI_TyposPage.js';
+import { TI_WYSIWYGEditorPage } from '@pages/the-internet/TI_WYSIWYGEditorPage.js';
 // Saucedemo - Pages
 import { SD_LoginPage } from '../pages/saucedemo/SD_LoginPage.js';
 import { SD_InventoryPage } from '../pages/saucedemo/SD_InventoryPage.js';
@@ -27,21 +72,8 @@ import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.u
  * Extends Playwright's base `test` with pre-instantiated Page Object Models,
  * Component Object Models, and multi-context helpers.
  * Tests import `{ test, expect }` from this file instead of `@playwright/test`.
- *
- * Benefits:
- *  - No `new HomePage(page)` boilerplate in every test
- *  - Each fixture is scoped to the test -- fully isolated
- *  - Easy to add new pages/components without touching existing tests
  */
 
-/** 
- * ---- Multi-context fixture types ----
- * sd_tab2: a second Page in the SAME BrowserContext (shared session/cookies)
- * sd_standard_ctx: an independent BrowserContext logged in as standard_user
- * sd_problem_ctx: an independent BrowserContext logged in as problem_user
- * sd_glitch_ctx: an independent BrowserContext logged in as performance_glitch_user
- * sd_unauth_ctx: a fresh unauthenticated BrowserContext at the login page 
-*/
 type MultiContextFixtures = {
   sd_multiContextHelper: MultiContextHelper;
   sd_tab2: Page;
@@ -51,20 +83,61 @@ type MultiContextFixtures = {
   sd_unauth_ctx: { context: BrowserContext; page: Page; loginPage: SD_LoginPage };
 };
 
-// Define the shape of our custom fixtures
 type PageFixtures = {
+  // The Internet - Pages
+  ti_abTestPage: TI_ABTestPage;
+  ti_addRemovePage: TI_AddRemovePage;
+  ti_basicAuthPage: TI_BasicAuthPage;
+  ti_brokenImagePage: TI_BrokenImagesPage;
+  ti_challengingDomPage: TI_ChallengingDomPage;
+  ti_checkboxesPage: TI_CheckboxesPage;
+  ti_contextMenuPage: TI_ContextMenuPage;
+  ti_digestAuthPage: TI_DigestAuthPage;
+  ti_disappearingElementsPage: TI_DisappearingElementsPage;
+  ti_dragAndDropPage: TI_DragAndDropPage;
+  ti_dropdownPage: TI_DropdownPage;
+  ti_dynamicContentPage: TI_DynamicContentPage;
+  ti_dynamicControlsPage: TI_DynamicControlsPage;
+  ti_dynamicLoadingPage: TI_DynamicLoadingPage;
+  ti_entryAdPage: TI_EntryAdPage;
+  ti_exitIntentPage: TI_ExitIntentPage;
+  ti_fileDownloadPage: TI_FileDownloadPage;
+  ti_fileUploadPage: TI_FileUploadPage;
+  ti_floatingMenuPage: TI_FloatingMenuPage;
+  ti_forgotPasswordPage: TI_ForgotPasswordPage;
+  ti_formAuthenticationPage: TI_FormAuthenticationPage;
+  ti_geolocationPage: TI_GeolocationPage;
+  ti_horizontalSliderPage: TI_HorizontalSliderPage;
+  ti_hoversPage: TI_HoversPage;
+  ti_iFramePage: TI_IFramePage;
+  ti_infiniteScrollPage: TI_InfiniteScrollPage;
+  ti_inputsPage: TI_InputsPage;
+  ti_javaScriptAlertsPage: TI_JavaScriptAlertsPage;
+  ti_javaScriptErrorPage: TI_JavaScriptErrorPage;
+  ti_jQueryUIMenuPage: TI_JQueryUIMenuPage;
+  ti_keyPressesPage: TI_KeyPressesPage;
+  ti_largeDeepDomPage: TI_LargeDeepDomPage;
+  ti_multipleWindowsPage: TI_MultipleWindowsPage;
+  ti_nestedFramesPage: TI_NestedFramesPage;
+  ti_notificationMessagesPage: TI_NotificationMessagesPage;
+  ti_redirectLinkPage: TI_RedirectLinkPage;
+  ti_secureFileDownloadPage: TI_SecureFileDownloadPage;
+  ti_shadowDomPage: TI_ShadowDomPage;
+  ti_shiftingContentPage: TI_ShiftingContentPage;
+  ti_slowResourcesPage: TI_SlowResourcesPage;
+  ti_sortableDataTablesPage: TI_SortableDataTablesPage;
+  ti_statusCodesPage: TI_StatusCodesPage;
+  ti_typosPage: TI_TyposPage;
+  ti_wysiwygEditorPage: TI_WYSIWYGEditorPage;
   // Playwright.dev - Pages
   pd_homePage: PD_HomePage;
   pd_docsPage: PD_DocsPage;
-
   // Playwright.dev - Components
-  // Each component fixture navigates to its natural host page before yielding.
   pd_navbar: PD_NavbarComponent;
   pd_search: PD_SearchComponent;
   pd_codeBlock: PD_CodeBlockComponent;
   pd_languageSelector: PD_LanguageSelectorComponent;
   pd_footer: PD_FooterComponent;
-
   // Saucedemo - Standard pages
   sd_inventoryPage: SD_InventoryPage;
   sd_loginPage: SD_LoginPage;
@@ -72,152 +145,203 @@ type PageFixtures = {
   sd_confirmationPage: SD_ConfirmationPage;
   sd_infoPage: SD_InfoPage;
   sd_verificationPage: SD_VerificationPage;
-
-  // WebSocket -- shared local echo server
+  // WebSocket
   echoServer: LocalEchoServer;
 } & MultiContextFixtures;
 
 export const test = base.extend<PageFixtures>({
-  // ---- Playwright.dev - Pages ----
-  /** HomePage fixture -- navigates to home and waits for load before yielding. */
+  // ── The Internet ─────────────────────────────────────────────────────────────
+  ti_abTestPage: async ({ page }, use) => {
+    const p = new TI_ABTestPage(page); await p.goto(); await use(p);
+  },
+  ti_addRemovePage: async ({ page }, use) => {
+    const p = new TI_AddRemovePage(page); await p.goto(); await use(p);
+  },
+  ti_basicAuthPage: async ({ page }, use) => {
+    await use(new TI_BasicAuthPage(page));
+  },
+  ti_brokenImagePage: async ({ page }, use) => {
+    await use(new TI_BrokenImagesPage(page));
+  },
+  ti_challengingDomPage: async ({ page }, use) => {
+    const p = new TI_ChallengingDomPage(page); await p.goto(); await use(p);
+  },
+  ti_checkboxesPage: async ({ page }, use) => {
+    const p = new TI_CheckboxesPage(page); await p.goto(); await use(p);
+  },
+  ti_contextMenuPage: async ({ page }, use) => {
+    const p = new TI_ContextMenuPage(page); await p.goto(); await use(p);
+  },
+  ti_digestAuthPage: async ({ page }, use) => {
+    await use(new TI_DigestAuthPage(page));
+  },
+  ti_disappearingElementsPage: async ({ page }, use) => {
+    const p = new TI_DisappearingElementsPage(page); await p.goto(); await use(p);
+  },
+  ti_dragAndDropPage: async ({ page }, use) => {
+    const p = new TI_DragAndDropPage(page); await p.goto(); await use(p);
+  },
+  ti_dropdownPage: async ({ page }, use) => {
+    const p = new TI_DropdownPage(page); await p.goto(); await use(p);
+  },
+  ti_dynamicContentPage: async ({ page }, use) => {
+    const p = new TI_DynamicContentPage(page); await p.goto(); await use(p);
+  },
+  ti_dynamicControlsPage: async ({ page }, use) => {
+    const p = new TI_DynamicControlsPage(page); await p.goto(); await use(p);
+  },
+  ti_dynamicLoadingPage: async ({ page }, use) => {
+    const p = new TI_DynamicLoadingPage(page); await p.goto(); await use(p);
+  },
+  ti_entryAdPage: async ({ page }, use) => {
+    const p = new TI_EntryAdPage(page); await p.goto(); await use(p);
+  },
+  ti_exitIntentPage: async ({ page }, use) => {
+    const p = new TI_ExitIntentPage(page); await p.goto(); await use(p);
+  },
+  ti_fileDownloadPage: async ({ page }, use) => {
+    const p = new TI_FileDownloadPage(page); await p.goto(); await use(p);
+  },
+  ti_fileUploadPage: async ({ page }, use) => {
+    const p = new TI_FileUploadPage(page); await p.goto(); await use(p);
+  },
+  ti_floatingMenuPage: async ({ page }, use) => {
+    const p = new TI_FloatingMenuPage(page); await p.goto(); await use(p);
+  },
+  ti_forgotPasswordPage: async ({ page }, use) => {
+    const p = new TI_ForgotPasswordPage(page); await p.goto(); await use(p);
+  },
+  ti_formAuthenticationPage: async ({ page }, use) => {
+    const p = new TI_FormAuthenticationPage(page); await p.goto(); await use(p);
+  },
+  ti_geolocationPage: async ({ page }, use) => {
+    const p = new TI_GeolocationPage(page); await p.goto(); await use(p);
+  },
+  ti_horizontalSliderPage: async ({ page }, use) => {
+    const p = new TI_HorizontalSliderPage(page); await p.goto(); await use(p);
+  },
+  ti_hoversPage: async ({ page }, use) => {
+    const p = new TI_HoversPage(page); await p.goto(); await use(p);
+  },
+  ti_iFramePage: async ({ page }, use) => {
+    const p = new TI_IFramePage(page); await p.goto(); await use(p);
+  },
+  ti_infiniteScrollPage: async ({ page }, use) => {
+    const p = new TI_InfiniteScrollPage(page); await p.goto(); await use(p);
+  },
+  ti_inputsPage: async ({ page }, use) => {
+    const p = new TI_InputsPage(page); await p.goto(); await use(p);
+  },
+  ti_javaScriptAlertsPage: async ({ page }, use) => {
+    const p = new TI_JavaScriptAlertsPage(page); await p.goto(); await use(p);
+  },
+  ti_javaScriptErrorPage: async ({ page }, use) => {
+    const p = new TI_JavaScriptErrorPage(page); await p.goto(); await use(p);
+  },
+  ti_jQueryUIMenuPage: async ({ page }, use) => {
+    const p = new TI_JQueryUIMenuPage(page); await p.goto(); await use(p);
+  },
+  ti_keyPressesPage: async ({ page }, use) => {
+    const p = new TI_KeyPressesPage(page); await p.goto(); await use(p);
+  },
+  ti_largeDeepDomPage: async ({ page }, use) => {
+    const p = new TI_LargeDeepDomPage(page); await p.goto(); await use(p);
+  },
+  ti_multipleWindowsPage: async ({ page }, use) => {
+    const p = new TI_MultipleWindowsPage(page); await p.goto(); await use(p);
+  },
+  ti_nestedFramesPage: async ({ page }, use) => {
+    const p = new TI_NestedFramesPage(page); await p.goto(); await use(p);
+  },
+  ti_notificationMessagesPage: async ({ page }, use) => {
+    const p = new TI_NotificationMessagesPage(page); await p.goto(); await use(p);
+  },
+  ti_redirectLinkPage: async ({ page }, use) => {
+    const p = new TI_RedirectLinkPage(page); await p.goto(); await use(p);
+  },
+  ti_secureFileDownloadPage: async ({ page }, use) => {
+    await use(new TI_SecureFileDownloadPage(page));
+  },
+  ti_shadowDomPage: async ({ page }, use) => {
+    const p = new TI_ShadowDomPage(page); await p.goto(); await use(p);
+  },
+  ti_shiftingContentPage: async ({ page }, use) => {
+    const p = new TI_ShiftingContentPage(page); await p.goto(); await use(p);
+  },
+  ti_slowResourcesPage: async ({ page }, use) => {
+    const p = new TI_SlowResourcesPage(page); await p.goto(); await use(p);
+  },
+  ti_sortableDataTablesPage: async ({ page }, use) => {
+    const p = new TI_SortableDataTablesPage(page); await p.goto(); await use(p);
+  },
+  ti_statusCodesPage: async ({ page }, use) => {
+    const p = new TI_StatusCodesPage(page); await p.goto(); await use(p);
+  },
+  ti_typosPage: async ({ page }, use) => {
+    const p = new TI_TyposPage(page); await p.goto(); await use(p);
+  },
+  ti_wysiwygEditorPage: async ({ page }, use) => {
+    const p = new TI_WYSIWYGEditorPage(page); await p.goto(); await use(p);
+  },
+
+  // ── Playwright.dev - Pages ───────────────────────────────────────────────────
   pd_homePage: async ({ page }, use) => {
-    const pd_homePage = new PD_HomePage(page);
-    await pd_homePage.goto();
-    await use(pd_homePage);
+    const p = new PD_HomePage(page); await p.goto(); await use(p);
   },
-
-  /** DocsPage fixture -- navigates to /docs/intro before yielding. */
   pd_docsPage: async ({ page }, use) => {
-    const pd_docsPage = new PD_DocsPage(page);
-    await pd_docsPage.goto();
-    await use(pd_docsPage);
+    const p = new PD_DocsPage(page); await p.goto(); await use(p);
   },
 
-  // ---- Playwright.dev - Components ----
-  /**
-   * Navbar component -- navigates to the home page so the navbar is rendered,
-   * then yields a PD_NavbarComponent scoped to nav.navbar.
-   */
+  // ── Playwright.dev - Components ──────────────────────────────────────────────
   pd_navbar: async ({ page }, use) => {
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    const component = new PD_NavbarComponent(page);
-    await component.waitForVisible();
-    await use(component);
+    await page.goto('/'); await page.waitForLoadState('domcontentloaded');
+    const c = new PD_NavbarComponent(page); await c.waitForVisible(); await use(c);
   },
-
-  /**
-   * Search component -- navigates to the home page (search is always available).
-   * The modal itself is not opened automatically; tests call component.open().
-   */
   pd_search: async ({ page }, use) => {
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    const component = new PD_SearchComponent(page);
-    await use(component);
+    await page.goto('/'); await page.waitForLoadState('domcontentloaded');
+    await use(new PD_SearchComponent(page));
   },
-
-  /**
-   * CodeBlock component -- navigates to /docs/intro which is guaranteed to have
-   * code blocks, then yields a PD_CodeBlockComponent targeting the first block.
-   */
   pd_codeBlock: async ({ page }, use) => {
-    await page.goto('/docs/intro');
-    await page.waitForLoadState('domcontentloaded');
-    const component = new PD_CodeBlockComponent(page, 0);
-    await use(component);
+    await page.goto('/docs/intro'); await page.waitForLoadState('domcontentloaded');
+    await use(new PD_CodeBlockComponent(page, 0));
   },
-
-  /**
-   * LanguageSelector component -- navigates to the home page where the navbar
-   * language tabs (Node.js / Python / Java / .NET) are present.
-   */
   pd_languageSelector: async ({ page }, use) => {
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    const component = new PD_LanguageSelectorComponent(page);
-    await component.waitForVisible();
-    await use(component);
+    await page.goto('/'); await page.waitForLoadState('domcontentloaded');
+    const c = new PD_LanguageSelectorComponent(page); await c.waitForVisible(); await use(c);
   },
-
-  /**
-   * Footer component -- navigates to the home page then yields a PD_FooterComponent.
-   * Note: the footer is off-screen by default; helpers call scrollIntoView() as needed.
-   */
   pd_footer: async ({ page }, use) => {
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    const component = new PD_FooterComponent(page);
-    await use(component);
+    await page.goto('/'); await page.waitForLoadState('domcontentloaded');
+    await use(new PD_FooterComponent(page));
   },
 
-  // ---- Saucedemo - Standard pages ----
+  // ── Saucedemo - Standard pages ───────────────────────────────────────────────
   sd_inventoryPage: async ({ page }, use) => {
-    const sd_inventoryPage = new SD_InventoryPage(page);
-    await sd_inventoryPage.goto();
-    await use(sd_inventoryPage);
+    const p = new SD_InventoryPage(page); await p.goto(); await use(p);
   },
-
   sd_loginPage: async ({ page }, use) => {
-    const sd_loginPage = new SD_LoginPage(page);
-    await sd_loginPage.goto();
-    await use(sd_loginPage);
+    const p = new SD_LoginPage(page); await p.goto(); await use(p);
   },
-
   sd_cartPage: async ({ page }, use) => {
-    const sd_cartPage = new SD_CartPage(page);
-    await sd_cartPage.goto();
-    await use(sd_cartPage);
+    const p = new SD_CartPage(page); await p.goto(); await use(p);
   },
-
   sd_confirmationPage: async ({ page }, use) => {
-    const sd_confirmationPage = new SD_ConfirmationPage(page);
-    await sd_confirmationPage.goto();
-    await use(sd_confirmationPage);
+    const p = new SD_ConfirmationPage(page); await p.goto(); await use(p);
   },
-
   sd_infoPage: async ({ page }, use) => {
-    const sd_infoPage = new SD_InfoPage(page);
-    await sd_infoPage.goto();
-    await use(sd_infoPage);
+    const p = new SD_InfoPage(page); await p.goto(); await use(p);
   },
-
   sd_verificationPage: async ({ page }, use) => {
-    const sd_verificationPage = new SD_VerificationPage(page);
-    await sd_verificationPage.goto();
-    await use(sd_verificationPage);
+    const p = new SD_VerificationPage(page); await p.goto(); await use(p);
   },
 
-  /**
-   * echoServer -- per-test in-process WebSocket echo server bound to
-   * ws://127.0.0.1:<random>.  Replaces the unreliable public
-   * wss://echo.websocket.events used by ws-realtime tests.  Sends a welcome
-   * line on connect containing "echo.websocket.events" so the existing test
-   * filters that skip the welcome message continue to work, and echoes every
-   * frame the client sends.  The server is torn down at test end.
-   */
   echoServer: async ({}, use) => {
-    const server = await startLocalEchoServer();
-    await use(server);
-    await server.close();
+    const server = await startLocalEchoServer(); await use(server); await server.close();
   },
 
-  // ---- Saucedemo - Multi-context fixtures ----
-  /**
-   * MultiContextHelper -- wraps the browser object and exposes helpers for
-   * creating extra tabs (same session) and windows (independent sessions).
-   * Available in all multi-context tests via fixture injection.
-   */
+  // ── Saucedemo - Multi-context fixtures ───────────────────────────────────────
   sd_multiContextHelper: async ({ browser }, use) => {
     await use(new MultiContextHelper(browser));
   },
-
-  /**
-   * sd_tab2 -- A second Page opened inside the DEFAULT test context.
-   * Because it shares the same context as `page`, it inherits the same
-   * cookies / localStorage (i.e. the same logged-in session).
-   * Useful for verifying that cart state, navigation, etc. persist across tabs.
-   */
   sd_tab2: async ({ context }, use) => {
     const tab2 = await context.newPage();
     await tab2.goto('https://www.saucedemo.com/inventory.html');
@@ -225,73 +349,32 @@ export const test = base.extend<PageFixtures>({
     await use(tab2);
     await tab2.close();
   },
-
-  /**
-   * sd_standard_ctx -- An INDEPENDENT BrowserContext logged in as standard_user.
-   * Use alongside sd_problem_ctx to run two users simultaneously in separate windows.
-   * The context is closed automatically after the test.
-   */
   sd_standard_ctx: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      baseURL: 'https://www.saucedemo.com',
-      storageState: getSaucedemoAuthFile('standard_user'),
-    });
+    const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com', storageState: getSaucedemoAuthFile('standard_user') });
     const page = await context.newPage();
     await page.goto('https://www.saucedemo.com/inventory.html');
-    const inventoryPage = new SD_InventoryPage(page);
-    await inventoryPage.waitForPageLoad();
-    await use({ context, page, inventoryPage });
-    await context.close();
+    const inventoryPage = new SD_InventoryPage(page); await inventoryPage.waitForPageLoad();
+    await use({ context, page, inventoryPage }); await context.close();
   },
-
-  /**
-   * sd_problem_ctx -- An INDEPENDENT BrowserContext logged in as problem_user.
-   * problem_user sees broken images on all inventory items -- good for
-   * comparing rendering differences between user sessions.
-   */
   sd_problem_ctx: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      baseURL: 'https://www.saucedemo.com',
-      storageState: getSaucedemoAuthFile('problem_user'),
-    });
+    const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com', storageState: getSaucedemoAuthFile('problem_user') });
     const page = await context.newPage();
     await page.goto('https://www.saucedemo.com/inventory.html');
-    const inventoryPage = new SD_InventoryPage(page);
-    await inventoryPage.waitForPageLoad();
-    await use({ context, page, inventoryPage });
-    await context.close();
+    const inventoryPage = new SD_InventoryPage(page); await inventoryPage.waitForPageLoad();
+    await use({ context, page, inventoryPage }); await context.close();
   },
-
-  /**
-   * sd_glitch_ctx -- An INDEPENDENT BrowserContext logged in as performance_glitch_user.
-   * performance_glitch_user experiences artificial load delays -- useful for
-   * demonstrating that independent contexts do not interfere with each other's timing.
-   */
   sd_glitch_ctx: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      baseURL: 'https://www.saucedemo.com',
-      storageState: getSaucedemoAuthFile('performance_glitch_user'),
-    });
+    const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com', storageState: getSaucedemoAuthFile('performance_glitch_user') });
     const page = await context.newPage();
     await page.goto('https://www.saucedemo.com/inventory.html');
-    const inventoryPage = new SD_InventoryPage(page);
-    await inventoryPage.waitForPageLoad();
-    await use({ context, page, inventoryPage });
-    await context.close();
+    const inventoryPage = new SD_InventoryPage(page); await inventoryPage.waitForPageLoad();
+    await use({ context, page, inventoryPage }); await context.close();
   },
-
-  /**
-   * sd_unauth_ctx -- A fresh UNAUTHENTICATED BrowserContext at the login page.
-   * Use for testing login rejection flows (e.g. locked_out_user) in isolation
-   * without touching the default test session.
-   */
   sd_unauth_ctx: async ({ browser }, use) => {
     const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com' });
     const page = await context.newPage();
-    const loginPage = new SD_LoginPage(page);
-    await loginPage.goto();
-    await use({ context, page, loginPage });
-    await context.close();
+    const loginPage = new SD_LoginPage(page); await loginPage.goto();
+    await use({ context, page, loginPage }); await context.close();
   },
 });
 

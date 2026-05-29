@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "abtest",
         "accessdenied",
         "addressunreachable",
         "aspnet",
@@ -15,8 +16,11 @@
         "domcontentloaded",
         "framereceived",
         "framesent",
+        "geolocation",
+        "herokuapp",
         "HSTS",
         "internetdisconnected",
+        "jscroll",
         "Kbps",
         "midweight",
         "multiuser",
@@ -25,12 +29,16 @@
         "nosniff",
         "Onesie",
         "playwrightdev",
+        "PUSI",
         "ringspun",
         "sadface",
         "SAMEORIGIN",
+        "shadowdom",
         "Srcs",
+        "theinternethero",
         "timedout",
         "TTFB",
+        "WCAG",
         "xcto"
     ]
 }
