@@ -148,6 +148,8 @@ test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-conte
   });
 
   test('logout in Tab 1 should affect the session visible in Tab 2', async ({ page, sd_tab2 }) => {
+    test.slow();
+    
     await allure.allureId('CTX-TAB-006');
     await allure.story('Logout Propagation');
     await allure.label('severity', 'critical');

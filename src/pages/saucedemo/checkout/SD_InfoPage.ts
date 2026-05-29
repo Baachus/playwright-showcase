@@ -12,6 +12,12 @@ export class SD_InfoPage extends BasePage {
   readonly lastName: Locator;
   readonly zipCode: Locator;
   readonly checkoutBtn: Locator;
+  readonly cancelBtn: Locator;
+  readonly checkoutTitle: Locator;
+
+  // Errors
+  readonly errorAlert: Locator;
+  readonly errorIcon: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -20,6 +26,12 @@ export class SD_InfoPage extends BasePage {
     this.lastName = page.locator('[data-test="lastName"]');
     this.zipCode  = page.locator('[data-test="postalCode"]');
     this.checkoutBtn = page.locator('[data-test="continue"]');
+    this.cancelBtn = page.locator('[data-test="cancel"]');
+    this.checkoutTitle = page.locator('[data-test="title"]');
+
+    // Errors
+    this.errorAlert = page.locator('[data-test="error"]');
+    this.errorIcon = page.locator('svg');
   }
 
   // ── Navigation ──────────────────────────────────────────────────────────────

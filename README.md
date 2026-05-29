@@ -6,35 +6,73 @@ A production-grade **Playwright + TypeScript** testing showcase covering a wide 
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [Applications Under Test](#applications-under-test)
-- [Project Structure](#project-structure)
-- [Setup](#setup)
-- [Running Tests](#running-tests)
-  - [Run All Tests](#run-all-tests)
-  - [Run by Test Category](#run-by-test-category)
-  - [Run in Headed / Debug Mode](#run-in-headed--debug-mode)
-  - [Run by Tag](#run-by-tag)
-  - [Run Specific Test Scenarios](#run-specific-test-scenarios)
-- [Email Verification Tests](#email-verification-tests)
-- [Allure Reports](#allure-reports)
-  - [Generate and Open a Report](#generate-and-open-a-report)
-  - [Single-File Report](#single-file-report)
-  - [Trend / History Tracking](#trend--history-tracking)
-  - [Live Serve (no build step)](#live-serve-no-build-step)
-- [Allure ID Updates](#allure-id-updates)
-- [Visual Snapshot Management](#visual-snapshot-management)
-- [Lighthouse Performance Reports](#lighthouse-performance-reports)
-- [Code Quality](#code-quality)
-- [Configuration Reference](#configuration-reference)
-- [Architecture](#architecture)
+- [Playwright Showcase](#playwright-showcase)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Tech Stack](#tech-stack)
+  - [Applications Under Test](#applications-under-test)
+    - [playwright.dev](#playwrightdev)
+    - [Saucedemo](#saucedemo)
+    - [The Internet](#the-internet)
+  - [Project Structure](#project-structure)
+  - [Setup](#setup)
+    - [Prerequisites](#prerequisites)
+    - [Install dependencies](#install-dependencies)
+    - [Install Playwright browsers](#install-playwright-browsers)
+    - [Seed authentication state](#seed-authentication-state)
+  - [Running Tests](#running-tests)
+    - [Run All Tests](#run-all-tests)
+    - [Run by Test Category](#run-by-test-category)
+    - [Run in Headed / Debug Mode](#run-in-headed--debug-mode)
+    - [View the HTML Test Report](#view-the-html-test-report)
+    - [Run by Tag](#run-by-tag)
+    - [Run Specific Test Scenarios](#run-specific-test-scenarios)
+      - [Multi-Context (by scenario type)](#multi-context-by-scenario-type)
+      - [WebSocket Smoke Tests](#websocket-smoke-tests)
+      - [Visual Regression Against a Single Browser](#visual-regression-against-a-single-browser)
+      - [Security Tests](#security-tests)
+      - [Performance Tests](#performance-tests)
+      - [Saucedemo Checkout Flow Only](#saucedemo-checkout-flow-only)
+      - [Email Verification](#email-verification)
+  - [Email Verification Tests](#email-verification-tests)
+    - [Scenarios](#scenarios)
+    - [Delivery modes](#delivery-modes)
+    - [Running with real Mailinator delivery](#running-with-real-mailinator-delivery)
+    - [Local interactive helper](#local-interactive-helper)
+  - [Allure Reports](#allure-reports)
+    - [Generate and Open a Report](#generate-and-open-a-report)
+    - [Single-File Report](#single-file-report)
+    - [Trend / History Tracking](#trend--history-tracking)
+    - [Live Serve (no build step)](#live-serve-no-build-step)
+  - [Allure ID Updates](#allure-id-updates)
+    - [Run the ID injector](#run-the-id-injector)
+    - [ID Prefix Map](#id-prefix-map)
+  - [Visual Snapshot Management](#visual-snapshot-management)
+    - [First run – creating baselines](#first-run--creating-baselines)
+    - [Update baselines after intentional UI changes](#update-baselines-after-intentional-ui-changes)
+    - [Tolerance thresholds](#tolerance-thresholds)
+  - [Lighthouse Performance Reports](#lighthouse-performance-reports)
+    - [Open the Lighthouse report](#open-the-lighthouse-report)
+    - [Default score thresholds](#default-score-thresholds)
+    - [Default Web Vitals thresholds](#default-web-vitals-thresholds)
+  - [Code Quality](#code-quality)
+  - [Configuration Reference](#configuration-reference)
+    - [`playwright.config.ts`](#playwrightconfigts)
+    - [Projects](#projects)
+    - [Path Aliases (`tsconfig.json`)](#path-aliases-tsconfigjson)
+  - [Architecture](#architecture)
+    - [Page Object Models (`src/pages/`)](#page-object-models-srcpages)
+    - [Component Object Models (`src/components/`)](#component-object-models-srccomponents)
+    - [Custom Fixtures (`src/fixtures/index.ts`)](#custom-fixtures-srcfixturesindexts)
+    - [Utility Libraries (`src/utils/`)](#utility-libraries-srcutils)
+    - [Authentication Setup](#authentication-setup)
+    - [Allure Labelling Convention](#allure-labelling-convention)
 
 ---
 
 ## Overview
 
-This project showcases how to structure a large Playwright test suite for maintainability and observability. It includes:
+This project showcases how to structure a large Playwright test suite for maintainability and observability. It targets three applications — playwright.dev, Saucedemo, and The Internet — and includes:
 
 - **UI Testing** – Page Object Model (POM) and Component Object Model (COM) tests across multiple browsers and devices
 - **API Testing** – Direct HTTP request testing with response validation
@@ -75,6 +113,9 @@ The official Playwright documentation site. Used for UI, accessibility, visual r
 ### [Saucedemo](https://www.saucedemo.com)
 A demo e-commerce application from Sauce Labs. Used for UI, checkout flow, multi-context, WebSocket, and authentication tests. Supports multiple user personas with different behaviors (standard, locked-out, problem, performance-glitch, error, visual).
 
+### [The Internet](https://the-internet.herokuapp.com)
+A purpose-built playground by Elemental Selenium covering a wide range of challenging UI scenarios. Used exclusively for UI tests across 44 spec files targeting features such as A/B testing, drag-and-drop, dynamic controls, iframes, shadow DOM, JavaScript alerts, file upload/download, geolocation, infinite scroll, and more.
+
 ---
 
 ## Project Structure
@@ -83,7 +124,8 @@ A demo e-commerce application from Sauce Labs. Used for UI, checkout flow, multi
 playwright-showcase/
 ├── src/
 │   ├── components/              # Component Object Models (COMs)
-│   │   └── playwrightdev/       # PD_NavbarComponent, PD_SearchComponent, etc.
+│   │   ├── playwrightdev/       # PD_NavbarComponent, PD_SearchComponent, etc.
+│   │   └── saucedemo/           # SD_InventoryItemComponent
 │   ├── fixtures/                # Custom Playwright fixture extensions
 │   │   ├── index.ts             # Main fixture export (page objects + multi-context)
 │   │   ├── playwrightdev.setup.ts
@@ -91,7 +133,8 @@ playwright-showcase/
 │   │   └── saucedemo-multiuser.setup.ts
 │   ├── pages/                   # Page Object Models (POMs)
 │   │   ├── playwrightdev/       # PD_HomePage, PD_DocsPage
-│   │   └── saucedemo/           # SD_LoginPage, SD_InventoryPage, SD_CartPage, checkout/
+│   │   ├── saucedemo/           # SD_LoginPage, SD_InventoryPage, SD_CartPage, checkout/
+│   │   └── the-internet/        # TI_* pages (44 pages, one per feature)
 │   └── utils/                   # Shared utility libraries
 │       ├── accessibility.utils.ts
 │       ├── authentication.utils.ts
@@ -109,7 +152,7 @@ playwright-showcase/
 │   ├── multi-context/           # Multi-tab, multi-window, multi-user tests
 │   ├── performance/             # Lighthouse performance audits
 │   ├── security/                # HTTP security header audits
-│   ├── ui/                      # End-to-end UI tests
+│   ├── ui/                      # End-to-end UI tests (playwrightdev/, saucedemo/, the-internet/)
 │   ├── unit/                    # Utility unit tests
 │   ├── visual/                  # Screenshot regression tests + stored baselines
 │   └── websocket/               # WebSocket mock and real echo-server tests
@@ -191,6 +234,7 @@ This runs every project in `playwright.config.ts` in parallel, including setup p
 | WebSocket (all) | `npm run test:websocket` |
 | WebSocket mock only | `npm run test:ws-mock` |
 | WebSocket realtime only | `npm run test:ws-realtime` |
+| The Internet UI tests | `npx playwright test tests/ui/the-internet --project="The Internet Chromium"` |
 | Email verification | `npm run test:email` |
 | Email verification (smoke only) | `npm run test:email:smoke` |
 
@@ -445,9 +489,57 @@ The script:
 | `security/security` | `SEC` |
 | `ui/.../docs-page` | `UI-DP` |
 | `ui/.../home-page` | `UI-HP` |
+| `ui/saucedemo/cart` | `UI-CR` |
 | `ui/saucedemo/checkout` | `UI-CK` |
+| `ui/saucedemo/info` | `UI-SI` |
 | `ui/saucedemo/inventory` | `UI-INV` |
 | `ui/saucedemo/login` | `UI-LG` |
+| `ui/saucedemo/problem_user/pu_info` | `UI-PUSI` |
+| `ui/saucedemo/problem_user/pu_inventory` | `UI-PUI` |
+| `ui/the-internet/ab-test` | `TI-AB` |
+| `ui/the-internet/add-remove` | `TI-AR` |
+| `ui/the-internet/basic-auth` | `TI-BA` |
+| `ui/the-internet/broken-image` | `TI-BI` |
+| `ui/the-internet/challenging-dom` | `TI-CD` |
+| `ui/the-internet/checkboxes` | `TI-CB` |
+| `ui/the-internet/context-menu` | `TI-CM` |
+| `ui/the-internet/digest-auth` | `TI-DA` |
+| `ui/the-internet/disappearing-elements` | `TI-DE` |
+| `ui/the-internet/drag-and-drop` | `TI-DR` |
+| `ui/the-internet/dropdown` | `TI-DD` |
+| `ui/the-internet/dynamic-content` | `TI-DC` |
+| `ui/the-internet/dynamic-controls` | `TI-DCO` |
+| `ui/the-internet/dynamic-loading` | `TI-DL` |
+| `ui/the-internet/entry-ad` | `TI-EA` |
+| `ui/the-internet/exit-intent` | `TI-EI` |
+| `ui/the-internet/file-download` | `TI-FD` |
+| `ui/the-internet/file-upload` | `TI-FU` |
+| `ui/the-internet/floating-menu` | `TI-FM` |
+| `ui/the-internet/forgot-password` | `TI-FP` |
+| `ui/the-internet/form-authentication` | `TI-FA` |
+| `ui/the-internet/geolocation` | `TI-GEO` |
+| `ui/the-internet/horizontal-slider` | `TI-HS` |
+| `ui/the-internet/hovers` | `TI-HV` |
+| `ui/the-internet/iframe` | `TI-IN` |
+| `ui/the-internet/infinite-scroll` | `TI-IS` |
+| `ui/the-internet/inputs` | `TI-IP` |
+| `ui/the-internet/javascript-alerts` | `TI-JA` |
+| `ui/the-internet/javascript-error` | `TI-JE` |
+| `ui/the-internet/jquery-ui-menu` | `TI-JQ` |
+| `ui/the-internet/key-presses` | `TI-KP` |
+| `ui/the-internet/large-deep-dom` | `TI-LD` |
+| `ui/the-internet/multiple-windows` | `TI-MW` |
+| `ui/the-internet/nested-frames` | `TI-NF` |
+| `ui/the-internet/notification-messages` | `TI-NM` |
+| `ui/the-internet/redirect-link` | `TI-RL` |
+| `ui/the-internet/secure-file-download` | `TI-SFD` |
+| `ui/the-internet/shadow-dom` | `TI-SD` |
+| `ui/the-internet/shifting-content` | `TI-SC` |
+| `ui/the-internet/slow-resources` | `TI-SR` |
+| `ui/the-internet/sortable-data-tables` | `TI-STC` |
+| `ui/the-internet/status-codes` | `TI-ST` |
+| `ui/the-internet/typos` | `TI-TY` |
+| `ui/the-internet/wysiwyg-editor` | `TI-WY` |
 | `visual/.../docs-page` | `VIS-DP` |
 | `visual/.../home-page` | `VIS-HP` |
 | `websocket/.../ws-mock` | `WS-MOCK` |
@@ -578,6 +670,9 @@ npm run format:check
 | `Performance` | `tests/performance` | Desktop Chrome | None |
 | `Security` | `tests/security` | Desktop Chrome | None |
 | `Accessibility` | `tests/accessibility` | Desktop Chrome | None |
+| `The Internet Chromium` | `tests/ui/the-internet` | Desktop Chrome | None |
+| `The Internet Firefox` | `tests/ui/the-internet` | Desktop Firefox | None |
+| `The Internet Webkit` | `tests/ui/the-internet` | Desktop Safari | None |
 
 ### Path Aliases (`tsconfig.json`)
 
@@ -600,6 +695,7 @@ Every page under test is modelled as a TypeScript class extending `BasePage`. Pa
 - `PD_HomePage`, `PD_DocsPage` – playwright.dev pages
 - `SD_LoginPage`, `SD_InventoryPage`, `SD_CartPage` – Saucedemo pages
 - `SD_InfoPage`, `SD_VerificationPage`, `SD_ConfirmationPage` – Saucedemo checkout steps
+- `TI_*Page` – 44 page objects for the-internet.herokuapp.com (one per feature)
 
 ### Component Object Models (`src/components/`)
 
@@ -607,6 +703,7 @@ Components that appear across multiple pages are modelled as classes extending `
 
 - `PD_NavbarComponent`, `PD_SearchComponent`, `PD_FooterComponent`
 - `PD_CodeBlockComponent`, `PD_LanguageSelectorComponent`
+- `SD_InventoryItemComponent` – shared data snapshot for a single inventory card, reused across inventory, cart, and checkout pages
 
 ### Custom Fixtures (`src/fixtures/index.ts`)
 

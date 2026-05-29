@@ -108,31 +108,31 @@ export default defineConfig({
       name: 'Playwright.dev Chromium', testDir: './tests',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
     },
     {
       name: 'Playwright.dev Firefox', testDir: './tests',
       use: { ...devices['Desktop Firefox'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
     },
     {
       name: 'Playwright.dev Webkit', testDir: './tests',
       use: { ...devices['Desktop Safari'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
     },
     {
       name: 'Playwright.dev Mobile-chrome', testDir: './tests',
       use: { ...devices['Pixel 5'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
     },
     {
       name: 'Playwright.dev Mobile-safari', testDir: './tests',
       use: { ...devices['iPhone 13'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
     },
     {
       name: 'Components', testMatch: '**/components/**/*.spec.ts', testDir: './tests',
@@ -182,6 +182,18 @@ export default defineConfig({
     {
       name: 'Accessibility', testMatch: '**/accessibility/**/*.spec.ts', testDir: './tests',
       use: { ...devices['Desktop Chrome'], baseURL: 'https://playwright.dev' },
+    },
+    {
+      name: 'The Internet Chromium', testMatch: '**/ui/the-internet/**/*.spec.ts', testDir: './tests',
+      use: { ...devices['Desktop Chrome'], baseURL: 'https://the-internet.herokuapp.com' },
+    },
+    {
+      name: 'The Internet Firefox', testMatch: '**/ui/the-internet/**/*.spec.ts', testDir: './tests',
+      use: { ...devices['Desktop Firefox'], baseURL: 'https://the-internet.herokuapp.com' },
+    },
+    {
+      name: 'The Internet Webkit', testMatch: '**/ui/the-internet/**/*.spec.ts', testDir: './tests',
+      use: { ...devices['Desktop Safari'], baseURL: 'https://the-internet.herokuapp.com' },
     },
     {
       name: 'Email', testMatch: '**/email/**/*.spec.ts', testDir: './tests',
