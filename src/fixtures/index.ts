@@ -65,6 +65,10 @@ import { MultiContextHelper } from '../utils/multi-context.utils.js';
 import { getSaucedemoAuthFile } from '../utils/authentication.utils.js';
 // WebSocket utilities
 import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.utils.js';
+// Email - Pages
+import { LocalEmailAppPage } from '../pages/email/LocalEmailAppPage.js';
+import { MailpitInboxPage } from '../pages/mailpit/MailpitInboxPage.js';
+import { mintInboxName, inboxToAddress } from '../utils/email.utils.js';
 
 /**
  * Custom Fixtures
@@ -147,6 +151,16 @@ type PageFixtures = {
   sd_verificationPage: SD_VerificationPage;
   // WebSocket
   echoServer: LocalEchoServer;
+
+  // Email -- local sender app + Mailpit capture server
+  /** A unique mailbox local-part minted per test (no collisions). */
+  emailInbox: string;
+  /** Full recipient address derived from `emailInbox`. */
+  emailAddress: string;
+  /** Page Object for the local email-sender helper service. */
+  emailApp: LocalEmailAppPage;
+  /** REST reader for the Mailpit mailbox scoped to `emailAddress`. */
+  mailpitInbox: MailpitInboxPage;
 } & MultiContextFixtures;
 
 export const test = base.extend<PageFixtures>({
@@ -336,6 +350,44 @@ export const test = base.extend<PageFixtures>({
 
   echoServer: async ({}, use) => {
     const server = await startLocalEchoServer(); await use(server); await server.close();
+  },
+
+  // ---- Email -- local sender + Mailpit ----
+  /**
+   * emailInbox -- a fresh mailbox local-part minted per test.  A unique name
+   * per test keeps Mailpit `to:` searches isolated even under parallelism.
+   */
+  emailInbox: async ({}, use) => {
+    await use(mintInboxName('pwshowcase'));
+  },
+
+  /** Full recipient address derived from `emailInbox`. */
+  emailAddress: async ({ emailInbox }, use) => {
+    await use(inboxToAddress(emailInbox));
+  },
+
+  /**
+   * emailApp -- LocalEmailAppPage bound to the running helper service.
+   * The service URL comes from the EMAIL_APP_BASE_URL env var (set by the
+   * `webServer` block in playwright.config.ts), defaulting to localhost:4310.
+   * The fixture resets the server's in-memory state before each test.
+   */
+  emailApp: async ({ page }, use) => {
+    const baseURL = process.env.EMAIL_APP_BASE_URL ?? 'http://localhost:4310';
+    const app = new LocalEmailAppPage(page, baseURL);
+    await app.reset();
+    await use(app);
+  },
+
+  /**
+   * mailpitInbox -- REST reader scoped to this test's unique recipient
+   * address.  No navigation needed; the test triggers a send, then polls the
+   * Mailpit API for arrival.  Disposed automatically after the test.
+   */
+  mailpitInbox: async ({ emailAddress }, use) => {
+    const inbox = new MailpitInboxPage(emailAddress);
+    await use(inbox);
+    await inbox.dispose();
   },
 
   // ── Saucedemo - Multi-context fixtures ───────────────────────────────────────
