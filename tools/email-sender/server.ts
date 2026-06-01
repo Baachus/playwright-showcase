@@ -4,23 +4,24 @@
  * A tiny Express + nodemailer service used by the Playwright `Email` project
  * to simulate a real application that sends verification / OTP / HTML /
  * attachment emails.  Each tested scenario hits one HTTP endpoint here, this
- * server composes the email and dispatches it to an SMTP recipient (typically
- * a Mailinator public inbox).
+ * server composes the email and dispatches it to an SMTP recipient (in the
+ * test setup, a local Mailpit capture server).
  *
  * Why this exists:
  *   the-internet.herokuapp.com (the project's main demo target) does not
- *   actually send email, and Mailinator's read API is paid-only.  This local
- *   service gives us a fully controllable email-producing system that
- *   Playwright can drive, while still reading the resulting message from
- *   the free Mailinator public inbox UI.
+ *   actually send email.  This local service gives us a fully controllable
+ *   email-producing system that Playwright can drive.  In the test setup it
+ *   relays over SMTP to a local Mailpit capture server, and the specs read the
+ *   result back via Mailpit's REST API.
  *
  * Transports
- *   - MX direct (default): nodemailer looks up the recipient's MX records and
- *     delivers straight to Mailinator's mail servers.  No SMTP credentials,
- *     works on most dev machines where outbound port 25 is open.
- *   - SMTP relay: set SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS to relay
- *     through a real SMTP provider (Brevo, SendGrid, Mailtrap, etc.) if your
- *     network or CI provider blocks port 25.
+ *   - SMTP relay (used by the tests): set SMTP_HOST / SMTP_PORT (/ SMTP_USER /
+ *     SMTP_PASS) to relay through an SMTP server.  The Playwright config points
+ *     these at the local Mailpit sink (127.0.0.1:1025).  Any real SMTP provider
+ *     (Brevo, SendGrid, Mailtrap, ...) works too.
+ *   - MX direct (default when no SMTP_HOST): nodemailer looks up the
+ *     recipient's MX records and delivers on port 25.  Requires outbound 25,
+ *     which is blocked on most dev machines / CI -- prefer the SMTP relay.
  *   - Capture: set EMAIL_CAPTURE=1 to skip real delivery entirely and store
  *     emails in memory.  Useful for unit-style runs where you only want to
  *     assert on payloads.
@@ -353,8 +354,11 @@ app.get('/verify/:token', (req: Request, res: Response) => {
   record.verifiedAt = Date.now();
   res.type('html').send(`
     <html><body style="font-family:Arial;margin:40px;">
-      <p>Thanks <span data-test="verify-email">${escapeHtml(record.email)}</span>,
-      your address is now confirmed.</p>
+      <div data-test="verify-success">
+        <h1>Email verified</h1>
+        <p>Thanks <span data-test="verify-email">${escapeHtml(record.email)}</span>,
+        your address is now confirmed.</p>
+      </div>
     </body></html>`);
 });
 

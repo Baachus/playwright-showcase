@@ -67,8 +67,8 @@ import { getSaucedemoAuthFile } from '../utils/authentication.utils.js';
 import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.utils.js';
 // Email - Pages
 import { LocalEmailAppPage } from '../pages/email/LocalEmailAppPage.js';
-import { Mailinator_PublicInboxPage } from '../pages/mailinator/Mailinator_PublicInboxPage.js';
-import { mintInboxName, inboxToAddress } from '../utils/mailinator.utils.js';
+import { MailpitInboxPage } from '../pages/mailpit/MailpitInboxPage.js';
+import { mintInboxName, inboxToAddress } from '../utils/email.utils.js';
 
 /**
  * Custom Fixtures
@@ -152,15 +152,15 @@ type PageFixtures = {
   // WebSocket
   echoServer: LocalEchoServer;
 
-  // Email -- local sender app + Mailinator public inbox
-  /** A unique Mailinator public-inbox name minted per test (no collisions). */
+  // Email -- local sender app + Mailpit capture server
+  /** A unique mailbox local-part minted per test (no collisions). */
   emailInbox: string;
-  /** Full mailbox address for `emailInbox` (e.g. <inbox>@mailinator.com). */
+  /** Full recipient address derived from `emailInbox`. */
   emailAddress: string;
   /** Page Object for the local email-sender helper service. */
   emailApp: LocalEmailAppPage;
-  /** Page Object for the Mailinator public inbox UI, scoped to `emailInbox`. */
-  mailinatorInbox: Mailinator_PublicInboxPage;
+  /** REST reader for the Mailpit mailbox scoped to `emailAddress`. */
+  mailpitInbox: MailpitInboxPage;
 } & MultiContextFixtures;
 
 export const test = base.extend<PageFixtures>({
@@ -352,45 +352,16 @@ export const test = base.extend<PageFixtures>({
     const server = await startLocalEchoServer(); await use(server); await server.close();
   },
 
-  // ---- Email -- local sender + Mailinator ----
+  // ---- Email -- local sender + Mailpit ----
   /**
-   * emailInbox -- a fresh public-inbox name minted per test.  Mailinator's
-   * public inboxes are world-readable, so we never reuse a fixed name -- a
-   * unique one per test prevents any chance of collision.
+   * emailInbox -- a fresh mailbox local-part minted per test.  A unique name
+   * per test keeps Mailpit `to:` searches isolated even under parallelism.
    */
   emailInbox: async ({}, use) => {
     await use(mintInboxName('pwshowcase'));
   },
 
-  /** Full `<inbox>@mailinator.com` address derived from `emailInbox`. */
-  emailAddress: async ({ emailInbox }, use) => {
-    await use(inboxToAddress(emailInbox));
-  },
-
-  /**
-   * emailApp -- LocalEmailAppPage bound to the running helper service.
-   * The service URL comes from the EMAIL_APP_BASE_URL env var (set by the
-   * `webServer` block in playwright.config.ts), defaulting to localhost:4310.
-   * The fixture resets the server's in-memory state before each test.
-   */
-  emailApp: async ({ page }, use) => {
-    const baseURL = process.env.EMAIL_APP_BASE_URL ?? 'http://localhost:4310';
-    const app = new LocalEmailAppPage(page, baseURL);
-    await app.reset();
-    await use(app);
-  },
-
-  // ---- Email -- local sender + Mailinator ----
-  /**
-   * emailInbox -- a fresh public-inbox name minted per test.  Mailinator's
-   * public inboxes are world-readable, so we never reuse a fixed name -- a
-   * unique one per test prevents any chance of collision.
-   */
-  emailInbox: async ({}, use) => {
-    await use(mintInboxName('pwshowcase'));
-  },
-
-  /** Full `<inbox>@mailinator.com` address derived from `emailInbox`. */
+  /** Full recipient address derived from `emailInbox`. */
   emailAddress: async ({ emailInbox }, use) => {
     await use(inboxToAddress(emailInbox));
   },
@@ -409,21 +380,14 @@ export const test = base.extend<PageFixtures>({
   },
 
   /**
-   * mailinatorInbox -- Mailinator_PublicInboxPage scoped to this test's
-   * unique inbox.  Does NOT navigate by default -- the test triggers a
-   * send first and then calls .goto() to start polling.
+   * mailpitInbox -- REST reader scoped to this test's unique recipient
+   * address.  No navigation needed; the test triggers a send, then polls the
+   * Mailpit API for arrival.  Disposed automatically after the test.
    */
-  mailinatorInbox: async ({ page, emailInbox }, use) => {
-    await use(new Mailinator_PublicInboxPage(page, emailInbox));
-  },
-
-  /**
-   * mailinatorInbox -- Mailinator_PublicInboxPage scoped to this test's
-   * unique inbox.  Does NOT navigate by default -- the test triggers a
-   * send first and then calls .goto() to start polling.
-   */
-  mailinatorInbox: async ({ page, emailInbox }, use) => {
-    await use(new Mailinator_PublicInboxPage(page, emailInbox));
+  mailpitInbox: async ({ emailAddress }, use) => {
+    const inbox = new MailpitInboxPage(emailAddress);
+    await use(inbox);
+    await inbox.dispose();
   },
 
   // ── Saucedemo - Multi-context fixtures ───────────────────────────────────────

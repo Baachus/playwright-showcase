@@ -6,13 +6,12 @@ import * as allure from 'allure-js-commons';
  * ─────────────────────────────────────────────────────────────────────────────
  * Flow:
  *   1. Trigger an HTML email via the local sender app (HTTP POST).
- *   2. Open Mailinator's public inbox UI for the per-test inbox.
- *   3. Poll until the message arrives, open it, assert subject + body content.
+ *   2. Poll Mailpit's REST API for the per-test mailbox until it arrives.
+ *   3. Assert subject + rendered body content.
  *
- * Inbox safety
- *   Each test gets a fresh, unique inbox name via the `emailInbox` fixture, so
- *   tests never race against each other and never accidentally read mail from
- *   another developer's run.
+ * Mailbox safety
+ *   Each test gets a fresh, unique recipient via the `emailAddress` fixture, so
+ *   tests never race against each other.
  */
 test.beforeEach(async () => {
   await allure.epic('Email Verification');
@@ -21,9 +20,9 @@ test.beforeEach(async () => {
 
 test.describe('Email -- inbox arrival + content', { tag: ['@email'] }, () => {
   test(
-    'rich HTML email arrives in Mailinator with expected subject and body',
+    'rich HTML email arrives in Mailpit with expected subject and body',
     { tag: ['@smoke'] },
-    async ({ emailApp, emailAddress, mailinatorInbox }) => {
+    async ({ emailApp, emailAddress, mailpitInbox }) => {
       await allure.allureId('EMAIL-CT-001');
       await allure.story('Rich HTML email arrival');
       await allure.label('severity', 'critical');
@@ -33,15 +32,12 @@ test.describe('Email -- inbox arrival + content', { tag: ['@email'] }, () => {
         expect(result.ok).toBe(true);
       });
 
-      await allure.step('Open Mailinator inbox and wait for the message', async () => {
-        await mailinatorInbox.goto();
-        await mailinatorInbox.assertOnInbox();
-        await mailinatorInbox.waitForMessageBySubject(/rich HTML/i, { timeoutMs: 90_000 });
+      await allure.step('Wait for the message in Mailpit', async () => {
+        await mailpitInbox.waitForMessageBySubject(/rich HTML/i, { timeoutMs: 30_000 });
       });
 
-      await allure.step('Open the message and assert subject + content', async () => {
-        await mailinatorInbox.openFirstMessage();
-        const bodyText = await mailinatorInbox.getHtmlBodyText();
+      await allure.step('Assert subject + content', async () => {
+        const bodyText = await mailpitInbox.getHtmlBodyText();
         expect(bodyText).toMatch(/Hello, traveller/i);
         expect(bodyText).toMatch(/Item one[\s\S]+Item two[\s\S]+Item three/i);
       });

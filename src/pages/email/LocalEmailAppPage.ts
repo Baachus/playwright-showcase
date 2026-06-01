@@ -11,7 +11,7 @@ import { BasePage } from '../BasePage.js';
  *     keep the inbox-flow tests fast.
  *
  * Tests can mix and match: use the HTTP helper to trigger a send, then a
- * `Mailinator_PublicInboxPage` to read the result.
+ * `MailpitInboxPage` to read the result.
  */
 export type SendResult = {
   ok: boolean;

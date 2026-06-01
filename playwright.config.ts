@@ -3,6 +3,14 @@ import { defineConfig, devices } from '@playwright/test';
 const EMAIL_APP_PORT = Number(process.env.EMAIL_APP_PORT ?? 4310);
 const EMAIL_APP_BASE_URL = process.env.EMAIL_APP_BASE_URL ?? `http://localhost:${EMAIL_APP_PORT}`;
 
+// Local Mailpit capture server (SMTP sink + REST API).  The email-sender app
+// relays mail here over SMTP; the specs read it back via the REST API.
+const MAILPIT_SMTP_HOST = process.env.MAILPIT_SMTP_HOST ?? '127.0.0.1';
+const MAILPIT_SMTP_PORT = Number(process.env.MAILPIT_SMTP_PORT ?? 1025);
+const MAILPIT_HTTP_HOST = process.env.MAILPIT_HTTP_HOST ?? '127.0.0.1';
+const MAILPIT_HTTP_PORT = Number(process.env.MAILPIT_HTTP_PORT ?? 8025);
+const MAILPIT_API_BASE = process.env.MAILPIT_API_BASE ?? `http://${MAILPIT_HTTP_HOST}:${MAILPIT_HTTP_PORT}`;
+
 /**
  * Detect whether the Email project is in scope for this run.  The local
  * email-sender helper only needs to boot when we're actually going to run
@@ -31,6 +39,19 @@ export default defineConfig({
   webServer: EMAIL_TESTS_REQUESTED
     ? [
         {
+          // Mailpit -- start first so the SMTP sink is ready for the sender.
+          command: 'node tools/mailpit/run.mjs',
+          url: `${MAILPIT_API_BASE}/api/v1/info`,
+          reuseExistingServer: !process.env.CI,
+          timeout: 60_000, // first run may download the Mailpit binary
+          stdout: 'pipe',
+          stderr: 'pipe',
+          env: {
+            MAILPIT_SMTP_ADDR: `${MAILPIT_SMTP_HOST}:${MAILPIT_SMTP_PORT}`,
+            MAILPIT_HTTP_ADDR: `${MAILPIT_HTTP_HOST}:${MAILPIT_HTTP_PORT}`,
+          },
+        },
+        {
           command: 'npx tsx tools/email-sender/server.ts',
           url: `${EMAIL_APP_BASE_URL}/healthz`,
           reuseExistingServer: !process.env.CI,
@@ -40,17 +61,11 @@ export default defineConfig({
           env: {
             EMAIL_APP_PORT: String(EMAIL_APP_PORT),
             EMAIL_APP_BASE_URL,
-            // Default to real delivery.  The specs read from the live
-            // Mailinator public-inbox UI, so capture mode would leave the
-            // inbox empty and time out every wait-for-message poll.  When no
-            // SMTP relay is configured we fall through to nodemailer's direct
-            // MX transport (requires outbound port 25); set SMTP_HOST/... to
-            // route through a relay if port 25 is blocked.  Opt into capture
-            // mode explicitly with EMAIL_CAPTURE=1 -- it's only useful for
-            // unit-style runs that read from /captured rather than Mailinator.
+            // Relay all mail to the local Mailpit SMTP sink.  External SMTP /
+            // capture-mode overrides still work if explicitly provided.
             EMAIL_CAPTURE: process.env.EMAIL_CAPTURE ?? '0',
-            ...(process.env.SMTP_HOST    ? { SMTP_HOST: process.env.SMTP_HOST }    : {}),
-            ...(process.env.SMTP_PORT    ? { SMTP_PORT: process.env.SMTP_PORT }    : {}),
+            SMTP_HOST: process.env.SMTP_HOST ?? MAILPIT_SMTP_HOST,
+            SMTP_PORT: process.env.SMTP_PORT ?? String(MAILPIT_SMTP_PORT),
             ...(process.env.SMTP_USER    ? { SMTP_USER: process.env.SMTP_USER }    : {}),
             ...(process.env.SMTP_PASS    ? { SMTP_PASS: process.env.SMTP_PASS }    : {}),
             ...(process.env.SMTP_SECURE  ? { SMTP_SECURE: process.env.SMTP_SECURE } : {}),
@@ -198,10 +213,9 @@ export default defineConfig({
     {
       name: 'Email', testMatch: '**/email/**/*.spec.ts', testDir: './tests',
       // baseURL points at the local email-sender app so emailApp.goto() and
-      // /verify/:token links work directly via page.goto(...).  Tests still
-      // navigate to https://www.mailinator.com/... explicitly when reading
-      // the inbox.  The email-sender app marks elements with data-test=...,
-      // so set the matching testIdAttribute for getByTestId(...).
+      // /verify/:token links work directly via page.goto(...).  Tests read the
+      // resulting mail from the local Mailpit REST API.  The email-sender app
+      // marks elements with data-test=..., so set the matching testIdAttribute.
       use: {
         ...devices['Desktop Chrome'],
         baseURL: EMAIL_APP_BASE_URL,

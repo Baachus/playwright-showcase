@@ -9,9 +9,10 @@ exercised end-to-end with real network delivery.
 ## Why a local helper
 
 `the-internet.herokuapp.com` (the project's main demo target) does not
-actually send email, and Mailinator's read API is paid-only.  This service
-gives us a fully controllable producer that Playwright can drive, while we
-still read the resulting message from the free Mailinator public inbox UI.
+actually send email.  This service gives us a fully controllable producer that
+Playwright can drive.  It relays mail over SMTP to a local **Mailpit** capture
+server (see `tools/mailpit/`), and the specs read the result back through
+Mailpit's REST API — fully local, no internet, no port 25, no third-party inbox.
 
 ## Run
 

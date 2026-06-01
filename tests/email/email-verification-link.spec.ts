@@ -1,17 +1,16 @@
 import { test, expect } from '../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
-import { extractLink } from '../../src/utils/mailinator.utils.js';
+import { extractLink } from '../../src/utils/email.utils.js';
 
 /**
  * Email Tests -- Verification link click flow
  * ─────────────────────────────────────────────────────────────────────────────
  * Flow:
  *   1. POST /send/verification on the local sender app.  The server returns
- *      the verification link in the JSON response (convenient!) AND embeds it
- *      in the email body itself -- the real-world flow comes from the email.
- *   2. Open Mailinator, wait for the message, extract the link from the body.
- *   3. Cross-check: the link extracted from the email must equal the one the
- *      server returned (proves the email genuinely carried the right token).
+ *      the verification link in the JSON response AND embeds it in the email
+ *      body -- the real-world flow comes from the email.
+ *   2. Poll Mailpit for the message, extract the link from the body.
+ *   3. Cross-check: the link from the email must carry the server-issued token.
  *   4. Click the link in Playwright and assert the success page renders.
  */
 test.beforeEach(async () => {
@@ -23,7 +22,7 @@ test.describe('Email -- verification link', { tag: ['@email'] }, () => {
   test(
     'user can verify by clicking the link in the verification email',
     { tag: ['@smoke', '@critical'] },
-    async ({ emailApp, emailAddress, mailinatorInbox }) => {
+    async ({ emailApp, emailAddress, mailpitInbox }) => {
       await allure.allureId('EMAIL-VL-001');
       await allure.story('Click verification link from inbox');
       await allure.label('severity', 'blocker');
@@ -36,25 +35,22 @@ test.describe('Email -- verification link', { tag: ['@email'] }, () => {
         return result;
       });
 
-      // 2. open inbox + wait for arrival
-      await allure.step('Open Mailinator and wait for the message', async () => {
-        await mailinatorInbox.goto();
-        await mailinatorInbox.waitForMessageBySubject(/verify your email/i, { timeoutMs: 90_000 });
-        await mailinatorInbox.openFirstMessage();
+      // 2. wait for arrival
+      await allure.step('Wait for the message in Mailpit', async () => {
+        await mailpitInbox.waitForMessageBySubject(/verify your email/i, { timeoutMs: 30_000 });
       });
 
       // 3. extract link from the rendered HTML body
       const linkFromEmail = await allure.step('Extract verification link from email body', async () => {
-        const bodyText = await mailinatorInbox.getHtmlBodyText();
         const link =
-          (await mailinatorInbox.getFirstLinkHref()) ??
-          extractLink(bodyText, u => u.includes('/verify/'));
+          (await mailpitInbox.getFirstLinkHref()) ??
+          extractLink(await mailpitInbox.getHtmlBodyText(), u => u.includes('/verify/'));
         expect(link, 'verification link should be in the email body').toBeTruthy();
         return link!;
       });
 
-      // 4. cross-check: server-issued link must match what the email carried
-      await allure.step('Email link matches the server-issued link', async () => {
+      // 4. cross-check: server-issued token must be present in the email link
+      await allure.step('Email link matches the server-issued token', async () => {
         expect(linkFromEmail).toContain(send.token!);
       });
 

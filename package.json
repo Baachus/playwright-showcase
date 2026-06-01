@@ -38,7 +38,8 @@
     "test:ws-mock:smoke": "playwright test tests/websocket --project=WebSocket-Mock --grep @smoke",
     "test:email": "playwright test tests/email --project=Email",
     "test:email:smoke": "playwright test tests/email --project=Email --grep @smoke",
-    "email:server": "tsx tools/email-sender/server.ts"
+    "email:server": "tsx tools/email-sender/server.ts",
+    "mailpit": "node tools/mailpit/run.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",

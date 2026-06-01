@@ -1,14 +1,13 @@
 import { test, expect } from '../../src/fixtures/index.js';
 import * as allure from 'allure-js-commons';
-import { extractOtp } from '../../src/utils/mailinator.utils.js';
+import { extractOtp } from '../../src/utils/email.utils.js';
 
 /**
  * Email Tests -- OTP / one-time code extraction
  * ─────────────────────────────────────────────────────────────────────────────
  * The local sender app issues a fresh 6-digit code on every /send/otp call.
  * The test asserts that the OTP we read out of the inbox matches the one the
- * server issued -- which is the contract you'd want to test in any real OTP
- * authentication flow.
+ * server issued -- the core contract of any real OTP authentication flow.
  */
 test.beforeEach(async () => {
   await allure.epic('Email Verification');
@@ -19,7 +18,7 @@ test.describe('Email -- OTP', { tag: ['@email'] }, () => {
   test(
     'OTP read from inbox matches the code issued by the server',
     { tag: ['@smoke'] },
-    async ({ emailApp, emailAddress, mailinatorInbox }) => {
+    async ({ emailApp, emailAddress, mailpitInbox }) => {
       await allure.allureId('EMAIL-OTP-001');
       await allure.story('Read OTP from email');
       await allure.label('severity', 'critical');
@@ -31,14 +30,12 @@ test.describe('Email -- OTP', { tag: ['@email'] }, () => {
         return r;
       });
 
-      await allure.step('Open Mailinator and wait for the OTP message', async () => {
-        await mailinatorInbox.goto();
-        await mailinatorInbox.waitForMessageBySubject(/sign-in code/i, { timeoutMs: 90_000 });
-        await mailinatorInbox.openFirstMessage();
+      await allure.step('Wait for the OTP message in Mailpit', async () => {
+        await mailpitInbox.waitForMessageBySubject(/sign-in code/i, { timeoutMs: 30_000 });
       });
 
       await allure.step('OTP in body matches the server-issued code', async () => {
-        const bodyText = await mailinatorInbox.getHtmlBodyText();
+        const bodyText = await mailpitInbox.getHtmlBodyText();
         const otp = extractOtp(bodyText);
         expect(otp, 'a 6-digit OTP should be present in the email body').not.toBeNull();
         expect(otp).toEqual(send.code);
