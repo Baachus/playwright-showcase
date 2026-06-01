@@ -12,6 +12,8 @@
     "test:security": "playwright test tests/security",
     "test:visual": "playwright test tests/visual --project=Visual",
     "test:visual:update": "playwright test tests/visual --project=Visual --update-snapshots",
+    "visual:baselines:linux": "bash scripts/update-visual-baselines.sh",
+    "visual:baselines:linux:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update-visual-baselines.ps1",
     "test:mock": "playwright test tests/mocking --project=Mocking",
     "test:components": "playwright test tests/components --project=Components",
     "test:multi-context": "playwright test tests/multi-context --project=Multi-Context",

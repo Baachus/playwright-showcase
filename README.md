@@ -50,6 +50,8 @@ A production-grade **Playwright + TypeScript** testing showcase covering a wide 
   - [Visual Snapshot Management](#visual-snapshot-management)
     - [First run – creating baselines](#first-run--creating-baselines)
     - [Update baselines after intentional UI changes](#update-baselines-after-intentional-ui-changes)
+    - [Cross-OS baselines for CI (Linux)](#cross-os-baselines-for-ci-linux)
+    - [Before committing a UI or visual change](#before-committing-a-ui-or-visual-change)
     - [Tolerance thresholds](#tolerance-thresholds)
   - [Lighthouse Performance Reports](#lighthouse-performance-reports)
     - [Open the Lighthouse report](#open-the-lighthouse-report)
@@ -557,7 +559,7 @@ The script:
 
 ## Visual Snapshot Management
 
-Visual regression tests compare screenshots pixel-by-pixel against stored baselines in `tests/visual/**/*.spec.ts-snapshots/`. Baselines are OS-specific (the suffix `-win32.png` is appended automatically on Windows).
+Visual regression tests compare screenshots pixel-by-pixel against stored baselines in `tests/visual/**/*.spec.ts-snapshots/`. Baselines are **OS-specific**: Playwright appends a platform suffix to each file (`-win32.png` on Windows, `-linux.png` on Linux). Font and antialiasing differences between operating systems mean a Windows screenshot will never byte-match a Linux one, so **each OS needs its own committed baseline**. Our CI runs on `ubuntu-latest`, so the `Visual` project needs `-linux.png` baselines committed alongside the `-win32.png` ones.
 
 ### First run – creating baselines
 
@@ -572,6 +574,53 @@ npm run test:visual:update
 # or
 npx playwright test tests/visual --project=Visual --update-snapshots
 ```
+
+This updates baselines for **your current OS only**. If you're on Windows, it refreshes the `-win32.png` files — CI's `-linux.png` files are **not** updated by this command. See the next section.
+
+### Cross-OS baselines for CI (Linux)
+
+CI fails the `Visual` project with *"A snapshot doesn't exist … writing actual"* whenever the `-linux.png` baselines are missing. Because Linux renders fonts differently than Windows, you can't just rename your `-win32.png` files — you must generate real Linux baselines in the same environment CI uses.
+
+The helper scripts do exactly this: they run the `Visual` project inside the official Playwright Docker image, pinned to the exact version in `package-lock.json`, so the output matches CI pixel-for-pixel. Your `-win32.png` baselines and your local `node_modules` are left untouched (an anonymous volume shadows `node_modules` so the container's `npm ci` can't overwrite your Windows install).
+
+**Requirements:** Docker (Docker Desktop on Windows/macOS).
+
+```bash
+# Windows (uses built-in Windows PowerShell — no PowerShell 7 / pwsh needed)
+npm run visual:baselines:linux:win
+
+# macOS / Linux / Git Bash
+npm run visual:baselines:linux
+```
+
+Then review and commit the generated images:
+
+```bash
+git add tests/visual/**/*-linux.png
+git commit -m "test(visual): update Linux baselines for CI"
+```
+
+See `tests/visual/README.md` for more detail.
+
+### Before committing a UI or visual change
+
+Each time you commit a change that affects the rendered UI, run this checklist so CI stays green:
+
+```bash
+npm run typecheck      # 1. TypeScript compiles
+npm run lint           # 2. Lint passes
+npm run test:visual    # 3. Visual specs pass locally (Windows baselines)
+npm run visual:baselines:linux:win   # 4. Regenerate Linux baselines (Docker)
+```
+
+Then stage **both** platform baselines together with your code change and commit:
+
+```bash
+git add tests/visual/**/*-win32.png tests/visual/**/*-linux.png
+git commit -m "feat: <your change> + refreshed visual baselines"
+```
+
+If your change does **not** touch the UI, you can skip steps 3–4 — the existing baselines still apply.
 
 ### Tolerance thresholds
 
