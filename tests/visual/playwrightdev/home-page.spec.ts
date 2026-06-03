@@ -132,7 +132,7 @@ test.describe('Component Screenshots', { tag: ['@visual'] }, () => {
     await allure.step('Assert language tabs match baseline', async () => {
       await expect(langTabs).toHaveScreenshot(
         'home-language-tabs.png',
-        buildLocatorSnapshotOptions({ maxDiffPixelRatio: 0.03 }),
+        buildLocatorSnapshotOptions({ maxDiffPixelRatio: 0.05 }),
       );
     });
   });

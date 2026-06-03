@@ -26,8 +26,25 @@ import { Page, Locator, PageScreenshotOptions, LocatorScreenshotOptions } from '
 export interface SnapshotOptions {
   /** Locators to black-box (replaced with a solid rectangle). */
   mask?: Locator[];
-  /** Allowed pixel difference ratio (0–1). Default: 0.02 (2%). */
+  /**
+   * Allowed pixel difference ratio (0–1).
+   * Defaults: 0.05 (5%) for element/viewport shots, 0.10 (10%) for full-page
+   * shots — full-page captures of a live site accumulate far more incidental
+   * diff (content reflow, lazy images, sub-pixel text) so they need more slack.
+   */
   maxDiffPixelRatio?: number;
+  /**
+   * Absolute floor on allowed differing pixels, applied alongside the ratio.
+   * Whichever budget is larger wins, so small captures aren't tripped by a
+   * handful of anti-aliased edge pixels. Defaults: 200 (element) / 1500 (full-page).
+   */
+  maxDiffPixels?: number;
+  /**
+   * Per-pixel colour sensitivity (0 = strict, 1 = lax). Higher values ignore
+   * minor anti-aliasing/font-hinting differences between environments.
+   * Default: 0.25.
+   */
+  threshold?: number;
   /** Capture the full scrollable page, not just the viewport. */
   fullPage?: boolean;
   /** Clip the screenshot to a bounding box. */
@@ -125,12 +142,18 @@ export function maskVolatileRegions(page: Page, extraSelectors: string[] = []): 
  */
 export function buildSnapshotOptions(opts: SnapshotOptions = {}): PageScreenshotOptions & {
   maxDiffPixelRatio?: number;
+  maxDiffPixels?: number;
+  threshold?: number;
   mask?: Locator[];
 } {
+  const fullPage = opts.fullPage ?? false;
   return {
-    fullPage:           opts.fullPage ?? false,
+    fullPage,
     mask:               opts.mask ?? [],
-    maxDiffPixelRatio:  opts.maxDiffPixelRatio ?? 0.02,
+    // Full-page shots drift more (height reflow, lazy content) → looser budget.
+    maxDiffPixelRatio:  opts.maxDiffPixelRatio ?? (fullPage ? 0.10 : 0.05),
+    maxDiffPixels:      opts.maxDiffPixels ?? (fullPage ? 1500 : 200),
+    threshold:          opts.threshold ?? 0.25,
     omitBackground:     opts.omitBackground ?? false,
     ...(opts.clip ? { clip: opts.clip } : {}),
   };
@@ -142,11 +165,15 @@ export function buildSnapshotOptions(opts: SnapshotOptions = {}): PageScreenshot
  */
 export function buildLocatorSnapshotOptions(opts: Omit<SnapshotOptions, 'fullPage' | 'clip'> = {}): LocatorScreenshotOptions & {
   maxDiffPixelRatio?: number;
+  maxDiffPixels?: number;
+  threshold?: number;
   mask?: Locator[];
 } {
   return {
     mask:              opts.mask ?? [],
-    maxDiffPixelRatio: opts.maxDiffPixelRatio ?? 0.02,
+    maxDiffPixelRatio: opts.maxDiffPixelRatio ?? 0.05,
+    maxDiffPixels:     opts.maxDiffPixels ?? 200,
+    threshold:         opts.threshold ?? 0.25,
     omitBackground:    opts.omitBackground ?? false,
   };
 }

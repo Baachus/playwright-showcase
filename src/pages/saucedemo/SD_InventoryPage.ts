@@ -1,6 +1,8 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage.js';
 import { InventoryItem, SD_InventoryItemComponent } from '../../components/saucedemo/SD_InventoryItemComponent.js';
+import { SD_LoginPage } from './SD_LoginPage.js';
+import { resolveCredentials } from '@utils/authentication.utils.js';
 
 export type { InventoryItem };
 
@@ -57,7 +59,38 @@ export class SD_InventoryPage extends BasePage {
   // BasePage implementation
   async goto(): Promise<void> {
     await this.page.goto(`https://www.saucedemo.com${SD_InventoryPage.PATH}`);
+
+    // Self-heal: if the saved storageState session is missing or has been
+    // rejected (common in CI, where Saucedemo redirects unauthenticated
+    // requests for /inventory.html back to the login page at "/"), log in
+    // once and retry instead of silently waiting out the timeout.
+    if (await this.isOnLoginPage()) {
+      await this.recoverSession();
+      await this.page.goto(`https://www.saucedemo.com${SD_InventoryPage.PATH}`);
+    }
+
     await this.waitForPageLoad();
+  }
+
+  /** True when Saucedemo has bounced us to the login screen. */
+  private async isOnLoginPage(): Promise<boolean> {
+    if (/\/inventory\.html/.test(this.page.url())) return false;
+    return this.page
+      .locator('[data-test="login-button"]')
+      .isVisible()
+      .catch(() => false);
+  }
+
+  /** Perform a real login using the resolved credentials, then refresh storageState. */
+  private async recoverSession(): Promise<void> {
+    const { username, password } = resolveCredentials();
+    const loginPage = new SD_LoginPage(this.page);
+    await loginPage.goto();
+    await loginPage.login(username, password);
+    await this.page.waitForURL(/inventory/, { timeout: 15_000 });
+    // Persist the freshly authenticated state so sibling tests in this worker
+    // re-use a valid session rather than re-triggering the redirect.
+    await this.page.context().storageState({ path: '.auth/saucedemo.json' });
   }
 
   async waitForPageLoad(): Promise<void> {
