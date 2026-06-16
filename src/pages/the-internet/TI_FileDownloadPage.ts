@@ -54,7 +54,10 @@ export class TI_FileDownloadPage extends BasePage {
    */
   async downloadFirstFile(): Promise<string> {
     const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
+      // Explicit timeout prevents the promise from hanging indefinitely in
+      // WebKit, which sometimes navigates to the file URL instead of firing
+      // a download event.
+      this.page.waitForEvent('download', { timeout: 15_000 }),
       this.downloadLinks.first().click(),
     ]);
     return download.suggestedFilename();
@@ -66,7 +69,7 @@ export class TI_FileDownloadPage extends BasePage {
    */
   async downloadFile(index: number): Promise<string> {
     const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
+      this.page.waitForEvent('download', { timeout: 15_000 }),
       this.downloadLinks.nth(index).click(),
     ]);
     return download.suggestedFilename();

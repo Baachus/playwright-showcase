@@ -34,7 +34,10 @@ export class TI_MultipleWindowsPage extends BasePage {
    */
   async clickAndGetNewPage(): Promise<Page> {
     const [newPage] = await Promise.all([
-      this.page.context().waitForEvent('page'),
+      // Explicit timeout: in WebKit, target="_blank" links can open in a
+      // separate browser process rather than the same context, causing the
+      // 'page' event to never fire and blocking worker teardown indefinitely.
+      this.page.context().waitForEvent('page', { timeout: 15_000 }),
       this.clickHereLink.click(),
     ]);
     await newPage.waitForLoadState('domcontentloaded');
