@@ -57,7 +57,7 @@ export class TI_JQueryUIMenuPage extends BasePage {
   async clickPdf(): Promise<void> {
     await this.hoverDownloads();
     const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
+      this.page.waitForEvent('download', { timeout: 15_000 }),
       this.pdfLink.click(),
     ]);
     await download.cancel();
@@ -66,7 +66,7 @@ export class TI_JQueryUIMenuPage extends BasePage {
   async clickCsv(): Promise<void> {
     await this.hoverDownloads();
     const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
+      this.page.waitForEvent('download', { timeout: 15_000 }),
       this.csvLink.click(),
     ]);
     await download.cancel();
@@ -75,7 +75,7 @@ export class TI_JQueryUIMenuPage extends BasePage {
   async clickExcel(): Promise<void> {
     await this.hoverDownloads();
     const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
+      this.page.waitForEvent('download', { timeout: 15_000 }),
       this.excelLink.click(),
     ]);
     await download.cancel();

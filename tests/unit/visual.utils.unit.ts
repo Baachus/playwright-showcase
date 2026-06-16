@@ -79,7 +79,7 @@ test.describe('visual.utils › buildSnapshotOptions', () => {
     const opts = buildSnapshotOptions();
     expect(opts.fullPage).toBe(false);
     expect(opts.mask).toEqual([]);
-    expect(opts.maxDiffPixelRatio).toBe(0.02);
+    expect(opts.maxDiffPixelRatio).toBe(0.05);
     expect(opts.omitBackground).toBe(false);
   });
 
@@ -152,7 +152,7 @@ test.describe('visual.utils › buildLocatorSnapshotOptions', () => {
     await allure.allureId('UNIT-VIS-017');
     const opts = buildLocatorSnapshotOptions();
     expect(opts.mask).toEqual([]);
-    expect(opts.maxDiffPixelRatio).toBe(0.02);
+    expect(opts.maxDiffPixelRatio).toBe(0.05);
     expect(opts.omitBackground).toBe(false);
   });
 

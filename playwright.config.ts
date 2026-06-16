@@ -208,7 +208,15 @@ export default defineConfig({
     },
     {
       name: 'The Internet Webkit', testMatch: '**/ui/the-internet/**/*.spec.ts', testDir: './tests',
-      use: { ...devices['Desktop Safari'], baseURL: 'https://the-internet.herokuapp.com' },
+      use: {
+        ...devices['Desktop Safari'],
+        baseURL: 'https://the-internet.herokuapp.com',
+        // Without actionTimeout, waitForEvent() calls default to no limit (0).
+        // In WebKit, events like 'page' and 'download' can silently never fire,
+        // leaving unresolved promises that prevent the browser process from
+        // closing cleanly and cause workers to hang for 5 minutes until force-killed.
+        actionTimeout: 15_000,
+      },
     },
     {
       name: 'Email', testMatch: '**/email/**/*.spec.ts', testDir: './tests',

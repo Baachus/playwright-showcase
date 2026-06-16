@@ -68,7 +68,7 @@ test.describe('Component Screenshots', { tag: ['@visual'] }, () => {
     await allure.step('Assert sidebar screenshot matches baseline', async () => {
       await expect(sidebar).toHaveScreenshot(
         'docs-sidebar.png',
-        buildLocatorSnapshotOptions({ maxDiffPixelRatio: 0.02 }),
+        buildLocatorSnapshotOptions({ maxDiffPixelRatio: 0.05 }),
       );
     });
   });

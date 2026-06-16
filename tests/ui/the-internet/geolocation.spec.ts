@@ -31,32 +31,36 @@ test.describe('The Internet – Geolocation', { tag: ['@ui', '@theinternethero',
     await allure.story('Geolocation');
     await allure.label('severity', 'critical');
 
-    // Create a context with geolocation permission and a mock location
+    // Create a context with geolocation permission and a mock location.
+    // Wrapped in try/finally so the context (and its WebKit browser process)
+    // is always closed — even if an assertion throws mid-test.
     const context = await browser.newContext({
       geolocation: { latitude: 51.5074, longitude: -0.1278 },
       permissions: ['geolocation'],
     });
-    const page = await context.newPage();
-    const geoPage = new TI_GeolocationPage(page);
-    await geoPage.goto();
+    try {
+      const page = await context.newPage();
+      const geoPage = new TI_GeolocationPage(page);
+      await geoPage.goto();
 
-    await allure.step('Click Where Am I and wait for coordinates', async () => {
-      await geoPage.clickWhereAmI();
-      await geoPage.waitForCoordinates();
-    });
+      await allure.step('Click Where Am I and wait for coordinates', async () => {
+        await geoPage.clickWhereAmI();
+        await geoPage.waitForCoordinates();
+      });
 
-    await allure.step('Assert coordinates are populated', async () => {
-      await geoPage.assertCoordinatesVisible();
-      await geoPage.assertCoordinatesPopulated();
-    });
+      await allure.step('Assert coordinates are populated', async () => {
+        await geoPage.assertCoordinatesVisible();
+        await geoPage.assertCoordinatesPopulated();
+      });
 
-    await allure.step('Assert coordinates match the mocked location', async () => {
-      const lat = await geoPage.getLatitude();
-      const lng = await geoPage.getLongitude();
-      expect(parseFloat(lat)).toBeCloseTo(51.5074, 2);
-      expect(parseFloat(lng)).toBeCloseTo(-0.1278, 2);
-    });
-
-    await context.close();
+      await allure.step('Assert coordinates match the mocked location', async () => {
+        const lat = await geoPage.getLatitude();
+        const lng = await geoPage.getLongitude();
+        expect(parseFloat(lat)).toBeCloseTo(51.5074, 2);
+        expect(parseFloat(lng)).toBeCloseTo(-0.1278, 2);
+      });
+    } finally {
+      await context.close();
+    }
   });
 });
