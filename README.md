@@ -1,6 +1,6 @@
 # Playwright Showcase
 
-A production-grade **Playwright + TypeScript** testing showcase covering a wide range of real-world testing scenarios across two target applications. The project demonstrates best practices in test architecture, reporting, and tooling that can be adapted for any professional test automation suite.
+A production-grade **Playwright + TypeScript** testing showcase covering a wide range of real-world testing scenarios across three target applications. The project demonstrates best practices in test architecture, reporting, and tooling that can be adapted for any professional test automation suite.
 
 ---
 
@@ -36,8 +36,8 @@ A production-grade **Playwright + TypeScript** testing showcase covering a wide 
       - [Email Verification](#email-verification)
   - [Email Verification Tests](#email-verification-tests)
     - [Scenarios](#scenarios)
-    - [Delivery modes](#delivery-modes)
-    - [Running with real Mailinator delivery](#running-with-real-mailinator-delivery)
+    - [Configuration](#configuration)
+    - [Running the Mailpit server independently](#running-the-mailpit-server-independently)
     - [Local interactive helper](#local-interactive-helper)
   - [Allure Reports](#allure-reports)
     - [Generate and Open a Report](#generate-and-open-a-report)
@@ -140,6 +140,7 @@ playwright-showcase/
 │   └── utils/                   # Shared utility libraries
 │       ├── accessibility.utils.ts
 │       ├── authentication.utils.ts
+│       ├── email.utils.ts
 │       ├── mock.utils.ts
 │       ├── multi-context.utils.ts
 │       ├── performance.utils.ts
@@ -149,6 +150,7 @@ playwright-showcase/
 ├── tests/
 │   ├── accessibility/           # WCAG 2.1 AA scans via axe-core
 │   ├── api/                     # Direct API / HTTP tests
+│   ├── email/                   # Email verification via local Mailpit sink
 │   ├── components/              # Isolated component tests
 │   ├── mocking/                 # Network route interception tests
 │   ├── multi-context/           # Multi-tab, multi-window, multi-user tests
@@ -161,6 +163,9 @@ playwright-showcase/
 ├── scripts/
 │   ├── allure-generate.mjs      # Cross-platform Allure report generator with history
 │   └── add-allure-ids.mjs       # Auto-inject stable allure IDs into every test
+├── tools/
+│   ├── email-sender/            # Local Express + nodemailer helper that sends test mail
+│   └── mailpit/                 # Local Mailpit SMTP sink + REST API (auto-downloaded binary)
 ├── .auth/                       # Saved browser auth states (gitignored)
 ├── reports/
 │   └── lighthouse/              # Lighthouse HTML reports
@@ -342,61 +347,70 @@ npm run test:email:smoke
 
 ## Email Verification Tests
 
-The `Email` project exercises a full inbox-based verification flow:
+The `Email` project exercises a full inbox-based verification flow against a
+**local Mailpit instance** — a lightweight email sink that combines an SMTP
+server (to receive mail) with a REST API (to read it back). Nothing leaves the
+machine, so the suite is fully self-contained and deterministic in CI.
+
+The flow:
 
 1. A small local helper service (`tools/email-sender/`) sends real emails via
-   Express + nodemailer.  It is **not** the system under test in the strict
-   sense -- `the-internet.herokuapp.com` (the project's main demo target)
-   doesn't actually send mail and Mailinator's read API is paid-only.  The
-   helper acts as a controllable stand-in for an upstream service so the
-   verification *flow* can be exercised end-to-end.
-2. The helper sends to a fresh, unique Mailinator public inbox per test
-   (minted via `mintInboxName()` so runs never collide).
-3. Playwright drives Mailinator's free public-inbox web UI to read the
-   message, extract the verification link / OTP code, and follow through.
+   Express + nodemailer. It is **not** the system under test in the strict
+   sense — `the-internet.herokuapp.com` (the project's main demo target)
+   doesn't actually send mail. The helper acts as a controllable stand-in for
+   an upstream service so the verification *flow* can be exercised end-to-end.
+2. The helper relays every message to the local **Mailpit** SMTP sink. Each
+   test sends to a fresh, unique recipient address (minted via
+   `mintInboxName()` in `email.utils.ts`) so parallel runs never collide.
+3. The test reads the message back through **Mailpit's REST API**
+   (`MailpitInboxPage`), extracts the verification link / OTP code /
+   attachment, and asserts on it.
+
+Both helper services are started automatically by `playwright.config.ts`
+(via `webServer`) whenever an email run is detected — Mailpit boots first so
+the SMTP sink is ready before the sender starts. You do not need to start them
+manually for `npm run test:email`.
 
 ### Scenarios
 
 | Spec | What it covers |
 | --- | --- |
-| `email-content.spec.ts` | Email arrives in Mailinator with expected subject + body |
+| `email-content.spec.ts` | Email arrives in Mailpit with expected subject + body |
 | `email-verification-link.spec.ts` | Extract link from email and complete the verify flow |
 | `email-otp.spec.ts` | Parse the 6-digit one-time code from the email |
 | `email-attachment.spec.ts` | Attachment is surfaced and HTML body renders correctly |
 
-### Delivery modes
+### Configuration
 
-The helper supports three transports, picked up via env vars:
+These environment variables tune the email setup (all have sensible defaults):
 
-| Mode | When to use | How |
+| Variable | Default | Purpose |
 | --- | --- | --- |
-| **Capture** (default) | Quick local runs, CI without outbound port 25 | `EMAIL_CAPTURE=1` (set automatically when no `SMTP_HOST` is provided) -- emails are kept in memory, accessible via `GET /captured`. |
-| **Direct MX** | Local dev where port 25 is open | `EMAIL_CAPTURE=0` with no `SMTP_HOST` -- nodemailer looks up the recipient's MX records and delivers directly to Mailinator's mail servers. |
-| **SMTP relay** | CI / restricted networks | Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (Brevo / SendGrid / Mailtrap, etc.). |
+| `MAILPIT_API_BASE` | `http://127.0.0.1:8025` | Base URL of the Mailpit REST API the tests read from |
+| `TEST_EMAIL_DOMAIN` | `playwright-showcase.test` | Cosmetic domain for minted recipients (Mailpit accepts any address) |
 
-### Running with real Mailinator delivery
+### Running the Mailpit server independently
+
+The config starts Mailpit automatically during an email run. To launch it on
+its own (e.g. to inspect captured mail in Mailpit's own web UI):
 
 ```bash
-# Direct MX (port 25 must be open outbound)
-EMAIL_CAPTURE=0 npm run test:email
-
-# Through an SMTP relay
-EMAIL_CAPTURE=0 \
-  SMTP_HOST=smtp-relay.example.com SMTP_PORT=587 \
-  SMTP_USER=apikey SMTP_PASS=*** \
-  npm run test:email
+npm run mailpit
+# Mailpit web UI + REST API on http://127.0.0.1:8025
 ```
+
+The Mailpit binary is downloaded into `tools/mailpit/bin/` on first use.
 
 ### Local interactive helper
 
-You can also start the helper independently and drive it from a browser:
+You can also start the email-sender helper independently and drive it from a
+browser:
 
 ```bash
 npm run email:server
-# then open http://localhost:4310/
 ```
 
-See `tools/email-sender/README.md` for the full endpoint list.
+See `tools/email-sender/README.md` and `tools/mailpit/README.md` for details.
 
 ---
 
@@ -722,6 +736,7 @@ npm run format:check
 | `The Internet Chromium` | `tests/ui/the-internet` | Desktop Chrome | None |
 | `The Internet Firefox` | `tests/ui/the-internet` | Desktop Firefox | None |
 | `The Internet Webkit` | `tests/ui/the-internet` | Desktop Safari | None |
+| `Email` | `tests/email` | Desktop Chrome | None |
 
 ### Path Aliases (`tsconfig.json`)
 
@@ -745,6 +760,7 @@ Every page under test is modelled as a TypeScript class extending `BasePage`. Pa
 - `SD_LoginPage`, `SD_InventoryPage`, `SD_CartPage` – Saucedemo pages
 - `SD_InfoPage`, `SD_VerificationPage`, `SD_ConfirmationPage` – Saucedemo checkout steps
 - `TI_*Page` – 44 page objects for the-internet.herokuapp.com (one per feature)
+- `LocalEmailAppPage`, `MailpitInboxPage` – drive the email-sender helper and read mail via Mailpit's REST API
 
 ### Component Object Models (`src/components/`)
 
@@ -773,6 +789,7 @@ Reusable, independently unit-tested helper modules:
 | Utility | Responsibilities |
 |---------|-----------------|
 | `accessibility.utils.ts` | axe-core scanning, WCAG level assertions, violation summaries |
+| `email.utils.ts` | Mailpit REST helpers: unique-address minting, message polling, link/OTP/attachment extraction |
 | `authentication.utils.ts` | Auth file resolution, credential loading |
 | `mock.utils.ts` | `page.route()` helpers: JSON/HTML mocking, error simulation, request spying |
 | `multi-context.utils.ts` | Browser context creation and multi-window coordination |
