@@ -1,4 +1,4 @@
-import { test, expect } from '../../../src/fixtures/index.js';
+import { test, expect, ensureSaucedemoInventory } from '../../../src/fixtures/index.js';
 import { SD_InventoryPage } from '../../../src/pages/saucedemo/SD_InventoryPage.js';
 import * as allure from 'allure-js-commons';
 
@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
   // (cookies / localStorage), but Playwright does NOT auto-navigate -- the
   // tab starts on `about:blank`.  Multi-tab tests need Tab 1 to actually be
   // on the inventory page so that POM helpers (cart buttons, badge, menu) work.
-  await page.goto('https://www.saucedemo.com/inventory.html');
+  await ensureSaucedemoInventory(page, 'standard_user');
   const inventoryPage = new SD_InventoryPage(page);
   await inventoryPage.waitForPageLoad();
 });
