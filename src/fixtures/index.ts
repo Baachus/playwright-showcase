@@ -62,7 +62,7 @@ import { SD_InfoPage } from '@pages/saucedemo/checkout/SD_InfoPage.js';
 import { SD_VerificationPage } from '@pages/saucedemo/checkout/SD_VerificationPage.js';
 // Multi-context utilities
 import { MultiContextHelper } from '../utils/multi-context.utils.js';
-import { getSaucedemoAuthFile } from '../utils/authentication.utils.js';
+import { getSaucedemoAuthFile, SD_PASSWORD } from '../utils/authentication.utils.js';
 // WebSocket utilities
 import { startLocalEchoServer, type LocalEchoServer } from '../utils/websocket.utils.js';
 // Email - Pages
@@ -162,6 +162,32 @@ type PageFixtures = {
   /** REST reader for the Mailpit mailbox scoped to `emailAddress`. */
   mailpitInbox: MailpitInboxPage;
 } & MultiContextFixtures;
+
+/**
+ * Self-healing auth guard for the multi-context Saucedemo fixtures.
+ *
+ * The sd_*_ctx fixtures load a storageState produced by the
+ * setup-saucedemo-multiuser project. If that state is missing or stale -- or a
+ * starved CI worker lets the saved session expire -- navigating straight to
+ * /inventory.html silently renders the login form instead, so a blind
+ * waitFor(inventory-container) would hang for the full 30s timeout. This guard
+ * detects that case and logs in explicitly, mirroring the pattern already used
+ * in tests/websocket/saucedemo/ws-mock.spec.ts.
+ */
+export async function ensureSaucedemoInventory(page: Page, username: string): Promise<void> {
+  await page.goto('https://www.saucedemo.com/inventory.html');
+  const authed = await page
+    .locator('[data-test="inventory-container"]')
+    .waitFor({ state: 'visible', timeout: 5000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!authed) {
+    await page.locator('[data-test="username"]').fill(username);
+    await page.locator('[data-test="password"]').fill(SD_PASSWORD);
+    await page.locator('[data-test="login-button"]').click();
+    await page.waitForURL(/inventory/);
+  }
+}
 
 export const test = base.extend<PageFixtures>({
   // ── The Internet ─────────────────────────────────────────────────────────────
@@ -404,21 +430,21 @@ export const test = base.extend<PageFixtures>({
   sd_standard_ctx: async ({ browser }, use) => {
     const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com', storageState: getSaucedemoAuthFile('standard_user') });
     const page = await context.newPage();
-    await page.goto('https://www.saucedemo.com/inventory.html');
+    await ensureSaucedemoInventory(page, 'standard_user');
     const inventoryPage = new SD_InventoryPage(page); await inventoryPage.waitForPageLoad();
     await use({ context, page, inventoryPage }); await context.close();
   },
   sd_problem_ctx: async ({ browser }, use) => {
     const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com', storageState: getSaucedemoAuthFile('problem_user') });
     const page = await context.newPage();
-    await page.goto('https://www.saucedemo.com/inventory.html');
+    await ensureSaucedemoInventory(page, 'problem_user');
     const inventoryPage = new SD_InventoryPage(page); await inventoryPage.waitForPageLoad();
     await use({ context, page, inventoryPage }); await context.close();
   },
   sd_glitch_ctx: async ({ browser }, use) => {
     const context = await browser.newContext({ baseURL: 'https://www.saucedemo.com', storageState: getSaucedemoAuthFile('performance_glitch_user') });
     const page = await context.newPage();
-    await page.goto('https://www.saucedemo.com/inventory.html');
+    await ensureSaucedemoInventory(page, 'performance_glitch_user');
     const inventoryPage = new SD_InventoryPage(page); await inventoryPage.waitForPageLoad();
     await use({ context, page, inventoryPage }); await context.close();
   },
