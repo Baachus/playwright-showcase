@@ -54,9 +54,18 @@ jobs:
     - name: Install dependencies
       run: npm ci
     # Browsers are preinstalled in the container; no `install --with-deps` needed.
+    # Resolve the bundled Chromium binary path for Lighthouse (chrome-launcher).
+    - name: Resolve Chromium path for Lighthouse
+      run: |
+        CHROME_BIN=$(find /ms-playwright -name 'chrome' -executable -type f | head -1)
+        echo "CHROME_PATH=$CHROME_BIN" >> $GITHUB_ENV
     - name: Run Playwright tests
       run: npx playwright test
       env:
+        # Firefox refuses to launch when $HOME is owned by a different user (pwuser).
+        # GitHub Actions sets HOME=/github/home inside containers; override to /root.
+        HOME: /root
+        CHROME_PATH: ${{ env.CHROME_PATH }}
         SAUCEDEMO_USERNAME: ${{ secrets.SAUCEDEMO_USERNAME }}
         SAUCEDEMO_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
     - uses: actions/upload-artifact@v4

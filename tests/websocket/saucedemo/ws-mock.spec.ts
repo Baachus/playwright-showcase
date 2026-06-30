@@ -252,8 +252,33 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
     });
   });
 
-  // --server-push / DOM updates-------------------------------------------------------------- 
+  // --server-push / DOM updates--------------------------------------------------------------
   test.describe('Server-Push & DOM Reactions', { tag: ['@smoke'] }, () => {
+
+    /**
+     * Guard against setup-saucedemo failures (transient network issues, missing
+     * secrets, etc.).  Unlike the Connection/Message tests above, Server-Push
+     * tests interact with actual inventory DOM elements that only appear when
+     * authenticated.  If storageState is missing or stale we log in explicitly
+     * so the test still gets a real inventory page.
+     */
+    test.beforeEach(async ({ page }) => {
+      // Navigate first so we can inspect the DOM.
+      await page.goto('https://www.saucedemo.com/inventory.html');
+      // saucedemo renders the login form in-place (URL stays /inventory.html)
+      // when the session is invalid, so check for inventory content, not URL.
+      const inventoryVisible = await page.locator('.inventory_list').isVisible();
+      if (!inventoryVisible) {
+        await page.locator('[data-test="username"]').fill(
+          process.env.SAUCEDEMO_USERNAME ?? 'standard_user',
+        );
+        await page.locator('[data-test="password"]').fill(
+          process.env.SAUCEDEMO_PASSWORD ?? 'secret_sauce',
+        );
+        await page.locator('[data-test="login-button"]').click();
+        await page.waitForURL(/inventory/);
+      }
+    });
 
     test('should update a product price in the DOM when the server pushes a price-update', async ({ page }) => {
       await allure.allureId('WS-MOCK-009');
