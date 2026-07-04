@@ -28,16 +28,15 @@ test.describe('Search Component', () => {
       });
     });
 
-    test('should open the search modal with the Ctrl+K keyboard shortcut', async ({ pd_search, page }) => {
+    test('should open the search modal with the Ctrl+K keyboard shortcut', async ({ pd_search }) => {
       await allure.allureId('COMP-SR-002');
       await allure.story('Open via Keyboard Shortcut');
       await allure.label('severity', 'normal');
 
-      await allure.step('Wait for page network idle so shortcut registers', async () => {
-        await page.waitForLoadState('networkidle');
-      });
-
       await allure.step('Press Ctrl+K to open search', async () => {
+        // openWithKeyboard() waits for the DocSearch trigger to hydrate first,
+        // which is what actually gates the shortcut (networkidle never settles
+        // reliably on playwright.dev).
         await pd_search.openWithKeyboard();
       });
 

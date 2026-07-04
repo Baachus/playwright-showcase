@@ -68,9 +68,9 @@ test.describe('Inventory Page', { tag: ['@ui', '@shippingInfo', '@problem_user']
                 await problemInfoPage.lastName.fill(lastName);
                 await problemInfoPage.zipCode.fill(zipCode);
 
-                await expect(await problemInfoPage.firstName).toHaveText('');
-                await expect(await problemInfoPage.lastName).toBeEmpty();
-                await expect(await problemInfoPage.zipCode).toHaveText('');
+                await expect(problemInfoPage.firstName).toHaveText('');
+                await expect(problemInfoPage.lastName).toBeEmpty();
+                await expect(problemInfoPage.zipCode).toHaveText('');
             });
         });
     });

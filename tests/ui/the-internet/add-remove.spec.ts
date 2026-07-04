@@ -45,14 +45,14 @@ test.describe('The Internet – Add Remove Element Testing', { tag: ['@ui', '@th
       for(let i = 0; i < numberOfDeletes; i++) {
         await ti_addRemovePage.addElement.click();
       }
-      await expect(await ti_addRemovePage.deleteElement).toHaveCount(numberOfDeletes);
+      await expect(ti_addRemovePage.deleteElement).toHaveCount(numberOfDeletes);
     });
 
     await allure.step('Remove all Delete Buttons', async()=>{
       for(let i = 0; i < numberOfDeletes; i++) {
         await (await ti_addRemovePage.getNthDeleteButton(0)).click();
       }
-      await expect(await ti_addRemovePage.deleteElement).toBeHidden();
+      await expect(ti_addRemovePage.deleteElement).toBeHidden();
     });
   });
 });

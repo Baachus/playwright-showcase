@@ -161,7 +161,8 @@ test.describe('Theme Variants', { tag: ['@visual'] }, () => {
 
     await allure.step('Emulate dark color scheme', async () => {
       await withDarkMode(page, async () => {
-        await page.waitForTimeout(100);
+        // Wait for the theme to actually flip instead of sleeping.
+        await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
         await allure.step('Assert dark-mode docs viewport matches baseline', async () => {
           await expect(page).toHaveScreenshot('docs-dark-mode.png', buildSnapshotOptions());
         });

@@ -31,6 +31,10 @@ export class PD_SearchComponent extends BaseComponent {
   }
 
   async openWithKeyboard(): Promise<void> {
+    // The Ctrl+K handler is attached when DocSearch hydrates; the trigger
+    // button becoming visible is the reliable readiness signal (waiting on
+    // networkidle is not — analytics keeps the network busy indefinitely).
+    await this.triggerButton.waitFor({ state: 'visible' });
     const isMac = process.platform === 'darwin';
     await this.page.keyboard.press(isMac ? 'Meta+K' : 'Control+K');
     await this.searchInput.waitFor({ state: 'visible' });

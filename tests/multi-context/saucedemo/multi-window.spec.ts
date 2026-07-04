@@ -49,7 +49,7 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
 
     await allure.step('Window 1 (standard_user): add item to cart', async () => {
       await sd_standard_ctx.inventoryPage.addItemToCart('Sauce Labs Backpack');
-      expect(await sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
+      await expect.poll(() => sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
     });
 
     await allure.step('Window 2 (problem_user): cart should still be empty', async () => {
@@ -60,13 +60,13 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
     await allure.step('Window 1 (standard_user): reload -- cart count persists', async () => {
       await sd_standard_ctx.page.reload();
       await sd_standard_ctx.inventoryPage.waitForPageLoad();
-      expect(await sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
+      await expect.poll(() => sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
     });
 
     await allure.step('Window 2 (problem_user): still empty after Window 1 reload', async () => {
       await sd_problem_ctx.page.reload();
       await sd_problem_ctx.inventoryPage.waitForPageLoad();
-      expect(await sd_problem_ctx.inventoryPage.getCartCount()).toBe(0);
+      await expect.poll(() => sd_problem_ctx.inventoryPage.getCartCount()).toBe(0);
     });
   });
 
@@ -122,9 +122,9 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
     });
 
     await allure.step('Assert each window has its own isolated cart count', async () => {
-      expect(await sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
-      expect(await sd_problem_ctx.inventoryPage.getCartCount()).toBe(0);
-      expect(await sd_glitch_ctx.inventoryPage.getCartCount()).toBe(2);
+      await expect.poll(() => sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
+      await expect.poll(() => sd_problem_ctx.inventoryPage.getCartCount()).toBe(0);
+      await expect.poll(() => sd_glitch_ctx.inventoryPage.getCartCount()).toBe(2);
     });
   });
 

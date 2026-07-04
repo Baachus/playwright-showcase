@@ -267,6 +267,12 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
       await page.goto('https://www.saucedemo.com/inventory.html');
       // saucedemo renders the login form in-place (URL stays /inventory.html)
       // when the session is invalid, so check for inventory content, not URL.
+      // Wait until either outcome is rendered before branching — a bare
+      // isVisible() immediately after goto races the first paint.
+      await page
+        .locator('.inventory_list, [data-test="login-button"]')
+        .first()
+        .waitFor({ state: 'visible' });
       const inventoryVisible = await page.locator('.inventory_list').isVisible();
       if (!inventoryVisible) {
         await page.locator('[data-test="username"]').fill(
@@ -361,7 +367,7 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
       // Pre-add an item so the badge element is present
       await page.goto('https://www.saucedemo.com/inventory.html');
       await page.locator('button[data-test^="add-to-cart"]').first().click();
-      expect(await page.locator('.shopping_cart_badge').innerText()).toBe('1');
+      await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
 
       await server.waitForConnection();
       await waitForClientConnection(page);
@@ -431,11 +437,10 @@ test.describe('Mock WebSocket -- Intercept & Control', { tag: ['@websocket', '@w
       });
 
       await allure.step('Assert server received all three client messages', async () => {
-        // Poll until all 3 arrive
-        const deadline = Date.now() + 4_000;
-        while (server.receivedMessages.length < 3 && Date.now() < deadline) {
-          await page.waitForTimeout(100);
-        }
+        // expect.poll retries with backoff and reports a proper timeout error.
+        await expect
+          .poll(() => server.receivedMessages.length, { timeout: 4_000 })
+          .toBeGreaterThanOrEqual(3);
         expect(server.receivedMessages.map(m => m.toString())).toEqual(['alpha', 'beta', 'gamma']);
       });
 

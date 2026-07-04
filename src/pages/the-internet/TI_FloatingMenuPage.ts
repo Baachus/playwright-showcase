@@ -44,7 +44,10 @@ export class TI_FloatingMenuPage extends BasePage {
    */
   async scrollToBottom(): Promise<void> {
     await this.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await this.page.waitForTimeout(300);
+    // Wait for the scroll position to actually settle instead of sleeping.
+    await this.page.waitForFunction(
+      () => window.scrollY + window.innerHeight >= document.body.scrollHeight - 2
+    );
   }
 
   /**
@@ -52,7 +55,7 @@ export class TI_FloatingMenuPage extends BasePage {
    */
   async scrollToTop(): Promise<void> {
     await this.page.evaluate(() => window.scrollTo(0, 0));
-    await this.page.waitForTimeout(300);
+    await this.page.waitForFunction(() => window.scrollY === 0);
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────

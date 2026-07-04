@@ -244,8 +244,8 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
 
         await allure.step('standard_user adds to cart; ad-hoc context cart stays empty', async () => {
           await sd_standard_ctx.inventoryPage.addItemToCart('Sauce Labs Onesie');
-          expect(await sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
-          expect(await adhocCtx!.inventoryPage.getCartCount()).toBe(0);
+          await expect.poll(() => sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
+          await expect.poll(() => adhocCtx!.inventoryPage.getCartCount()).toBe(0);
         });
       } finally {
         await adhocCtx?.context.close();

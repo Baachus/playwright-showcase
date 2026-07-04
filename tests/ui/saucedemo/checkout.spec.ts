@@ -55,7 +55,7 @@ test.describe('Checkout Page', { tag: ['@ui', '@checkout'] }, () => {
     });
 
     await allure.step('Verify Purchase Completed and Navigate back to Inventory', async()=>{
-        await expect(await sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
+        await expect(sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
         await sd_confirmationPage.backHomeBtn.click();
         await sd_inventoryPage.assertOnInventoryPage();
     });
@@ -111,7 +111,7 @@ test.describe('Checkout Page', { tag: ['@ui', '@checkout'] }, () => {
     });
 
     await allure.step('Verify Purchase Completed and Navigate back to Inventory', async()=>{
-        await expect(await sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
+        await expect(sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
         await sd_confirmationPage.backHomeBtn.click();
         await sd_inventoryPage.assertOnInventoryPage();
     });
@@ -165,7 +165,7 @@ test.describe('Checkout Page', { tag: ['@ui', '@checkout'] }, () => {
     });
 
     await allure.step('Verify Purchase Completed and Navigate back to Inventory', async()=>{
-        await expect(await sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
+        await expect(sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
         await sd_confirmationPage.backHomeBtn.click();
         await sd_inventoryPage.assertOnInventoryPage();
     });
@@ -208,7 +208,7 @@ test.describe('Checkout Page', { tag: ['@ui', '@checkout'] }, () => {
     });
 
     await allure.step('Verify Purchase Completed and Navigate back to Inventory', async()=>{
-        await expect(await sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
+        await expect(sd_confirmationPage.thankYouLabel).toHaveText('Thank you for your order!');
         await sd_confirmationPage.backHomeBtn.click();
         await sd_inventoryPage.assertOnInventoryPage();
     });

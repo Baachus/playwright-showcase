@@ -16,7 +16,9 @@ test.describe('Accessibility – Home Page', { tag: ['@accessibility'] }, () => 
     await allure.feature('Accessibility Testing - Home Page');
 
     await page.goto('https://playwright.dev/');
-    await page.waitForLoadState('networkidle');
+    // Wait for real content instead of networkidle (which can hang on
+    // analytics/long-polling and is a common flake source on live sites).
+    await expect(page.getByRole('main')).toBeVisible();
   });
 
   test('should have no WCAG 2.1 AA violations',
@@ -113,7 +115,8 @@ test.describe('Accessibility – Docs Page', { tag: ['@accessibility'] }, () => 
     await allure.feature('Accessibility Testing - Docs Page');
 
     await page.goto('https://playwright.dev/docs/intro');
-    await page.waitForLoadState('networkidle');
+    // Anchor on rendered article content rather than networkidle.
+    await expect(page.locator('article')).toBeVisible();
   });
 
   test('should have no WCAG 2.1 AA violations on intro page',
@@ -170,7 +173,9 @@ test.describe('Accessibility – Keyboard Navigation', { tag: ['@accessibility']
       await allure.label('severity', 'critical');
 
       await page.goto('https://playwright.dev/');
-      await page.waitForLoadState('networkidle');
+      // The Ctrl+K handler is attached by the DocSearch script — wait for the
+      // search button to be interactive before sending the shortcut.
+      await expect(page.getByRole('button', { name: /search/i }).first()).toBeVisible();
 
       await allure.step('Press Ctrl+K to open search', async () => {
         await page.keyboard.press('Control+K');
@@ -190,18 +195,20 @@ test.describe('Accessibility – Keyboard Navigation', { tag: ['@accessibility']
       await allure.label('severity', 'critical');
 
       await page.goto('https://playwright.dev/');
+      // Ensure the shortcut handler is attached before pressing keys.
+      await expect(page.getByRole('button', { name: /search/i }).first()).toBeVisible();
 
       await allure.step('Open search dialog via keyboard', async () => {
         await page.keyboard.press('Control+K');
       });
-      
+
       await allure.step('Press Escape to dismiss dialog', async () => {
+        // Assert the dialog actually opens (the old racy isVisible() check
+        // could silently skip the whole test body), then dismiss it.
         const dialog = page.getByRole('dialog');
-        const isVisible = await dialog.isVisible().catch(() => false);
-        if (isVisible) {
-          await page.keyboard.press('Escape');
-          await expect(dialog).toBeHidden({ timeout: 3_000 });
-        }
+        await expect(dialog).toBeVisible({ timeout: 5_000 });
+        await page.keyboard.press('Escape');
+        await expect(dialog).toBeHidden({ timeout: 3_000 });
       });
     });
 });

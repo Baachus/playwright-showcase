@@ -151,9 +151,10 @@ test.describe('Real WebSocket -- Local Echo Server', { tag: ['@websocket', '@ws-
       const messages = ['alpha', 'beta', 'gamma', 'delta'];
 
       await allure.step('Send all messages sequentially', async () => {
+        // WebSocket frames are ordered on an open connection; no pacing delay
+        // is needed, and the assertions below don't depend on echo order.
         for (const msg of messages) {
           await page.evaluate((m: string) => (window as any).__realWs.send(m), msg);
-          await page.waitForTimeout(50);
         }
       });
 

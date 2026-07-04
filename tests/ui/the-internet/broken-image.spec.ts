@@ -21,7 +21,7 @@ test.describe('The Internet – Broken Images Testing', { tag: ['@ui', '@theinte
     });
 
     await allure.step('Validate Broken Images', async()=>{
-        await expect(await ti_brokenImagePage.title).toHaveText('Broken Images');
+        await expect(ti_brokenImagePage.title).toHaveText('Broken Images');
         await expect(await ti_brokenImagePage.getNthImage(0)).toHaveAttribute('src', 'asdf.jpg');
         await expect(await ti_brokenImagePage.getNthImage(1)).toHaveAttribute('src', 'hjkl.jpg');
         await expect(await ti_brokenImagePage.getNthImage(2)).toHaveAttribute('src', 'img/avatar-blank.jpg');

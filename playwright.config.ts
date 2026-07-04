@@ -75,11 +75,16 @@ export default defineConfig({
     : undefined,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // One local retry absorbs transient blips from the live external targets
+  // (playwright.dev, saucedemo, the-internet) without hiding real failures.
+  retries: process.env.CI ? 2 : 1,
   workers: process.env.CI ? 2 : undefined,
-  timeout: 30_000,
+  // Live-site navigations occasionally take >30s under load; 45s keeps slow
+  // runs from flaking while still catching genuine hangs.
+  timeout: 45_000,
   expect: {
-    timeout: 5_000,
+    // 5s is tight for assertions that follow live-site navigations.
+    timeout: 10_000,
     toHaveScreenshot: { maxDiffPixelRatio: 0.02, animations: 'disabled' },
   },
   reporter: [
@@ -104,6 +109,11 @@ export default defineConfig({
     baseURL: 'https://playwright.dev',
     trace: 'on-first-retry', screenshot: 'only-on-failure',
     video: 'on-first-retry', viewport: { width: 1280, height: 720 },
+    // Bounded waits everywhere: without actionTimeout, actions and
+    // waitForEvent() default to unlimited and can hang a worker until the
+    // test timeout (or forever, in WebKit's case — see that project's note).
+    actionTimeout: 15_000,
+    navigationTimeout: 30_000,
   },
   outputDir: 'test-results',
   projects: [

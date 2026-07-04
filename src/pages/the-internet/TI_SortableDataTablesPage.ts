@@ -39,14 +39,14 @@ export class TI_SortableDataTablesPage extends BasePage {
   }
 
   // ── Actions ─────────────────────────────────────────────────────────────────
+  // The table sort runs synchronously in the click handler, so no wait is
+  // needed after the click resolves.
   async sortTable1By(columnName: string): Promise<void> {
     await this.table1Headers.filter({ hasText: columnName }).click();
-    await this.page.waitForTimeout(300);
   }
 
   async sortTable2By(columnName: string): Promise<void> {
     await this.table2Headers.filter({ hasText: columnName }).click();
-    await this.page.waitForTimeout(300);
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────

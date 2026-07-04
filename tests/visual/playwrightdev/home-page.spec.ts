@@ -150,7 +150,9 @@ test.describe('Theme Variants', { tag: ['@visual'] }, () => {
 
     await allure.step('Switch to dark mode via media emulation', async () => {
       await withDarkMode(page, async () => {
-        await page.waitForTimeout(200); // allow theme transition to settle (frozen but still needs a tick)
+        // Wait for Docusaurus to actually apply the dark theme rather than
+        // sleeping — data-theme flips when the media-query listener fires.
+        await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
         await allure.step('Assert dark-mode viewport matches baseline', async () => {
           await expect(page).toHaveScreenshot('home-dark-mode.png', buildSnapshotOptions());
         });
@@ -165,7 +167,7 @@ test.describe('Theme Variants', { tag: ['@visual'] }, () => {
 
     await allure.step('Confirm light mode is the default', async () => {
       await page.emulateMedia({ colorScheme: 'light' });
-      await page.waitForTimeout(100);
+      await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
     });
 
     await allure.step('Assert light-mode viewport matches baseline', async () => {
