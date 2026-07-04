@@ -61,7 +61,8 @@ export class TI_DragAndDropPage extends BasePage {
       target.dispatchEvent(new DragEvent('drop',      { bubbles: true, dataTransfer: dt }));
       source.dispatchEvent(new DragEvent('dragend',   { bubbles: true, dataTransfer: dt }));
     }, [sourceId, targetId] as [string, string]);
-    await this.page.waitForTimeout(300);
+    // No fixed wait needed: the page swaps the columns synchronously in the
+    // drop handler, and callers assert via retrying expect(...).toHaveText().
   }
 
   async dragAtoB(): Promise<void> {

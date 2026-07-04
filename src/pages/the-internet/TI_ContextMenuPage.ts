@@ -33,14 +33,13 @@ export class TI_ContextMenuPage extends BasePage {
    * Returns the dialog message text.
    */
   async rightClickHotSpot(): Promise<string> {
-    let dialogMessage = '';
-    this.page.once('dialog', async (dialog) => {
-      dialogMessage = dialog.message();
-      await dialog.accept();
-    });
+    // Register the dialog listener before clicking, then await the event
+    // itself instead of sleeping — no race, no fixed delay.
+    const dialogPromise = this.page.waitForEvent('dialog');
     await this.hotSpot.click({ button: 'right' });
-    // Give the dialog handler time to fire
-    await this.page.waitForTimeout(500);
+    const dialog = await dialogPromise;
+    const dialogMessage = dialog.message();
+    await dialog.accept();
     return dialogMessage;
   }
 

@@ -49,15 +49,12 @@ test.describe('The Internet – Context Menu', { tag: ['@ui', '@theinternethero'
     await cmPage.goto();
 
     await allure.step('Right-click the hot-spot and accept the alert', async () => {
-      let dialogSeen = false;
-      page.once('dialog', async (dialog) => {
-        dialogSeen = true;
-        expect(dialog.type()).toBe('alert');
-        await dialog.accept();
-      });
+      // Await the dialog event directly instead of sleeping and checking a flag.
+      const dialogPromise = page.waitForEvent('dialog');
       await cmPage.hotSpot.click({ button: 'right' });
-      await page.waitForTimeout(600);
-      expect(dialogSeen).toBe(true);
+      const dialog = await dialogPromise;
+      expect(dialog.type()).toBe('alert');
+      await dialog.accept();
     });
 
     await allure.step('Page should still be on context menu URL after dismissal', async () => {

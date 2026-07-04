@@ -92,7 +92,7 @@ test.describe('Inventory Page', { tag: ['@ui', '@inventory', '@problem_user'] },
             });
 
             await allure.step('Verify Cart Does not Have 6 items', async () => {
-                await expect(await problemInventoryPage.getCartCount()).toBe(3)
+                await expect.poll(() => problemInventoryPage.getCartCount()).toBe(3)
             });
         });
     });

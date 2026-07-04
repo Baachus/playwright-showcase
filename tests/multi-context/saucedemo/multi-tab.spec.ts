@@ -87,14 +87,14 @@ test.describe('Multi-Tab -- Shared Session', { tag: ['@multi-tab', '@multi-conte
     await allure.step('Tab 1: add two items', async () => {
       await tab1Inventory.addItemToCart('Sauce Labs Backpack');
       await tab1Inventory.addItemToCart('Sauce Labs Bike Light');
-      expect(await tab1Inventory.getCartCount()).toBe(2);
+      await expect.poll(() => tab1Inventory.getCartCount()).toBe(2);
     });
 
     await allure.step('Tab 2: reload and remove one item', async () => {
       await sd_tab2.reload();
       await tab2Inventory.waitForPageLoad();
       await tab2Inventory.removeItemFromCart('Sauce Labs Backpack');
-      expect(await tab2Inventory.getCartCount()).toBe(1);
+      await expect.poll(() => tab2Inventory.getCartCount()).toBe(1);
     });
 
     await allure.step('Tab 1: reload and verify one item remains', async () => {

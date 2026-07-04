@@ -34,6 +34,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "test:contract": "playwright test tests/api/api-contract.spec.ts --project=API",
     "test:websocket": "playwright test tests/websocket --project=WebSocket-Mock --project=WebSocket-Realtime",
     "test:ws-mock": "playwright test tests/websocket --project=WebSocket-Mock",
     "test:ws-realtime": "playwright test tests/websocket --project=WebSocket-Realtime",
@@ -62,12 +63,12 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-playwright": "^2.10.2",
     "express": "^5.0.0",
-    "lighthouse": "^13.3.0",
-    "nodemailer": "^7.0.0",
+    "lighthouse": "^12.6.1",
+    "nodemailer": "^9.0.3",
     "prettier": "^3.8.3",
     "tsx": "^4.19.0",
     "typescript": "^6.0.3",
-    "ws": "^8.18.1"
-  },
-  "dependencies": {}
+    "ws": "^8.18.1",
+    "zod": "^3.25.76"
+  }
 }

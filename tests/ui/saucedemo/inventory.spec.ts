@@ -139,12 +139,12 @@ test.describe('Inventory Page', { tag: ['@ui', '@inventory'] }, () => {
 
     await allure.step('Add Item to Cart', async()=>{
       await sd_inventoryPage.addItemToCart(firstItem.name);
-      expect(await sd_inventoryPage.getCartCount()).toBe(1);
+      await expect.poll(() => sd_inventoryPage.getCartCount()).toBe(1);
     });
     
     await allure.step('Remove Item From Cart and Verify Cart Count', async()=>{
       await sd_inventoryPage.removeItemFromCart(firstItem.name);
-      expect(await sd_inventoryPage.getCartCount()).toBe(0);
+      await expect.poll(() => sd_inventoryPage.getCartCount()).toBe(0);
     });
   });
 

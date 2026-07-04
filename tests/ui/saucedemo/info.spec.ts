@@ -52,9 +52,9 @@ test.describe('Shipping Information Page', { tag: ['@ui', '@shippingInfo'] }, ()
         });
 
         await allure.step('Verify No Information in Fields', async()=>{
-            await expect(await sd_infoPage.firstName).toBeEmpty();
-            await expect(await sd_infoPage.lastName).toBeEmpty();
-            await expect(await sd_infoPage.zipCode).toBeEmpty();
+            await expect(sd_infoPage.firstName).toBeEmpty();
+            await expect(sd_infoPage.lastName).toBeEmpty();
+            await expect(sd_infoPage.zipCode).toBeEmpty();
         });
     });
 
@@ -67,7 +67,7 @@ test.describe('Shipping Information Page', { tag: ['@ui', '@shippingInfo'] }, ()
 
         await allure.step('Navigate to shipping Information and Verify Title', async()=>{
             await sd_infoPage.goto();
-            expect(await sd_infoPage.checkoutTitle).toHaveText('Checkout: Your Information');
+            await expect(sd_infoPage.checkoutTitle).toHaveText('Checkout: Your Information');
         });
     });
 

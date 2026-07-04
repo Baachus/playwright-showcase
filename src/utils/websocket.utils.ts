@@ -296,13 +296,13 @@ export async function injectWebSocketClient(page: Page, wsUrl: string): Promise<
  * Polls isOpen at 100ms intervals.
  */
 export async function waitForClientConnection(page: Page, timeoutMs = 5_000): Promise<void> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    const open: boolean = await page.evaluate(() => window.__wsClient?.isOpen ?? false);
-    if (open) return;
-    await page.waitForTimeout(100);
-  }
-  throw new Error('Client WS connection did not open within ' + timeoutMs + 'ms');
+  // waitForFunction re-evaluates on rAF/mutation rather than a coarse manual
+  // poll loop, and produces a proper timeout error with context.
+  await page
+    .waitForFunction(() => window.__wsClient?.isOpen ?? false, undefined, { timeout: timeoutMs })
+    .catch(() => {
+      throw new Error('Client WS connection did not open within ' + timeoutMs + 'ms');
+    });
 }
 
 /**
@@ -320,13 +320,16 @@ export async function waitForClientMessages(
   count: number,
   timeoutMs = 5_000,
 ): Promise<string[]> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    const msgs = await getClientMessages(page);
-    if (msgs.length >= count) return msgs;
-    await page.waitForTimeout(100);
-  }
-  throw new Error('Client did not receive ' + count + ' message(s) within ' + timeoutMs + 'ms');
+  await page
+    .waitForFunction(
+      (n) => (window.__wsClient?.messages.length ?? 0) >= n,
+      count,
+      { timeout: timeoutMs },
+    )
+    .catch(() => {
+      throw new Error('Client did not receive ' + count + ' message(s) within ' + timeoutMs + 'ms');
+    });
+  return getClientMessages(page);
 }
 
 /**

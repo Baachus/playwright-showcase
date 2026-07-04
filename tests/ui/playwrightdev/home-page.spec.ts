@@ -90,7 +90,9 @@ test.describe('Home Page', () => {
       await allure.label('severity', 'normal');
 
       await allure.step('Press Ctrl+K shortcut', async () => {
-        await page.waitForLoadState('networkidle');
+        // Wait for the DocSearch trigger to hydrate (the readiness signal for
+        // the shortcut) instead of networkidle, which never settles reliably.
+        await expect(pd_homePage.searchButton).toBeVisible();
         await page.keyboard.press('Control+K');
       });
 

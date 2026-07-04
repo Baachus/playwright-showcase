@@ -47,7 +47,8 @@ export class TI_ExitIntentPage extends BasePage {
         new MouseEvent('mouseleave', { bubbles: false, cancelable: true })
       );
     });
-    await this.page.waitForTimeout(500);
+    // Wait on the actual outcome (modal shown) rather than a fixed delay.
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async closeModal(): Promise<void> {

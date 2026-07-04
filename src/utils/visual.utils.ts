@@ -195,8 +195,14 @@ export async function withViewport(
 ): Promise<void> {
   const original = page.viewportSize();
   await page.setViewportSize(VIEWPORTS[viewport]);
-  // Allow layout to reflow
-  await page.waitForTimeout(150);
+  // Wait for two animation frames so layout/reflow has actually happened,
+  // rather than sleeping an arbitrary duration.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
   try {
     await action();
   } finally {
@@ -261,11 +267,15 @@ export async function waitForFonts(page: Page): Promise<void> {
 }
 
 /**
- * Convenience function that waits for images, fonts, and network idle before
- * taking a screenshot — use when maximum stability is needed.
+ * Convenience function that waits for images and fonts before taking a
+ * screenshot — use when maximum stability is needed.
+ *
+ * Note: deliberately uses 'load' rather than 'networkidle'. Sites with
+ * long-polling/analytics never reach network-idle, which turns this helper
+ * into a timeout flake. Images + fonts are what actually affect pixels.
  */
 export async function waitForStableState(page: Page): Promise<void> {
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('load');
   await waitForImages(page);
   await waitForFonts(page);
 }

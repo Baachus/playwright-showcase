@@ -37,8 +37,12 @@ export class TI_InfiniteScrollPage extends BasePage {
   // ── Actions ─────────────────────────────────────────────────────────────────
   async scrollToBottom(): Promise<void> {
     const count = await this.getParagraphCount();
-    await this.paragraphs.nth(count-1).scrollIntoViewIfNeeded();
-    await this.page.waitForTimeout(1000);
+    await this.paragraphs.nth(count - 1).scrollIntoViewIfNeeded();
+    // Wait for jscroll to actually append new content instead of sleeping.
+    await this.page.waitForFunction(
+      (prev) => document.querySelectorAll('div[class="jscroll-added"]').length > prev,
+      count
+    );
   }
 
   // ── Queries ─────────────────────────────────────────────────────────────────

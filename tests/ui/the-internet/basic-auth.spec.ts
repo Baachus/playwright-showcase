@@ -21,8 +21,8 @@ test.describe('The Internet – Basic Authorization Testing', { tag: ['@ui', '@t
     });
 
     await allure.step('Validate Title and Text on Valid Login', async()=>{
-        await expect(await ti_basicAuthPage.title).toHaveText('Basic Auth');
-        await expect(await ti_basicAuthPage.text).toHaveText('Congratulations! You must have the proper credentials.');
+        await expect(ti_basicAuthPage.title).toHaveText('Basic Auth');
+        await expect(ti_basicAuthPage.text).toHaveText('Congratulations! You must have the proper credentials.');
     });
   });
 
