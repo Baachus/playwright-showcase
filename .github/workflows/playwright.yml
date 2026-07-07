@@ -44,7 +44,7 @@ jobs:
     # Visual baselines are pixel-sensitive to the Chromium/font build, so the run
     # MUST use the same environment the *-linux.png baselines were generated in.
     container:
-      image: mcr.microsoft.com/playwright:v1.60.0-noble
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -82,7 +82,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     # Same pinned image as the test job so generated baselines match CI renders.
     container:
-      image: mcr.microsoft.com/playwright:v1.60.0-noble
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
