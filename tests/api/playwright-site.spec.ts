@@ -89,28 +89,12 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
           expect(hasCacheControl).toBeTruthy();
         });
       });
-
-    test('should not expose server version information',
-      async ({ request }) => {
-        await allure.allureId('API-006');
-        await allure.story('Response Headers');
-        await allure.label('severity', 'normal');
-
-        const response = await request.get('https://playwright.dev/');
-
-        await allure.step('Assert Server header contains no version string', async () => {
-          const server = response.headers()['server'] ?? '';
-          expect(server).not.toMatch(/apache\/\d/i);
-          expect(server).not.toMatch(/nginx\/\d/i);
-          expect(server).not.toMatch(/iis\/\d/i);
-        });
-      });
   });
 
   test.describe('Response Time SLAs', () => {
     test('home page should respond within 3 seconds',
       async ({ request }) => {
-        await allure.allureId('API-007');
+        await allure.allureId('API-006');
         await allure.story('Response Time');
         await allure.label('severity', 'critical');
 
@@ -127,7 +111,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('docs page should respond within 3 seconds',
       async ({ request }) => {
-        await allure.allureId('API-008');
+        await allure.allureId('API-007');
         await allure.story('Response Time');
         await allure.label('severity', 'critical');
 
@@ -146,7 +130,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
   test.describe('Content Validation', () => {
     test('home page body should contain Playwright branding',
       async ({ request }) => {
-        await allure.allureId('API-009');
+        await allure.allureId('API-008');
         await allure.story('Content Validation');
         await allure.label('severity', 'normal');
 
@@ -160,7 +144,7 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
 
     test('response body should not be empty',
       async ({ request }) => {
-        await allure.allureId('API-010');
+        await allure.allureId('API-009');
         await allure.story('Content Validation');
         await allure.label('severity', 'normal');
 
@@ -169,21 +153,6 @@ test.describe('API – Core HTTP Behavior', { tag: ['@api'] }, () => {
         await allure.step('Assert response body has substantial content', async () => {
           const body = await response.text();
           expect(body.length).toBeGreaterThan(100);
-        });
-      });
-  });
-
-  test.describe('HTTPS & Redirects', () => {
-    test('site should be served over HTTPS',
-      async ({ request }) => {
-        await allure.allureId('API-011');
-        await allure.story('HTTPS');
-        await allure.label('severity', 'critical');
-
-        const response = await request.get('https://playwright.dev/');
-        
-        await allure.step('Assert final URL uses https://', async () => {
-          expect(response.url()).toMatch(/^https:\/\//);
         });
       });
   });

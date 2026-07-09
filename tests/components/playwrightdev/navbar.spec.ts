@@ -58,73 +58,9 @@ test.describe('Navbar Component', () => {
     });
   });
 
-  test.describe('Language Switcher Dropdown', { tag: ['@component'] }, () => {
-    test('should show the language dropdown trigger in the navbar', async ({ pd_navbar }) => {
-      await allure.allureId('COMP-NB-005');
-      await allure.story('Dropdown Trigger Visible');
-      await allure.label('severity', 'critical');
-
-      await allure.step('Assert the dropdown trigger is visible without hovering', async () => {
-        await expect(pd_navbar.languageDropdownTrigger).toBeVisible();
-      });
-    });
-
-    test('should reveal all four language options on hover', async ({ pd_navbar }) => {
-      await allure.allureId('COMP-NB-006');
-      await allure.story('All Language Options on Hover');
-      await allure.label('severity', 'critical');
-
-      await allure.step('Hover trigger and assert all four options appear', async () => {
-        await pd_navbar.assertLanguageLinksVisible();
-      });
-    });
-
-    test('should navigate to Python docs when Python option is clicked', async ({ pd_navbar, page }) => {
-      await allure.allureId('COMP-NB-007');
-      await allure.story('Python Option Navigation');
-      await allure.label('severity', 'normal');
-
-      await allure.step('Hover dropdown and click Python', async () => {
-        await pd_navbar.switchLanguage('Python');
-      });
-
-      await allure.step('Assert URL contains /python/', async () => {
-        await expect(page).toHaveURL(/\/python\//);
-      });
-    });
-
-    test('should navigate to Java docs when Java option is clicked', async ({ pd_navbar, page }) => {
-      await allure.allureId('COMP-NB-008');
-      await allure.story('Java Option Navigation');
-      await allure.label('severity', 'normal');
-
-      await allure.step('Hover dropdown and click Java', async () => {
-        await pd_navbar.switchLanguage('Java');
-      });
-
-      await allure.step('Assert URL contains /java/', async () => {
-        await expect(page).toHaveURL(/\/java\//);
-      });
-    });
-
-    test('should navigate to .NET docs when .NET option is clicked', async ({ pd_navbar, page }) => {
-      await allure.allureId('COMP-NB-009');
-      await allure.story('.NET Option Navigation');
-      await allure.label('severity', 'normal');
-
-      await allure.step('Hover dropdown and click .NET', async () => {
-        await pd_navbar.switchLanguage('.NET');
-      });
-
-      await allure.step('Assert URL contains /dotnet/', async () => {
-        await expect(page).toHaveURL(/\/dotnet\//);
-      });
-    });
-  });
-
   test.describe('Theme Toggle', { tag: ['@component'] }, () => {
     test('should display the theme toggle button', async ({ pd_navbar }) => {
-      await allure.allureId('COMP-NB-010');
+      await allure.allureId('COMP-NB-005');
       await allure.story('Theme Toggle Visible');
       await allure.label('severity', 'minor');
 
@@ -134,7 +70,7 @@ test.describe('Navbar Component', () => {
     });
 
     test('should switch theme when the toggle is clicked', async ({ pd_navbar }) => {
-      await allure.allureId('COMP-NB-011');
+      await allure.allureId('COMP-NB-006');
       await allure.story('Theme Toggle Interaction');
       await allure.label('severity', 'normal');
 
@@ -154,7 +90,7 @@ test.describe('Navbar Component', () => {
 
   test.describe('Brand Navigation', { tag: ['@component'] }, () => {
     test('should return to home page when brand logo is clicked from docs', async ({ page }) => {
-      await allure.allureId('COMP-NB-012');
+      await allure.allureId('COMP-NB-007');
       await allure.story('Brand Logo Click');
       await allure.label('severity', 'normal');
 

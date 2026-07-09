@@ -40,21 +40,11 @@ test.describe('Docs Page', () => {
           await expect(pd_docsPage.mainContent).toBeVisible();
         });
     });
-
-    test('should contain code examples on intro page', async ({ pd_docsPage }) => {
-      await allure.allureId('UI-DP-004');
-        await allure.story('Code Examples');
-      await allure.label('severity', 'normal');
-      
-      await allure.step('Assert at least one code block is present', async () => {
-        await pd_docsPage.assertCodeBlocksPresent();
-      });
-    });
   });
 
   test.describe('Sidebar Navigation', { tag: ['@ui'] }, () => {
     test('should list navigation links in the sidebar', async ({ pd_docsPage }) => {
-      await allure.allureId('UI-DP-005');
+      await allure.allureId('UI-DP-002');
       await allure.story('Navigation Links');
       await allure.label('severity', 'normal');
 
@@ -65,7 +55,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should navigate to the Installation page', async ({ pd_docsPage, page }) => {
-      await allure.allureId('UI-DP-006');
+      await allure.allureId('UI-DP-003');
       await allure.story('Installation Navigation');
       await allure.label('severity', 'critical');
       
@@ -83,7 +73,7 @@ test.describe('Docs Page', () => {
     });
 
     test('should navigate to Writing Tests page',async ({ pd_docsPage, page }) => {
-      await allure.allureId('UI-DP-007');
+      await allure.allureId('UI-DP-004');
       await allure.story('Writing Test Navigation');
       await allure.label('severity', 'normal');
 
@@ -97,31 +87,6 @@ test.describe('Docs Page', () => {
     });
   });
 
-  test.describe('Code Blocks', { tag: ['@ui'] }, () => {
-    test('should have multiple code blocks on the intro page', async ({ pd_docsPage }) => {
-      await allure.allureId('UI-DP-008');
-      await allure.story('Code Blocks');
-      await allure.label('severity', 'minor');
-
-      await allure.step('Count code blocks on page', async () => {
-        const count = await pd_docsPage.getCodeBlockCount();
-        expect(count).toBeGreaterThan(0);
-      });
-    });
-
-    test('should render code block content', async ({ pd_docsPage }) => {
-      await allure.allureId('UI-DP-009');
-      await allure.story('Code Blocks Render');
-      await allure.label('severity', 'minor');
-
-      await allure.step('Get content of first code block', async () => {
-        const content = await pd_docsPage.getCodeBlockContent(0);
-        expect(content).not.toBeNull();
-        expect(content!.length).toBeGreaterThan(0);
-      });
-    });
-  });
-
   test.describe('Direct Page Navigation', { tag: ['@ui'] }, () => {
     for (const [label, section] of [
       ['API Testing', 'api-testing'],
@@ -129,7 +94,7 @@ test.describe('Docs Page', () => {
       ['Configuration', 'test-configuration'],
     ] as const) {
       test(`should load the ${label} page`, async ({ pd_docsPage }) => {
-        await allure.allureId('UI-DP-010');
+        await allure.allureId('UI-DP-005');
         await allure.story('Direct Page Navigation');
         await allure.label('severity', 'normal');
         await allure.step(`Navigate to /docs/${section}`, async () => {

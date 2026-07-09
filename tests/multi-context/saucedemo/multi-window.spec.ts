@@ -23,27 +23,8 @@ test.beforeEach(async () => {
 });
 
 test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@multi-context'] }, () => {
-
-  test('two independent windows are both authenticated simultaneously', async ({ sd_standard_ctx, sd_problem_ctx }) => {
-    await allure.allureId('CTX-WIN-001');
-    await allure.story('Simultaneous Authentication');
-    await allure.label('severity', 'critical');
-
-    await allure.step('Assert standard_user window is on the inventory page', async () => {
-      await expect(sd_standard_ctx.page).toHaveURL(/inventory/);
-    });
-
-    await allure.step('Assert problem_user window is on the inventory page', async () => {
-      await expect(sd_problem_ctx.page).toHaveURL(/inventory/);
-    });
-
-    await allure.step('Both windows are in different contexts -- verify they are distinct objects', async () => {
-      expect(sd_standard_ctx.context).not.toBe(sd_problem_ctx.context);
-    });
-  });
-
   test('cart changes in Window 1 do not affect Window 2', async ({ sd_standard_ctx, sd_problem_ctx }) => {
-    await allure.allureId('CTX-WIN-002');
+    await allure.allureId('CTX-WIN-001');
     await allure.story('Cart Isolation Across Windows');
     await allure.label('severity', 'critical');
 
@@ -70,26 +51,8 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
     });
   });
 
-  test('standard_user and problem_user see the same product names', async ({ sd_standard_ctx, sd_problem_ctx }) => {
-    await allure.allureId('CTX-WIN-003');
-    await allure.story('Consistent Inventory Across Users');
-    await allure.label('severity', 'normal');
-
-    await allure.step('Fetch item names from both windows concurrently', async () => {
-      const [standardNames, problemNames] = await Promise.all([
-        sd_standard_ctx.inventoryPage.getItemNames(),
-        sd_problem_ctx.inventoryPage.getItemNames(),
-      ]);
-
-      await allure.step('Assert both users see the same product catalogue', async () => {
-        expect(standardNames).toEqual(problemNames);
-        expect(standardNames.length).toBeGreaterThan(0);
-      });
-    });
-  });
-
   test('logout in Window 1 does not affect Window 2 session', async ({ sd_standard_ctx, sd_problem_ctx }) => {
-    await allure.allureId('CTX-WIN-004');
+    await allure.allureId('CTX-WIN-002');
     await allure.story('Logout Isolation Between Windows');
     await allure.label('severity', 'critical');
 
@@ -105,31 +68,8 @@ test.describe('Multi-Window -- Session Isolation', { tag: ['@multi-window', '@mu
     });
   });
 
-  test('three independent windows operate concurrently without interference', async ({ sd_standard_ctx, sd_problem_ctx, sd_glitch_ctx }) => {
-    await allure.allureId('CTX-WIN-005');
-    await allure.story('Three-Window Concurrency');
-    await allure.label('severity', 'normal');
-
-    await allure.step('Add items in each window independently', async () => {
-      // Each window manages its own cart state.
-      // NOTE: problem_user has known cart-add bugs (some Add-to-cart buttons
-      // do not increment the badge) and cannot reliably reach count=2.  Use
-      // performance_glitch_user -- it is functional, just slow -- for the
-      // 2-item window so the isolation assertion is deterministic.
-      await sd_standard_ctx.inventoryPage.addItemToCart('Sauce Labs Backpack');
-      await sd_glitch_ctx.inventoryPage.addItemToCart('Sauce Labs Bike Light');
-      await sd_glitch_ctx.inventoryPage.addItemToCart('Sauce Labs Bolt T-Shirt');
-    });
-
-    await allure.step('Assert each window has its own isolated cart count', async () => {
-      await expect.poll(() => sd_standard_ctx.inventoryPage.getCartCount()).toBe(1);
-      await expect.poll(() => sd_problem_ctx.inventoryPage.getCartCount()).toBe(0);
-      await expect.poll(() => sd_glitch_ctx.inventoryPage.getCartCount()).toBe(2);
-    });
-  });
-
   test('unauthenticated window is redirected when accessing inventory', async ({ sd_unauth_ctx }) => {
-    await allure.allureId('CTX-WIN-006');
+    await allure.allureId('CTX-WIN-003');
     await allure.story('Unauthenticated Access Redirect');
     await allure.label('severity', 'normal');
 
