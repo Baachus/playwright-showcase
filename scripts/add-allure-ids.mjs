@@ -21,6 +21,7 @@ const PREFIX_MAP = [
   { match: 'components/playwrightdev/language-selector',prefix: 'COMP-LS'  },
   { match: 'components/playwrightdev/navbar',           prefix: 'COMP-NB'  },
   { match: 'components/playwrightdev/search',           prefix: 'COMP-SR'  },
+  { match: 'crawler/crawler',                           prefix: 'CRWL'     },
   { match: 'mocking/playwrightdev/api-mocking',         prefix: 'MOCK-API' },
   { match: 'mocking/playwrightdev/network-conditions',  prefix: 'MOCK-NET' },
   { match: 'multi-context/saucedemo/multi-tab',         prefix: 'CTX-TAB'  },

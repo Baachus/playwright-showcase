@@ -32,6 +32,7 @@ A production-grade **Playwright + TypeScript** testing showcase covering a wide 
       - [Visual Regression Against a Single Browser](#visual-regression-against-a-single-browser)
       - [Security Tests](#security-tests)
       - [Performance Tests](#performance-tests)
+      - [Web Crawler Tests](#web-crawler-tests)
       - [Saucedemo Checkout Flow Only](#saucedemo-checkout-flow-only)
       - [Email Verification](#email-verification)
   - [Email Verification Tests](#email-verification-tests)
@@ -116,7 +117,7 @@ The official Playwright documentation site. Used for UI, accessibility, visual r
 A demo e-commerce application from Sauce Labs. Used for UI, checkout flow, multi-context, WebSocket, and authentication tests. Supports multiple user personas with different behaviors (standard, locked-out, problem, performance-glitch, error, visual).
 
 ### [The Internet](https://the-internet.herokuapp.com)
-A purpose-built playground by Elemental Selenium covering a wide range of challenging UI scenarios. Used exclusively for UI tests across 44 spec files targeting features such as A/B testing, drag-and-drop, dynamic controls, iframes, shadow DOM, JavaScript alerts, file upload/download, geolocation, infinite scroll, and more.
+A purpose-built playground by Elemental Selenium covering a wide range of challenging UI scenarios. Used for UI tests across 44 spec files targeting features such as A/B testing, drag-and-drop, dynamic controls, iframes, shadow DOM, JavaScript alerts, file upload/download, geolocation, infinite scroll, and more. It's also the target of the [Web Crawler suite](#web-crawler-tests), since it ships with a handful of intentionally broken links/images/status pages to detect.
 
 ---
 
@@ -140,6 +141,7 @@ playwright-showcase/
 │   └── utils/                   # Shared utility libraries
 │       ├── accessibility.utils.ts
 │       ├── authentication.utils.ts
+│       ├── crawler.utils.ts
 │       ├── email.utils.ts
 │       ├── mock.utils.ts
 │       ├── multi-context.utils.ts
@@ -150,6 +152,7 @@ playwright-showcase/
 ├── tests/
 │   ├── accessibility/           # WCAG 2.1 AA scans via axe-core
 │   ├── api/                     # Direct API / HTTP tests
+│   ├── crawler/                 # BFS link-integrity crawl of the-internet.herokuapp.com
 │   ├── email/                   # Email verification via local Mailpit sink
 │   ├── components/              # Isolated component tests
 │   ├── mocking/                 # Network route interception tests
@@ -234,6 +237,7 @@ This runs every project in `playwright.config.ts` in parallel, including setup p
 | Accessibility tests | `npm run test:a11y` |
 | Performance tests | `npm run test:perf` |
 | Security tests | `npm run test:security` |
+| Web crawler tests | `npm run test:crawler` |
 | Visual regression | `npm run test:visual` |
 | Network mocking | `npm run test:mock` |
 | Component tests | `npm run test:components` |
@@ -325,6 +329,14 @@ Performance tests run Lighthouse and have a 90-second timeout. Run them in isola
 
 ```bash
 npx playwright test tests/performance --project=Performance
+```
+
+#### Web Crawler Tests
+
+Breadth-first crawls the-internet.herokuapp.com from the homepage (depth 2, ~70 pages) and asserts every discovered page/image resolves successfully, aside from a declared allowlist of the site's own intentionally broken demo content (status-code pages, auth-walled routes, decoy nav links, broken images). A second "positive control" test crawls with no allowlist to prove the detection itself actually works.
+
+```bash
+npm run test:crawler
 ```
 
 #### Saucedemo Checkout Flow Only
@@ -496,6 +508,7 @@ The script:
 | `components/.../language-selector` | `COMP-LS` |
 | `components/.../navbar` | `COMP-NB` |
 | `components/.../search` | `COMP-SR` |
+| `crawler/crawler` | `CRWL` |
 | `mocking/.../api-mocking` | `MOCK-API` |
 | `mocking/.../network-conditions` | `MOCK-NET` |
 | `multi-context/.../multi-tab` | `CTX-TAB` |
@@ -733,6 +746,7 @@ npm run format:check
 | `Performance` | `tests/performance` | Desktop Chrome | None |
 | `Security` | `tests/security` | Desktop Chrome | None |
 | `Accessibility` | `tests/accessibility` | Desktop Chrome | None |
+| `Crawler` | `tests/crawler` | N/A (HTTP only) | None |
 | `The Internet Chromium` | `tests/ui/the-internet` | Desktop Chrome | None |
 | `The Internet Firefox` | `tests/ui/the-internet` | Desktop Firefox | None |
 | `The Internet Webkit` | `tests/ui/the-internet` | Desktop Safari | None |
@@ -789,6 +803,7 @@ Reusable, independently unit-tested helper modules:
 | Utility | Responsibilities |
 |---------|-----------------|
 | `accessibility.utils.ts` | axe-core scanning, WCAG level assertions, violation summaries |
+| `crawler.utils.ts` | BFS site crawler: link/image status checking, expected-vs-unexpected breakage classification, report printing |
 | `email.utils.ts` | Mailpit REST helpers: unique-address minting, message polling, link/OTP/attachment extraction |
 | `authentication.utils.ts` | Auth file resolution, credential loading |
 | `mock.utils.ts` | `page.route()` helpers: JSON/HTML mocking, error simulation, request spying |

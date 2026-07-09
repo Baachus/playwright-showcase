@@ -205,7 +205,7 @@ test.describe('Accessibility – Keyboard Navigation', { tag: ['@accessibility']
       await allure.step('Press Escape to dismiss dialog', async () => {
         // Assert the dialog actually opens (the old racy isVisible() check
         // could silently skip the whole test body), then dismiss it.
-        const dialog = page.getByRole('dialog');
+        const dialog = page.locator('div[class="DocSearch-Modal"]');
         await expect(dialog).toBeVisible({ timeout: 5_000 });
         await page.keyboard.press('Escape');
         await expect(dialog).toBeHidden({ timeout: 3_000 });
