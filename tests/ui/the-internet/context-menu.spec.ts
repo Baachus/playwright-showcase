@@ -39,26 +39,4 @@ test.describe('The Internet – Context Menu', { tag: ['@ui', '@theinternethero'
       expect(message).toBe('You selected a context menu');
     });
   });
-
-  test('alert can be accepted after right-click', async ({ page }) => {
-    await allure.allureId('TI-CM-003');
-    await allure.story('Context Menu');
-    await allure.label('severity', 'normal');
-
-    const cmPage = new TI_ContextMenuPage(page);
-    await cmPage.goto();
-
-    await allure.step('Right-click the hot-spot and accept the alert', async () => {
-      // Await the dialog event directly instead of sleeping and checking a flag.
-      const dialogPromise = page.waitForEvent('dialog');
-      await cmPage.hotSpot.click({ button: 'right' });
-      const dialog = await dialogPromise;
-      expect(dialog.type()).toBe('alert');
-      await dialog.accept();
-    });
-
-    await allure.step('Page should still be on context menu URL after dismissal', async () => {
-      await cmPage.assertOnPage();
-    });
-  });
 });

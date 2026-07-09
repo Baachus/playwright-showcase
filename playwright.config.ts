@@ -209,6 +209,13 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], baseURL: 'https://playwright.dev' },
     },
     {
+      name: 'Crawler', testMatch: '**/crawler/**/*.spec.ts', testDir: './tests',
+      // A full-site BFS crawl issues dozens of sequential HTTP requests;
+      // 45s (the global default) is too tight under load, so give it room.
+      timeout: 90_000,
+      use: { baseURL: 'https://the-internet.herokuapp.com' },
+    },
+    {
       name: 'The Internet Chromium', testMatch: '**/ui/the-internet/**/*.spec.ts', testDir: './tests',
       use: { ...devices['Desktop Chrome'], baseURL: 'https://the-internet.herokuapp.com' },
     },

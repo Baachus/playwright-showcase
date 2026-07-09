@@ -10,6 +10,7 @@
     "test:a11y": "playwright test tests/accessibility",
     "test:perf": "playwright test tests/performance",
     "test:security": "playwright test tests/security",
+    "test:crawler": "playwright test tests/crawler --project=Crawler",
     "test:visual": "playwright test tests/visual --project=Visual",
     "test:visual:update": "playwright test tests/visual --project=Visual --update-snapshots",
     "visual:baselines:linux": "bash scripts/update-visual-baselines.sh",
