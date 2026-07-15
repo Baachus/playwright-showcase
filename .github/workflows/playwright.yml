@@ -4,8 +4,8 @@ on:
     branches: ['**']
   pull_request:
     branches: [ main, master ]
-  schedule:
-    - cron: '0 2 * * 2'    # nightly at 2am UTC on Tuesday
+  #schedule:
+    #- cron: '0 2 * * 2'    # nightly at 2am UTC on Tuesday
   workflow_dispatch:        # allow manual runs (e.g. to regenerate visual baselines)
 jobs:
   smoke:
