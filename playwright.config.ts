@@ -133,31 +133,31 @@ export default defineConfig({
       name: 'Playwright.dev Chromium', testDir: './tests',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**','**/bdd/**'],
     },
     {
       name: 'Playwright.dev Firefox', testDir: './tests',
       use: { ...devices['Desktop Firefox'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**','**/bdd/**'],
     },
     {
       name: 'Playwright.dev Webkit', testDir: './tests',
       use: { ...devices['Desktop Safari'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**','**/bdd/**'],
     },
     {
       name: 'Playwright.dev Mobile-chrome', testDir: './tests',
       use: { ...devices['Pixel 5'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**','**/bdd/**'],
     },
     {
       name: 'Playwright.dev Mobile-safari', testDir: './tests',
       use: { ...devices['iPhone 13'], storageState: '.auth/playwrightdev.json' },
       dependencies: ['setup-playwrightdev'],
-      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**'],
+      testIgnore: ['**/saucedemo/**','**/performance/**','**/visual/**','**/mocking/**','**/components/**','**/multi-context/**','**/websocket/**','**/ui/the-internet/**','**/email/**','**/bdd/**'],
     },
     {
       name: 'Components', testMatch: '**/components/**/*.spec.ts', testDir: './tests',
@@ -170,6 +170,11 @@ export default defineConfig({
     },
     {
       name: 'Saucedemo Chromium', testMatch: '**/ui/saucedemo/**/*.spec.ts', testDir: './tests',
+      dependencies: ['setup-saucedemo'],
+      use: { ...devices['Desktop Chrome'], baseURL: 'https://www.saucedemo.com', storageState: '.auth/saucedemo.json' },
+    },
+    {
+      name: 'BDD', testMatch: '**/bdd/**/*.spec.ts', testDir: './tests',
       dependencies: ['setup-saucedemo'],
       use: { ...devices['Desktop Chrome'], baseURL: 'https://www.saucedemo.com', storageState: '.auth/saucedemo.json' },
     },

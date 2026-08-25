@@ -2,6 +2,8 @@
 
 A production-grade **Playwright + TypeScript** testing showcase covering a wide range of real-world testing scenarios across three target applications. The project demonstrates best practices in test architecture, reporting, and tooling that can be adapted for any professional test automation suite.
 
+> **Writing or reviewing tests?** See [docs/AUTOMATION_STANDARDS.md](docs/AUTOMATION_STANDARDS.md) for how to write a test case (including BDD-style Given/When/Then), how to build a Page Object, TypeScript/lint standards, and how to update dependencies safely.
+
 ---
 
 ## Table of Contents
