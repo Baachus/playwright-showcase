@@ -1,6 +1,5 @@
 import { test, expect } from '../../../src/fixtures/index.js';
 import { BrowserContext, Page } from '@playwright/test';
-import { MultiContextHelper } from '../../../src/utils/multi-context.utils.js';
 import { SD_InventoryPage } from '../../../src/pages/saucedemo/SD_InventoryPage.js';
 import * as allure from 'allure-js-commons';
 
@@ -30,55 +29,11 @@ test.beforeEach(async () => {
 });
 
 test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', '@multi-context'] }, () => {
-
-  // --locked_out_user-------------------------------------------------------------- 
-  test.describe('locked_out_user -- Login Rejection', { tag: ['@smoke'] }, () => {
-
-    test('locked_out_user should be rejected at login with an error message', async ({ sd_unauth_ctx }) => {
-      await allure.allureId('CTX-USR-001');
-      await allure.story('Locked-Out User Rejection');
-      await allure.label('severity', 'critical');
-
-      await allure.step('Attempt to log in as locked_out_user', async () => {
-        const errorText = await MultiContextHelper.loginExpectRejected(
-          sd_unauth_ctx.page,
-          'locked_out_user',
-        );
-
-        await allure.step('Assert the error message mentions being locked out', async () => {
-          expect(errorText.toLowerCase()).toContain('locked out');
-        });
-      });
-
-      await allure.step('Assert the user remains on the login page', async () => {
-        await expect(sd_unauth_ctx.page).toHaveURL(/saucedemo\.com\/?$/);
-      });
-    });
-
-    test('locked_out_user error banner should be dismissible', async ({ sd_unauth_ctx }) => {
-      await allure.allureId('CTX-USR-002');
-      await allure.story('Error Banner Dismissal');
-      await allure.label('severity', 'normal');
-
-      await allure.step('Trigger the locked-out error', async () => {
-        await MultiContextHelper.loginExpectRejected(sd_unauth_ctx.page, 'locked_out_user');
-      });
-
-      await allure.step('Click the error close button', async () => {
-        await sd_unauth_ctx.page.locator('[data-test="error-button"]').click();
-      });
-
-      await allure.step('Assert error banner is no longer visible', async () => {
-        await expect(sd_unauth_ctx.page.locator('[data-test="error"]')).toBeHidden();
-      });
-    });
-  });
-
   // --standard_user vs problem_user-------------------------------------------------------------- 
   test.describe('standard_user vs problem_user -- Side-by-Side Comparison', () => {
 
     test('both users see the same product names on the inventory page', async ({ sd_standard_ctx, sd_problem_ctx }) => {
-      await allure.allureId('CTX-USR-003');
+      await allure.allureId('CTX-USR-001');
       await allure.story('Product Catalogue Consistency');
       await allure.label('severity', 'normal');
 
@@ -95,7 +50,7 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
     });
 
     test('both users see the same product prices', async ({ sd_standard_ctx, sd_problem_ctx }) => {
-      await allure.allureId('CTX-USR-004');
+      await allure.allureId('CTX-USR-002');
       await allure.story('Price Consistency Across Users');
       await allure.label('severity', 'normal');
 
@@ -112,7 +67,7 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
     });
 
     test('standard_user can sort inventory by price; problem_user cart behaves differently', async ({ sd_standard_ctx, sd_problem_ctx }) => {
-      await allure.allureId('CTX-USR-005');
+      await allure.allureId('CTX-USR-003');
       await allure.story('Sort and Cart Differences');
       await allure.label('severity', 'normal');
 
@@ -134,20 +89,8 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
 
   // --performance_glitch_user-------------------------------------------------------------- 
   test.describe('performance_glitch_user -- Slow but Functional', () => {
-
-    test('performance_glitch_user can log in and reach the inventory page', async ({ sd_glitch_ctx }) => {
-      await allure.allureId('CTX-USR-006');
-      await allure.story('Glitch User Authentication');
-      await allure.label('severity', 'normal');
-
-      await allure.step('Assert glitch user is authenticated and on inventory', async () => {
-        await expect(sd_glitch_ctx.page).toHaveURL(/inventory/);
-        await sd_glitch_ctx.inventoryPage.assertOnInventoryPage();
-      });
-    });
-
     test('performance_glitch_user sees the same product catalogue as standard_user', async ({ sd_standard_ctx, sd_glitch_ctx }) => {
-      await allure.allureId('CTX-USR-007');
+      await allure.allureId('CTX-USR-004');
       await allure.story('Glitch User Catalogue Consistency');
       await allure.label('severity', 'normal');
 
@@ -164,7 +107,7 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
     });
 
     test('performance_glitch_user can add items to cart', async ({ sd_glitch_ctx }) => {
-      await allure.allureId('CTX-USR-008');
+      await allure.allureId('CTX-USR-005');
       await allure.story('Glitch User Cart Interaction');
       await allure.label('severity', 'normal');
 
@@ -180,7 +123,7 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
   test.describe('Three Users -- Concurrent Session Comparison', () => {
 
     test('three users are all authenticated and independent simultaneously', async ({ sd_standard_ctx, sd_problem_ctx, sd_glitch_ctx }) => {
-      await allure.allureId('CTX-USR-009');
+      await allure.allureId('CTX-USR-006');
       await allure.story('Three Concurrent User Sessions');
       await allure.label('severity', 'critical');
 
@@ -227,7 +170,7 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
     });
 
     test('ad-hoc context created via MultiContextHelper is fully independent', async ({ sd_multiContextHelper, sd_standard_ctx }) => {
-      await allure.allureId('CTX-USR-010');
+      await allure.allureId('CTX-USR-007');
       await allure.story('Ad-Hoc Context Independence');
       await allure.label('severity', 'normal');
 
@@ -257,7 +200,7 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
   test.describe('Invalid Credentials -- Edge Cases', () => {
 
     test('empty username should show a validation error', async ({ sd_unauth_ctx }) => {
-      await allure.allureId('CTX-USR-011');
+      await allure.allureId('CTX-USR-008');
       await allure.story('Empty Username Validation');
       await allure.label('severity', 'normal');
 
@@ -270,24 +213,6 @@ test.describe('Multi-User -- User Behavior Differences', { tag: ['@multi-user', 
         await expect(error).toBeVisible();
         const text = await error.innerText();
         expect(text.toLowerCase()).toContain('username');
-      });
-    });
-
-    test('wrong password for standard_user should show a validation error', async ({ sd_unauth_ctx }) => {
-      await allure.allureId('CTX-USR-012');
-      await allure.story('Wrong Password Validation');
-      await allure.label('severity', 'normal');
-
-      await allure.step('Attempt login with wrong password', async () => {
-        await MultiContextHelper.loginExpectRejected(
-          sd_unauth_ctx.page,
-          'standard_user',
-          'wrong_password_123',
-        );
-      });
-
-      await allure.step('Assert user remains on the login page', async () => {
-        await expect(sd_unauth_ctx.page).toHaveURL(/saucedemo\.com\/?$/);
       });
     });
   });

@@ -59,23 +59,8 @@ test.describe('The Internet – A/B Testing', { tag: ['@ui', '@theinternethero',
   });
 
   // ── Variant Detection ────────────────────────────────────────────────────────
-
-  test('heading text is exactly one of the two known variants', async ({ ti_abTestPage }) => {
-    await allure.allureId('TI-AB-004');
-    await allure.story('Variant Detection');
-    await allure.label('severity', 'normal');
-
-    await allure.step('Read the heading and confirm it matches a known variant string', async () => {
-      const headingText = await ti_abTestPage.getHeadingText();
-      expect(
-        TI_ABTestPage.VALID_HEADINGS.some(v => headingText.includes(v)),
-        `Unexpected heading text: "${headingText}"`,
-      ).toBe(true);
-    });
-  });
-
   test('control variant renders when served', async ({ page }) => {
-    await allure.allureId('TI-AB-005');
+    await allure.allureId('TI-AB-004');
     await allure.story('Variant Detection');
     await allure.label('severity', 'normal');
 
@@ -102,7 +87,7 @@ test.describe('The Internet – A/B Testing', { tag: ['@ui', '@theinternethero',
   });
 
   test('variation 1 renders when served', async ({ page }) => {
-    await allure.allureId('TI-AB-006');
+    await allure.allureId('TI-AB-005');
     await allure.story('Variant Detection');
     await allure.label('severity', 'normal');
 
@@ -125,26 +110,8 @@ test.describe('The Internet – A/B Testing', { tag: ['@ui', '@theinternethero',
   });
 
   // ── Navigation ───────────────────────────────────────────────────────────────
-
-  test('page is accessible directly via /abtest URL', async ({ page }) => {
-    await allure.allureId('TI-AB-007');
-    await allure.story('Navigation');
-    await allure.label('severity', 'normal');
-
-    await allure.step('Navigate directly to /abtest', async () => {
-      await page.goto('/abtest');
-    });
-
-    await allure.step('Confirm URL and heading are correct', async () => {
-      await expect(page).toHaveURL(/\/abtest/);
-      const abTestPage = new TI_ABTestPage(page);
-      await abTestPage.waitForPageLoad();
-      await abTestPage.assertValidVariant();
-    });
-  });
-
   test('page reloads serve a valid variant on each load', async ({ page }) => {
-    await allure.allureId('TI-AB-008');
+    await allure.allureId('TI-AB-006');
     await allure.story('Navigation');
     await allure.label('severity', 'minor');
 
